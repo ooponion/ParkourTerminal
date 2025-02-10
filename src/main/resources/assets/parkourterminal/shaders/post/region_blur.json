@@ -1,0 +1,31 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "region_blur",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "samplers": [
+        { "name": "MaskSampler", "texture": "minecraft:main" }
+      ],
+      "uniforms": [
+        { "name": "BlurDir", "values": [1.0, 0.0] },
+        { "name": "Radius", "values": [20.0] }
+      ]
+    },
+    {
+      "name": "region_blur",
+      "intarget": "swap",
+      "outtarget": "minecraft:main",
+      "samplers": [
+        { "name": "MaskSampler", "texture": "minecraft:main" }
+      ],
+      "uniforms": [
+        { "name": "BlurDir", "values": [0.0, 1.0] },
+        { "name": "Radius", "values": [20.0] }
+      ]
+    }
+  ]
+}
