@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import parkourterminal.gui.ShiftRightClickGui;
-import parkourterminal.gui.TestGui;
 import parkourterminal.network.NetworkLoader;
 import parkourterminal.network.TeleportPacket;
 
@@ -29,7 +28,7 @@ public class ItemRightClickHandler {
 
                 if (savedLocations.tagCount() > 0 && selectedIndex < savedLocations.tagCount()) {
                     if (world.isRemote && player.isSneaking()) {
-                        Minecraft.getMinecraft().displayGuiScreen(new TestGui());
+                        Minecraft.getMinecraft().displayGuiScreen(new ShiftRightClickGui());
                         event.setCanceled(true);
                         return;
                     }

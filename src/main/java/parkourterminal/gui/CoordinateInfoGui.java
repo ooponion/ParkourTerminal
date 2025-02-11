@@ -48,7 +48,7 @@ public class CoordinateInfoGui extends BlurGui {
     private int gap = 10;            // 按钮间隔
     private int btnWidth;
     private int btnHeight = 20;
-    private int btnNormalColor = 0x80000000; // 深灰色
+    private int btnNormalColor = 0x40000000; // 深灰色
     private int btnHoverColor  = 0x600099FF; // 浅灰色
     private int btnCornerRadius = 5;
 
@@ -162,7 +162,7 @@ public class CoordinateInfoGui extends BlurGui {
             float currentProgress = fieldHoverProgress.get(field);
             currentProgress += (targetProgress - currentProgress) * 0.2f;
             fieldHoverProgress.put(field, currentProgress);
-            int startColor = 0x80000000; // 默认边框色（半透明黑）
+            int startColor = 0x40000000; // 默认边框色（半透明黑）
             int endColor = 0x600099FF;   // 高亮边框色（半透明蓝）
             int currentColor = AnimationHelper.interpolateColor(startColor, endColor, currentProgress);
             field.setCurrentBorderColor(currentColor);

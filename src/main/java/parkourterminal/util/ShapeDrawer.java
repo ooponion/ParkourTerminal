@@ -1,15 +1,10 @@
 package parkourterminal.util;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.shader.ShaderGroup;
 
 public class ShapeDrawer {
     public static void drawRect(int left, int top, int right, int bottom, int color) {

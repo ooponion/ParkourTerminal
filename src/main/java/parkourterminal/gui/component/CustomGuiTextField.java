@@ -10,10 +10,10 @@ import java.lang.reflect.Field;
 
 public class CustomGuiTextField extends GuiTextField {
     // 颜色优化
-    private int backgroundColor = 0x80000000;   // 背景颜色（半透明深灰色）
+    private int backgroundColor = 0x60000000;   // 背景颜色（半透明深灰色）
     private int textColor = 0x80EEEEEE;         // 文本颜色（柔和白）
     private int disabledTextColor = 0x80999999; // 禁用时文本颜色（浅灰色）
-    private int currentBorderColor = 0x40FFFFFF;
+    private int currentBorderColor = 0x60FFFFFF;
 
     private FontRenderer fontRendererObj;
 
