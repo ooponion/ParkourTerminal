@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 public class ConsolaFontRenderer extends FontRenderer {
     private static final ResourceLocation CONSOLA_TEXTURE = new ResourceLocation("parkourterminal", "fonts/consola.png");
 
-    private float fontScale;
+    public float fontScale;
 
     public ConsolaFontRenderer(Minecraft mc) {
         this(mc, 1.0f);
@@ -24,6 +24,10 @@ public class ConsolaFontRenderer extends FontRenderer {
         for (int i = 0; i < 256; i++)
             charWidth[i] = 4;
 
+        this.fontScale = fontScale;
+    }
+
+    public void setFontScale(float fontScale) {
         this.fontScale = fontScale;
     }
 

@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
-import parkourterminal.gui.component.BlurGui;
-import parkourterminal.gui.component.ConsolaFontRenderer;
-import parkourterminal.gui.component.ModCard;
-import parkourterminal.gui.component.ModDetailGui;
+import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.component.*;
 import parkourterminal.util.ShapeDrawer;
 
 public class IngameMenuGui extends BlurGui {
@@ -20,10 +21,17 @@ public class IngameMenuGui extends BlurGui {
     private State currentState = State.MAIN_MENU;
     private List<ModCard> modCards = new ArrayList<ModCard>();
     private ModDetailGui currentModDetailGui;
-    private int scrollOffset = 0; // 滚动偏移量
+    private int scrollOffset = 0; // 当前滚动偏移量
+    private int scrollTargetOffset = 0; // 目标滚动偏移量
+    private final float scrollSpeed = 0.4f; // 控制滚动平滑的速度（越小越平滑，越大越快）
+
+    // 拖动相关变量
+    private boolean isDraggingScrollBar = false; // 是否正在拖动滑动条
+    private int dragStartY = 0; // 拖动起始位置的 Y 坐标
+    private int dragStartScrollOffset = 0; // 拖动起始时的滚动偏移量
 
     private void registerCards() {
-        for (int i = 0; i < 60; i++) { // 假设我们有20个卡片
+        for (int i = 0; i < 100; i++) { // 假设我们有20个卡片
             registerCard("Mod " + (i + 1));
         }
     }
@@ -47,13 +55,67 @@ public class IngameMenuGui extends BlurGui {
         // 每次绘制前更新卡片位置，确保自适应屏幕变化
         updateCardPositions();
 
+        // 计算平滑过渡，逐渐更新 scrollOffset
+        scrollOffset = (int) (scrollOffset + (scrollTargetOffset - scrollOffset) * scrollSpeed);
+
         // 绘制仪表盘背景（例如模糊背景由 BlurGui 实现）
         drawDashboardBackground();
 
         if (currentState == State.MAIN_MENU) {
-            // 绘制所有 Mod 卡片，考虑滚动偏移量
+            // 计算卡片显示区域的坐标和尺寸
+            int panelMargin = 10;
+            int panelWidth = width - panelMargin * 2;
+            int panelHeight = height - panelMargin * 2;
+
+            int cardAreaX = panelMargin + (int) (panelWidth * 0.20);
+            int cardAreaY = panelMargin + (int) (panelHeight * 0.10);
+            int cardAreaWidth = (int) (panelWidth * 0.80);
+            int cardAreaHeight = (int) (panelHeight * 0.90);
+
+            // 获取 Minecraft 的 GUI 缩放比例
+            int scaleFactor = new ScaledResolution(this.mc).getScaleFactor();
+
+            // 将逻辑坐标转换为物理坐标
+            int physicalCardAreaX = cardAreaX * scaleFactor;
+            int physicalCardAreaY = cardAreaY * scaleFactor;
+            int physicalCardAreaWidth = cardAreaWidth * scaleFactor;
+            int physicalCardAreaHeight = cardAreaHeight * scaleFactor;
+
+            // 启用 OpenGL 裁剪测试
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            // 设置裁剪区域（注意 Y 坐标转换）
+            GL11.glScissor(
+                    physicalCardAreaX, // 物理 X 坐标
+                    this.mc.displayHeight - (physicalCardAreaY + physicalCardAreaHeight), // 物理 Y 坐标（转换）
+                    physicalCardAreaWidth, // 物理宽度
+                    physicalCardAreaHeight // 物理高度
+            );
+
+            // 绘制卡片（仅在此区域内可见）
             for (ModCard card : modCards) {
-                card.draw(mouseX, mouseY - scrollOffset); // 调整绘制位置
+                card.draw(mouseX, mouseY - scrollOffset); // 考虑滚动偏移量
+            }
+
+            // 关闭裁剪测试
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+
+            // 计算最大滚动偏移量
+            int maxScrollOffset = getMaxScrollOffset();
+
+            // 仅在内容高度超过卡片区域时才绘制滑动条
+            if (maxScrollOffset > 0) {
+                // 绘制滑动条
+                drawScrollBar(cardAreaX, cardAreaY, cardAreaWidth, cardAreaHeight, scrollOffset, maxScrollOffset);
+            }
+
+            // 处理拖动逻辑
+            if (isDraggingScrollBar) {
+                // 计算鼠标移动的距离
+                int deltaY = mouseY - dragStartY;
+                // 根据鼠标移动的距离更新目标滚动偏移量
+                scrollTargetOffset = dragStartScrollOffset + (int) (deltaY * 1.5f * ((float) getMaxScrollOffset() / cardAreaHeight));
+                // 限制滚动范围
+                scrollTargetOffset = Math.max(0, Math.min(getMaxScrollOffset(), scrollTargetOffset));
             }
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
             // 绘制详细设置界面
@@ -64,12 +126,33 @@ public class IngameMenuGui extends BlurGui {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (currentState == State.MAIN_MENU) {
-            // 检查是否点击了某个卡片，考虑滚动偏移量
-            for (ModCard card : modCards) {
-                if (card.isMouseOver(mouseX, mouseY + scrollOffset)) { // 调整点击检测
-                    currentModDetailGui = card.getModDetailGui();
-                    currentState = State.MOD_DETAIL;
-                    return;
+            // 计算卡片显示区域的边界
+            int panelMargin = 10;
+            int panelWidth = width - panelMargin * 2;
+            int panelHeight = height - panelMargin * 2;
+
+            int cardAreaX = panelMargin + (int) (panelWidth * 0.20);
+            int cardAreaY = panelMargin + (int) (panelHeight * 0.10);
+            int cardAreaWidth = (int) (panelWidth * 0.80);
+            int cardAreaHeight = (int) (panelHeight * 0.90);
+
+            // 检查是否点击了滑动条
+            int scrollBarX = cardAreaX + cardAreaWidth - 4; // 滑动条 X 坐标
+            if (mouseX >= scrollBarX && mouseX <= scrollBarX + 4 && mouseY >= cardAreaY && mouseY <= cardAreaY + cardAreaHeight) {
+                isDraggingScrollBar = true;
+                dragStartY = mouseY;
+                dragStartScrollOffset = scrollTargetOffset;
+            }
+
+            // 确保鼠标点击位置在卡片显示区域内
+            if (mouseX >= cardAreaX && mouseX <= cardAreaX + cardAreaWidth && mouseY >= cardAreaY && mouseY <= cardAreaY + cardAreaHeight) {
+                // 检查是否点击了某个卡片，考虑滚动偏移量
+                for (ModCard card : modCards) {
+                    if (card.isMouseOver(mouseX, mouseY - scrollOffset)) { // 考虑滚动偏移量
+                        currentModDetailGui = card.getModDetailGui();
+                        currentState = State.MOD_DETAIL;
+                        return;
+                    }
                 }
             }
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
@@ -80,7 +163,10 @@ public class IngameMenuGui extends BlurGui {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
-        if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
+        if (currentState == State.MAIN_MENU) {
+            // 停止拖动
+            isDraggingScrollBar = false;
+        } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
             currentModDetailGui.mouseReleased(mouseX, mouseY, state);
         }
         super.mouseReleased(mouseX, mouseY, state);
@@ -94,8 +180,9 @@ public class IngameMenuGui extends BlurGui {
         int scrollAmount = Mouse.getEventDWheel();
         if (scrollAmount != 0) {
             scrollAmount = scrollAmount > 0 ? -1 : 1; // 反转滚动方向
-            scrollOffset += scrollAmount * 20; // 每次滚动20像素
-            scrollOffset = Math.max(0, Math.min(getMaxScrollOffset(), scrollOffset)); // 限制滚动范围
+            // 更新目标滚动偏移量
+            scrollTargetOffset += scrollAmount * 20; // 每次滚动20像素
+            scrollTargetOffset = Math.max(0, Math.min(getMaxScrollOffset(), scrollTargetOffset)); // 限制滚动范围
         }
     }
 
@@ -134,6 +221,52 @@ public class IngameMenuGui extends BlurGui {
 
         // 单层玻璃效果背景
         drawGlassPanel(panelX, panelY, panelWidth, panelHeight, cornerRadius);
+
+        // 在背景左上角绘制图标
+        int iconSize = 16;     // 图标尺寸
+        int iconMargin = 5;   // 图标与背景边界的间距（可根据需求调整）
+        int iconX = panelX + iconMargin;
+        int iconY = panelY + iconMargin;
+
+        // 绑定自定义图标纹理
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.getTextureManager().bindTexture(new ResourceLocation("parkourterminal", "textures/gui/terminal.png"));
+
+        // 启用混合模式，确保透明效果正确
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+        // 恢复颜色状态
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        // 直接绘制图标，不使用任何变换（旋转等）
+        // 注意：drawScaledCustomSizeModalRect 是 Gui 类中的方法
+        this.drawScaledCustomSizeModalRect(iconX, iconY, 0, 0, 64, 64, iconSize, iconSize, 64, 64);
+
+        // 在图标右侧绘制文字 "Parkour Terminal"
+        String text = "Parkour Terminal";
+        int textColor = 0xFFFFFF; // 白色
+        int textX = iconX + iconSize + 5; // 文字 X 坐标：图标右侧 + 5 像素间距
+        int textY = iconY + (iconSize - fontRendererObj.FONT_HEIGHT) / 2; // 文字 Y 坐标：垂直居中
+
+        // 渲染文字
+        ((ConsolaFontRenderer)fontRendererObj).setFontScale(1.5f);
+        fontRendererObj.drawString(text, textX, textY, textColor);
+
+        // 绘制水平线（仪表盘上 10% 位置）
+        int horizontalLineY = panelY + (int) (panelHeight * 0.10); // 水平线 Y 坐标
+        int horizontalLineColor = 0xFFA0A0A0; // 白色（ARGB 格式）
+        ShapeDrawer.drawLine(panelX, horizontalLineY, panelX + panelWidth, horizontalLineY, horizontalLineColor);
+
+        // 绘制垂直线（水平线下方的左 20% 位置）
+        int verticalLineX = panelX + (int) (panelWidth * 0.20) + 1; // 垂直线 X 坐标
+        int verticalLineColor = 0xFF606060; // 白色（ARGB 格式）
+        ShapeDrawer.drawLine(verticalLineX, horizontalLineY, verticalLineX, panelY + panelHeight, verticalLineColor);
+
+        // 恢复 OpenGL 状态
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
     }
 
     private void drawGlassPanel(int x, int y, int width, int height, int cornerRadius) {
@@ -162,7 +295,6 @@ public class IngameMenuGui extends BlurGui {
         int cardAreaX = panelX + (int)(panelWidth * 0.20);
         int cardAreaY = panelY + (int)(panelHeight * 0.10);
         int cardAreaWidth = (int)(panelWidth * 0.80);
-        int cardAreaHeight = (int)(panelHeight * 0.90);
 
         int cardWidth = 80;
         int cardHeight = 20;
@@ -170,8 +302,6 @@ public class IngameMenuGui extends BlurGui {
 
         // 计算可放置的列数（确保至少 1 列）
         int columns = getColumns();
-        // 计算需要的行数（向上取整）
-        int rows = (modCards.size() + columns - 1) / columns;
 
         // 计算水平额外空间：每行的最小所需宽度与显示区域宽度的差值均摊到 (columns+1) 个间隙中
         int requiredWidth = columns * cardWidth + (columns + 1) * fixedMargin;
@@ -194,5 +324,42 @@ public class IngameMenuGui extends BlurGui {
     public void returnToMainMenu() {
         currentState = State.MAIN_MENU;
         currentModDetailGui = null;
+    }
+
+    private void drawScrollBar(int cardAreaX, int cardAreaY, int cardAreaWidth, int cardAreaHeight,
+                               int scrollOffset, int maxScrollOffset) {
+        // 仅当内容总高度大于可见区域时才绘制滑动条
+        if (maxScrollOffset > 0) {
+            // 滑动条宽度固定为 4 像素，绘制在卡片区域右侧
+            int scrollBarWidth = 4;
+            int scrollBarX = cardAreaX + cardAreaWidth - scrollBarWidth;
+
+            // 轨道使用透明颜色（本身只绘制边框，内部透明）
+            int trackColor = 0x00000000; // 完全透明
+            int cornerRadius = 2;
+
+            // 绘制轨道（整个卡片区域高度）
+            ShapeDrawer.drawRoundedRectBorder(scrollBarX, cardAreaY, scrollBarWidth, cardAreaHeight, trackColor, cornerRadius);
+
+            // 计算内容总高度：总高度 = 可见区域高度 + 最大滚动量
+            int totalContentHeight = cardAreaHeight + maxScrollOffset;
+            // 根据比例计算拇指高度：拇指高度 = 可见区域高度 * (可见区域高度 / 总内容高度)
+            int thumbHeight = (int)(((float) cardAreaHeight * cardAreaHeight) / totalContentHeight);
+            // 保证拇指有个最小高度
+            if (thumbHeight < 10) {
+                thumbHeight = 10;
+            }
+
+            // 计算滚动比例，防止除以0
+            float scrollRatio = maxScrollOffset > 0 ? (float) scrollOffset / maxScrollOffset : 0f;
+            // 拇指目标Y坐标：当scrollOffset为0时，拇指位于卡片区域顶端；当scrollOffset达到最大值时，拇指位于底部（cardAreaY + cardAreaHeight - thumbHeight）
+            int thumbY = cardAreaY + (int)((cardAreaHeight - thumbHeight) * scrollRatio);
+
+            // 定义拇指颜色为半透明白色
+            int thumbColor = 0x40FFFFFF;
+
+            // 绘制拇指
+            ShapeDrawer.drawRoundedRect(scrollBarX, thumbY, scrollBarWidth, thumbHeight, thumbColor, cornerRadius);
+        }
     }
 }

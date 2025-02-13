@@ -175,4 +175,33 @@ public class ShapeDrawer {
             wr.pos(x2, y2, 0).endVertex(); // 下一个点
         }
     }
+
+    public static void drawLine(int x1, int y1, int x2, int y2, int color) {
+        // 提取颜色分量
+        float a = (float)((color >> 24) & 255) / 255.0F;
+        float r = (float)((color >> 16) & 255) / 255.0F;
+        float g = (float)((color >> 8) & 255) / 255.0F;
+        float b = (float)(color & 255) / 255.0F;
+
+        // 设置 OpenGL 状态
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GlStateManager.color(r, g, b, a);
+
+        // 设置线宽为 1.0f
+        GL11.glLineWidth(1.0f);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer wr = tessellator.getWorldRenderer();
+
+        // 使用 GL_LINES 绘制一条直线
+        wr.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+        wr.pos(x1, y1, 0).endVertex();
+        wr.pos(x2, y2, 0).endVertex();
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
 }
