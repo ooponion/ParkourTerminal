@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.*;
@@ -30,6 +31,9 @@ public class IngameMenuGui extends BlurGui {
     private int dragStartY = 0; // 拖动起始位置的 Y 坐标
     private int dragStartScrollOffset = 0; // 拖动起始时的滚动偏移量
 
+    // 动画
+    private float exitIconScale = 1.0f;  // 退出图标的当前缩放比例
+
     private void registerCards() {
         for (int i = 0; i < 100; i++) { // 假设我们有20个卡片
             registerCard("Mod " + (i + 1));
@@ -37,7 +41,7 @@ public class IngameMenuGui extends BlurGui {
     }
 
     private void registerCard(String title) {
-        modCards.add(new ModCard(title, width - 115, height - 35, 100, 20));
+        modCards.add(new ModCard(title, new ResourceLocation("parkourterminal", "textures/gui/terminal.png") , width - 115, height - 35, 100, 20));
     }
 
     @Override
@@ -59,7 +63,7 @@ public class IngameMenuGui extends BlurGui {
         scrollOffset = (int) (scrollOffset + (scrollTargetOffset - scrollOffset) * scrollSpeed);
 
         // 绘制仪表盘背景（例如模糊背景由 BlurGui 实现）
-        drawDashboardBackground();
+        drawDashboardBackground(mouseX, mouseY);
 
         if (currentState == State.MAIN_MENU) {
             // 计算卡片显示区域的坐标和尺寸
@@ -93,7 +97,7 @@ public class IngameMenuGui extends BlurGui {
 
             // 绘制卡片（仅在此区域内可见）
             for (ModCard card : modCards) {
-                card.draw(mouseX, mouseY - scrollOffset); // 考虑滚动偏移量
+                card.draw(mouseX, mouseY); // 考虑滚动偏移量
             }
 
             // 关闭裁剪测试
@@ -125,12 +129,28 @@ public class IngameMenuGui extends BlurGui {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (currentState == State.MAIN_MENU) {
-            // 计算卡片显示区域的边界
-            int panelMargin = 10;
-            int panelWidth = width - panelMargin * 2;
-            int panelHeight = height - panelMargin * 2;
+        // 计算面板参数（与drawDashboardBackground中一致）
+        int panelMargin = 10;
+        int panelWidth = width - panelMargin * 2;
+        int panelHeight = height - panelMargin * 2;
+        int panelX = panelMargin;
+        int panelY = panelMargin;
 
+        // 退出图标参数（右上角）
+        int exitIconSize = 16;      // 图标尺寸
+        int exitIconMargin = 5;       // 边距
+        int exitIconX = panelX + panelWidth - exitIconSize - exitIconMargin;
+        int exitIconY = panelY + exitIconMargin;
+
+        // 如果左键点击在退出图标区域，则退出当前Gui
+        if (mouseButton == 0 &&
+                mouseX >= exitIconX && mouseX <= exitIconX + exitIconSize &&
+                mouseY >= exitIconY && mouseY <= exitIconY + exitIconSize) {
+            mc.displayGuiScreen(null);
+            return;
+        }
+
+        if (currentState == State.MAIN_MENU) {
             int cardAreaX = panelMargin + (int) (panelWidth * 0.20);
             int cardAreaY = panelMargin + (int) (panelHeight * 0.10);
             int cardAreaWidth = (int) (panelWidth * 0.80);
@@ -148,7 +168,7 @@ public class IngameMenuGui extends BlurGui {
             if (mouseX >= cardAreaX && mouseX <= cardAreaX + cardAreaWidth && mouseY >= cardAreaY && mouseY <= cardAreaY + cardAreaHeight) {
                 // 检查是否点击了某个卡片，考虑滚动偏移量
                 for (ModCard card : modCards) {
-                    if (card.isMouseOver(mouseX, mouseY - scrollOffset)) { // 考虑滚动偏移量
+                    if (card.isMouseOver(mouseX, mouseY)) { // 考虑滚动偏移量
                         currentModDetailGui = card.getModDetailGui();
                         currentState = State.MOD_DETAIL;
                         return;
@@ -210,7 +230,7 @@ public class IngameMenuGui extends BlurGui {
         return Math.max(1, columns);
     }
 
-    private void drawDashboardBackground() {
+    private void drawDashboardBackground(int mouseX, int mouseY) {
         int panelMargin = 10; // 背景板与屏幕边界的间距
         int panelX = panelMargin;
         int panelY = panelMargin;
@@ -253,15 +273,75 @@ public class IngameMenuGui extends BlurGui {
         // 渲染文字
         ((ConsolaFontRenderer)fontRendererObj).setFontScale(1.5f);
         fontRendererObj.drawString(text, textX, textY, textColor);
+        ((ConsolaFontRenderer)fontRendererObj).setFontScale(1.0f);
+
+        // --- 下面处理右上角退出图标的动画效果 ---
+        int exitIconSize = 12;         // 基础退出图标尺寸
+        int exitIconMargin = 5;        // 与背景边界的间距
+        int exitIconX = panelX + panelWidth - exitIconSize - exitIconMargin;
+        int exitIconY = panelY + exitIconMargin;
+        mc.getTextureManager().bindTexture(new ResourceLocation("parkourterminal", "textures/gui/quit.png"));
+
+        // 判断鼠标是否悬停在退出图标区域（使用 lastMouseX、lastMouseY）
+        if (mouseX >= exitIconX && mouseX <= exitIconX + exitIconSize &&
+                mouseY >= exitIconY && mouseY <= exitIconY + exitIconSize) {
+            // 平滑增大缩放比例至1.2
+            exitIconScale += (1.2f - exitIconScale) * 0.2f;
+        } else {
+            // 平滑回落至1.0
+            exitIconScale += (1.0f - exitIconScale) * 0.2f;
+        }
+
+        // 计算退出图标原来的中心位置
+        int centerX = exitIconX + exitIconSize / 2;
+        int centerY = exitIconY + exitIconSize / 2;
+
+        // 缩放后的尺寸
+        int scaledExitIconSize = (int) (exitIconSize * exitIconScale);
+
+        // 为保持中心位置不变，重新计算绘制的左上角
+        int drawX = centerX - scaledExitIconSize / 2;
+        int drawY = centerY - scaledExitIconSize / 2;
+
+        // 绘制退出图标（无需任何矩阵变换）
+        this.drawScaledCustomSizeModalRect(drawX, drawY, 0, 0, 64, 64, scaledExitIconSize, scaledExitIconSize, 64, 64);
+
+        ResourceLocation skin = mc.thePlayer.getLocationSkin();
+        mc.getTextureManager().bindTexture(skin);
+        int leftAreaWidth = (int)(panelWidth * 0.20);
+
+        // 设定头像绘制尺寸，例如 32×32 像素
+        int avatarSize = 64;
+
+        // 计算绘制位置：在左20%区域水平居中，并且垂直居中整个面板（或仪表盘内部）
+        drawX = panelX + (leftAreaWidth - avatarSize) / 2;
+        drawY = panelY + (panelHeight - avatarSize) / 2;
+
+        this.drawScaledCustomSizeModalRect(drawX, drawY, 8, 8, 8, 8, avatarSize, avatarSize, 64, 64);
+
+        // 绘制玩家 ID
+        String playerID = mc.thePlayer.getName();
+        List<String> lines = fontRendererObj.listFormattedStringToWidth(playerID, leftAreaWidth - 10);
+
+        // 设置一个适当的垂直边距
+        int textMargin = 4;
+        int textStartY = drawY + avatarSize + textMargin;
+        for (String line : lines) {
+            int lineWidth = fontRendererObj.getStringWidth(line);
+            // 使文本水平居中
+            int lineX = panelX + (leftAreaWidth - lineWidth) / 2;
+            fontRendererObj.drawString(line, lineX, textStartY, 0xFFD700);
+            textStartY += fontRendererObj.FONT_HEIGHT;
+        }
 
         // 绘制水平线（仪表盘上 10% 位置）
         int horizontalLineY = panelY + (int) (panelHeight * 0.10); // 水平线 Y 坐标
-        int horizontalLineColor = 0xFFA0A0A0; // 白色（ARGB 格式）
+        int horizontalLineColor = 0xA0FFFFFF; // 白色（ARGB 格式）
         ShapeDrawer.drawLine(panelX, horizontalLineY, panelX + panelWidth, horizontalLineY, horizontalLineColor);
 
         // 绘制垂直线（水平线下方的左 20% 位置）
         int verticalLineX = panelX + (int) (panelWidth * 0.20) + 1; // 垂直线 X 坐标
-        int verticalLineColor = 0xFF606060; // 白色（ARGB 格式）
+        int verticalLineColor = 0xA0FFFFFF; // 白色（ARGB 格式）
         ShapeDrawer.drawLine(verticalLineX, horizontalLineY, verticalLineX, panelY + panelHeight, verticalLineColor);
 
         // 恢复 OpenGL 状态
@@ -356,7 +436,7 @@ public class IngameMenuGui extends BlurGui {
             int thumbY = cardAreaY + (int)((cardAreaHeight - thumbHeight) * scrollRatio);
 
             // 定义拇指颜色为半透明白色
-            int thumbColor = 0x40FFFFFF;
+            int thumbColor = 0x40000000;
 
             // 绘制拇指
             ShapeDrawer.drawRoundedRect(scrollBarX, thumbY, scrollBarWidth, thumbHeight, thumbColor, cornerRadius);
