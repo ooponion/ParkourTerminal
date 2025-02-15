@@ -123,7 +123,7 @@ public class IngameMenuGui extends BlurGui {
             }
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
             // 绘制详细设置界面
-            currentModDetailGui.drawScreen(mouseX, mouseY, partialTicks);
+            currentModDetailGui.drawScreen(mouseX, mouseY, partialTicks, width, height);
         }
     }
 
@@ -176,7 +176,8 @@ public class IngameMenuGui extends BlurGui {
                 }
             }
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
-            currentModDetailGui.mouseClicked(mouseX, mouseY, mouseButton);
+            if (currentModDetailGui.mouseClicked(mouseX, mouseY, mouseButton))
+                returnToMainMenu();
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
