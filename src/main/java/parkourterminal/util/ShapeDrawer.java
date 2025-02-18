@@ -158,14 +158,14 @@ public class ShapeDrawer {
         double centerYPos = centerY;
 
         // 增加细分段数使圆弧更平滑
-        for (int i = startAngle; i < endAngle; i += 5) {
+        for (int i = startAngle; i < endAngle; i += 1) {
             // 当前角度
             double angle1 = Math.toRadians(i);
             double x1 = centerX + Math.cos(angle1) * radius;
             double y1 = centerY + Math.sin(angle1) * radius;
 
             // 下一个角度
-            double angle2 = Math.toRadians(i + 5);
+            double angle2 = Math.toRadians(i + 1);
             double x2 = centerX + Math.cos(angle2) * radius;
             double y2 = centerY + Math.sin(angle2) * radius;
 

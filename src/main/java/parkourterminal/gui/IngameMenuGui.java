@@ -7,9 +7,9 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.card.TestCard;
 import parkourterminal.gui.component.*;
 import parkourterminal.util.ShapeDrawer;
 
@@ -35,13 +35,7 @@ public class IngameMenuGui extends BlurGui {
     private float exitIconScale = 1.0f;  // 退出图标的当前缩放比例
 
     private void registerCards() {
-        for (int i = 0; i < 100; i++) { // 假设我们有20个卡片
-            registerCard("Mod " + (i + 1));
-        }
-    }
-
-    private void registerCard(String title) {
-        modCards.add(new ModCard(title, new ResourceLocation("parkourterminal", "textures/gui/terminal.png") , width - 115, height - 35, 100, 20));
+        modCards.add(new TestCard(width - 115, height - 35, 100, 20));
     }
 
     @Override

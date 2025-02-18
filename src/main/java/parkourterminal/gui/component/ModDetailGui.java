@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.layout.Container;
 import parkourterminal.util.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
@@ -20,6 +21,9 @@ public class ModDetailGui {
     protected int exitButtonWidth = 10;
     protected int exitButtonHeight = 10;
 
+    // Container
+    protected Container detailContainer;
+
     // 按钮边框颜色和圆角
     protected int exitButtonColor = 0x00FFFFFF;
     protected int exitButtonTargetColor = 0x80FFFFFF;
@@ -29,6 +33,8 @@ public class ModDetailGui {
 
     public ModDetailGui(String modName) {
         this.modName = modName;
+        // 初始化 Container
+        detailContainer = new Container();
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks, int width, int height) {
@@ -43,6 +49,12 @@ public class ModDetailGui {
         detailY = panelY + (int) (panelHeight * 0.10) + detailMargin;
         detailWidth = (int) (panelWidth * 0.80) - 2 * detailMargin;
         detailHeight = (int) (panelHeight * 0.90) - 2 * detailMargin;
+
+        // 更新 detailContainer 的位置和尺寸，使其与详细区域保持一致
+        detailContainer.x = detailX;
+        detailContainer.y = detailY + 20;
+        detailContainer.width = detailWidth;
+        detailContainer.height = detailHeight - 20;
 
         // 更新悬停动画进度
         boolean isHovered = isMouseOverExitButton(mouseX, mouseY);
@@ -68,10 +80,14 @@ public class ModDetailGui {
                 exitButtonTargetColor, exitButtonCornerRadius
         );
 
+        ShapeDrawer.drawLine(
+                panelX + (int) (panelWidth * 0.20) + 1, detailY + 15,
+                panelX + panelWidth, detailY + 15,
+                0xFFFFFFFF
+        );
+
         // 计算图标在按钮内居中位置
         ResourceLocation iconQuit2 = new ResourceLocation("parkourterminal", "textures/gui/quit2.png");
-        int iconSourceWidth = 64;
-        int iconSourceHeight = 64;
         int iconDrawWidth = 8;
         int iconDrawHeight = 8;
         int iconX = detailX + (exitButtonWidth - iconDrawWidth) / 2;

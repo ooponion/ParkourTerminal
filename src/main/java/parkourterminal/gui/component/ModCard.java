@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import parkourterminal.util.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
-public class ModCard {
+public abstract class ModCard {
     private String title;
     protected int x, y, width, height;
     private int targetX, targetY;
@@ -107,7 +107,5 @@ public class ModCard {
     }
 
     // 点击卡片后返回对应的详细设置界面
-    public ModDetailGui getModDetailGui() {
-        return new ModDetailGui(title);
-    }
+    public abstract ModDetailGui getModDetailGui();
 }
