@@ -1,5 +1,6 @@
 package parkourterminal.gui.component;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
@@ -7,6 +8,7 @@ import org.lwjgl.input.Keyboard;
 import parkourterminal.shader.Shader;
 import parkourterminal.shader.ShaderGroup;
 import parkourterminal.shader.ShaderUniform;
+import parkourterminal.util.BlurRenderer;
 import parkourterminal.util.ShaderHelper;
 
 import java.io.IOException;
@@ -72,7 +74,7 @@ public class BlurGui extends GuiScreen {
                     radiusUniform.set(currentBlur);
                 }
             }
-
+            OnResizeBlurShader();
             // 应用模糊 Shader
             this.shaderGroup.loadShaderGroup(partialTicks);
             this.mc.getFramebuffer().bindFramebuffer(true);
@@ -97,5 +99,13 @@ public class BlurGui extends GuiScreen {
         }
 
         super.handleKeyboardInput();
+    }
+
+    private void OnResizeBlurShader() {
+        if (shaderGroup != null) {
+            int width = Minecraft.getMinecraft().displayWidth;
+            int height = Minecraft.getMinecraft().displayHeight;
+            shaderGroup.createBindFramebuffers(width, height); // 这里确保 Framebuffer 适应新窗口大小
+        }
     }
 }

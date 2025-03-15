@@ -41,39 +41,41 @@ public class ShaderHelper {
     }
 
     public static ShaderGroup loadRegionBlurShader(float blurIntensity, ResourceLocation maskTexture) {
+
+        // 加载遮罩模糊 Shader
+        ShaderGroup regionBlurShader = null;
         try {
-            // 加载遮罩模糊 Shader
-            ShaderGroup regionBlurShader = new ShaderGroup(
+            regionBlurShader = new ShaderGroup(
                     Minecraft.getMinecraft().getTextureManager(),
                     Minecraft.getMinecraft().getResourceManager(),
                     Minecraft.getMinecraft().getFramebuffer(),
                     new ResourceLocation("parkourterminal", "shaders/post/region_blur.json")
             );
-            regionBlurShader.createBindFramebuffers(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-            // 获取 Shader 列表
-            List<Shader> shaders = regionBlurShader.getListShaders();
-            if (!shaders.isEmpty()) {
-                Shader shader = shaders.get(0);
-                ShaderManager manager = shader.getShaderManager();
 
-                // 设置模糊强度
-                ShaderUniform radiusUniform = manager.getShaderUniform("Radius");
-                if (radiusUniform != null) {
-                    radiusUniform.set(blurIntensity);
-                }
+        // 获取 Shader 列表
+        List<Shader> shaders = regionBlurShader.getListShaders();
+        if (!shaders.isEmpty()) {
+            Shader shader = shaders.get(0);
+            ShaderManager manager = shader.getShaderManager();
 
-                // 绑定遮罩纹理到 MaskSampler
-                ShaderUniform maskUniform = manager.getShaderUniform("MaskSampler");
-                if (maskUniform != null) {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(maskTexture);
-                }
+            // 设置模糊强度
+            ShaderUniform radiusUniform = manager.getShaderUniform("Radius");
+            if (radiusUniform != null) {
+                radiusUniform.set(blurIntensity);
             }
 
-            return regionBlurShader;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            // 绑定遮罩纹理到 MaskSampler
+            ShaderUniform maskUniform = manager.getShaderUniform("MaskSampler");
+            if (maskUniform != null) {
+                Minecraft.getMinecraft().getTextureManager().bindTexture(maskTexture);
+            }
         }
+        regionBlurShader.createBindFramebuffers(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        return regionBlurShader;
+
     }
 }
