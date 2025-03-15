@@ -76,7 +76,7 @@ public class CustomIngameMenu extends GuiIngameMenu {
         // 绑定自定义图标纹理
         Minecraft mc = Minecraft.getMinecraft();
         mc.getTextureManager().bindTexture(new ResourceLocation("parkourterminal", "textures/gui/settings.png"));
-        GlStateManager.viewport(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+      
         // 确保混合模式正确
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

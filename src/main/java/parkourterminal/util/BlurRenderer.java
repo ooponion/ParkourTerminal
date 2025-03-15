@@ -2,10 +2,14 @@ package parkourterminal.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.shader.Shader;
 import parkourterminal.shader.ShaderGroup;
+
+import java.io.IOException;
 
 public class BlurRenderer {
     // 全局共享的 ShaderGroup 和当前使用的模糊强度
@@ -26,6 +30,13 @@ public class BlurRenderer {
             sharedBlurIntensity = blurIntensity;
         }
     }
+    private static void OnResizeSharedBlurShader() {
+        if (sharedBlurShader != null) {
+            int width = Minecraft.getMinecraft().displayWidth;
+            int height = Minecraft.getMinecraft().displayHeight;
+            sharedBlurShader.createBindFramebuffers(width, height); // 这里确保 Framebuffer 适应新窗口大小
+        }
+    }
 
     // 获取共享的 ShaderGroup
     public static ShaderGroup getSharedBlurShader() {
@@ -36,10 +47,9 @@ public class BlurRenderer {
     public static void drawBlurredRoundedRect(int x, int y, int width, int height, int color, int radius, float blurIntensity, float partialTicks) {
         Minecraft mc = Minecraft.getMinecraft();
         Framebuffer framebuffer = mc.getFramebuffer();
-
         // 初始化或更新共享的 ShaderGroup（如果模糊强度未改变则复用）
         initSharedBlurShader(blurIntensity);
-
+        OnResizeSharedBlurShader();
         // 绑定 Framebuffer，并只清除深度缓冲（不清除颜色数据，保留背景）
         framebuffer.bindFramebuffer(true);
         GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -51,12 +61,14 @@ public class BlurRenderer {
         // 绑定遮罩纹理。这里使用 framebuffer.framebufferTexture 得到当前帧缓冲的纹理ID，
         // 并通过 OpenGL 绑定该纹理，使 Shader 在 MaskSampler 中采样到正确的数据
         int maskTextureId = framebuffer.framebufferTexture;
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GlStateManager.bindTexture(maskTextureId);
 
         // 使用共享的 ShaderGroup 应用模糊效果
         ShaderGroup blurShader = getSharedBlurShader();
         if (blurShader != null) {
             blurShader.loadShaderGroup(partialTicks);
+
         }
 
         // 恢复正常渲染，解除 Framebuffer 绑定
