@@ -18,7 +18,7 @@ public class IngameMenuGui extends BlurGui {
         MAIN_MENU,
         MOD_DETAIL
     }
-
+    private boolean isFirstInit = true;  // 记录是否是首次打开 GUI
     private State currentState = State.MAIN_MENU;
     private List<ModCard> modCards = new ArrayList<ModCard>();
     private ModDetailGui currentModDetailGui;
@@ -41,8 +41,10 @@ public class IngameMenuGui extends BlurGui {
     @Override
     public void initGui() {
         fontRendererObj = new ConsolaFontRenderer(mc);
-        registerCards();
-
+        if(isFirstInit){
+            registerCards();
+        }
+        isFirstInit=false;
         super.initGui();
     }
 
