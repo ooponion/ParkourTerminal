@@ -3,6 +3,7 @@ package parkourterminal.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -100,6 +101,7 @@ public class CustomIngameMenu extends GuiIngameMenu {
         String visibleText = fullText.substring(0, Math.min(textLength, fullText.length()));
 
         // 将逻辑坐标转换为物理坐标
+        int scaleFactor = new ScaledResolution(this.mc).getScaleFactor();
         int physicalX = texticonX * scaleFactor;
         int physicalY = textRectY * scaleFactor;
         int physicalWidth = (int) (textRectWidth * scaleFactor);
