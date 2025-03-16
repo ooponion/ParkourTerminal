@@ -23,6 +23,7 @@ public class IngameMenuGui extends BlurGui {
     private State currentState = State.MAIN_MENU;
     private List<ModCard> modCards = new ArrayList<ModCard>();
     private ModDetailGui currentModDetailGui;
+
     private int scrollOffset = 0; // 当前滚动偏移量
     private int scrollTargetOffset = 0; // 目标滚动偏移量
     private final float scrollSpeed = 0.4f; // 控制滚动平滑的速度（越小越平滑，越大越快）
@@ -43,7 +44,9 @@ public class IngameMenuGui extends BlurGui {
     public void initGui() {
         fontRendererObj = new ConsolaFontRenderer(mc);
         if(isFirstInit){
-            registerCards();
+            for(int i=0;i<50;i++){
+                registerCards();
+            }
         }
         isFirstInit=false;
         super.initGui();
