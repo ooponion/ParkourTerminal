@@ -7,9 +7,12 @@ import org.lwjgl.opengl.GL11;
 import parkourterminal.util.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
+import static java.lang.Math.abs;
+
 public abstract class ModCard {
     private String title;
-    protected int x, y, width, height;
+    protected float x, y;
+    protected int width, height;
     private int targetX, targetY;
     private int cornerRadius;
     private ResourceLocation icon;
@@ -47,18 +50,18 @@ public abstract class ModCard {
 
     public void draw(int mouseX, int mouseY) {
         if (targetX != x) {
-            int xDistance = (int)((targetX - x) * 0.15f);
+            float xDistance = ((targetX - x) * 0.15f);
 
-            if (xDistance == 0)
+            if (abs(xDistance) <= 0.01f)
                 x = targetX;
             else
                 x += xDistance;
         }
 
         if (targetY != y) {
-            int yDistance = (int)((targetY - y) * 0.15f);
+            float yDistance = ((targetY - y) * 0.15f);
 
-            if (yDistance == 0)
+            if (abs(yDistance) <= 0.01f)
                 y = targetY;
             else
                 y += yDistance;
@@ -86,9 +89,9 @@ public abstract class ModCard {
             mc.getTextureManager().bindTexture(icon);
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            int iconX = x + ICON_TEXT_GAP; // 预留间隔
-            int iconY = y + (height - ICON_SIZE) / 2;
-            mc.currentScreen.drawScaledCustomSizeModalRect(iconX, iconY, 0, 0, 64, 64, ICON_SIZE, ICON_SIZE, 64, 64);
+            float iconX = x + ICON_TEXT_GAP; // 预留间隔
+            float iconY = y + (height - ICON_SIZE) / 2.0f;
+            ShapeDrawer.drawScaledCustomSizeModalRect(iconX, iconY, 0, 0, 64, 64, ICON_SIZE, ICON_SIZE, 64, 64);
         }
 
         // 绘制标题文本
@@ -96,9 +99,9 @@ public abstract class ModCard {
         // 如果存在图标，则文本区域左边界向右偏移图标宽度和间隔
         int textOffset = (icon != null ? (ICON_SIZE + ICON_TEXT_GAP * 2) : 0);
         // 使文本在剩余区域内居中：剩余宽度为 (width - textOffset)
-        int textX = x + textOffset;
-        int textY = y + (height - fontRendererObj.FONT_HEIGHT) * 13 / 20;
-        fontRendererObj.drawString(title, textX, textY, textColor);
+        float textX = x + textOffset;
+        float textY = y + (height - fontRendererObj.FONT_HEIGHT) * 13.0f / 20;
+        fontRendererObj.drawString(title, textX, textY, textColor,false);
     }
 
     public boolean isMouseOver(int mouseX, int mouseY) {

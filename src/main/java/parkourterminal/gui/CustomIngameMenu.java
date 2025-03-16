@@ -8,7 +8,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.component.ModCard;
 import parkourterminal.util.BlurRenderer;
+import parkourterminal.util.ScissorHelper;
+import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
 
@@ -70,7 +73,7 @@ public class CustomIngameMenu extends GuiIngameMenu {
         int textRectY = iconY;
 
         // 绘制展开的圆角矩形
-        if(textRectWidth>3) {
+        if(textRectWidth>6) {
             BlurRenderer.drawBlurredRoundedRect(texticonX, textRectY, textRectWidth, textRectHeight, blurColor, 3, blurIntensity, partialTicks);
         }
 
@@ -92,27 +95,17 @@ public class CustomIngameMenu extends GuiIngameMenu {
         GlStateManager.translate(-iconSize / 2.0, -iconSize / 2.0, 0); // 还原偏移
 
         // 绘制图标
-        drawScaledCustomSizeModalRect(0, 0, 0, 0, 64, 64, iconSize, iconSize, 64, 64);
+        ShapeDrawer.drawScaledCustomSizeModalRect(0, 0, 0, 0, 64, 64, iconSize, iconSize, 64, 64);
 
         GlStateManager.popMatrix(); // 恢复 OpenGL 变换
 
         // 逐渐显示 "Settings"
-        int textLength = (int) (expandProgress * fullText.length()); // 计算要显示的字符数
-        String visibleText = fullText.substring(0, Math.min(textLength, fullText.length()));
+        ScissorHelper.EnableScissor(texticonX,textRectY,textRectWidth,textRectHeight);
 
-        // 将逻辑坐标转换为物理坐标
-        int scaleFactor = new ScaledResolution(this.mc).getScaleFactor();
-        int physicalX = texticonX * scaleFactor;
-        int physicalY = textRectY * scaleFactor;
-        int physicalWidth = (int) (textRectWidth * scaleFactor);
-        int physicalHeight = (int) (textRectHeight * scaleFactor);
-        GlStateManager.pushMatrix();
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        System.out.printf("width,%s/n",(physicalWidth -5));
-        GL11.glScissor(physicalX,this.mc.displayHeight -physicalHeight- physicalY, (physicalWidth -5), physicalHeight);
         fontRendererObj.drawString(fullText, texticonX + 5, textRectY + 4, 0xFFFFFFFF);
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        GlStateManager.popMatrix();
+        ScissorHelper.DisableScissor();
+
+
         // 恢复 OpenGL 状态
         GlStateManager.enableDepth();
     }

@@ -11,6 +11,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.card.TestCard;
 import parkourterminal.gui.component.*;
+import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
 public class IngameMenuGui extends BlurGui {
@@ -72,32 +73,14 @@ public class IngameMenuGui extends BlurGui {
             int cardAreaWidth = (int) (panelWidth * 0.80);
             int cardAreaHeight = (int) (panelHeight * 0.90);
 
-            // 获取 Minecraft 的 GUI 缩放比例
-            int scaleFactor = new ScaledResolution(this.mc).getScaleFactor();
-
-            // 将逻辑坐标转换为物理坐标
-            int physicalCardAreaX = cardAreaX * scaleFactor;
-            int physicalCardAreaY = cardAreaY * scaleFactor;
-            int physicalCardAreaWidth = cardAreaWidth * scaleFactor;
-            int physicalCardAreaHeight = cardAreaHeight * scaleFactor;
-
-            // 启用 OpenGL 裁剪测试
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            // 设置裁剪区域（注意 Y 坐标转换）
-            GL11.glScissor(
-                    physicalCardAreaX, // 物理 X 坐标
-                    this.mc.displayHeight - (physicalCardAreaY + physicalCardAreaHeight), // 物理 Y 坐标（转换）
-                    physicalCardAreaWidth, // 物理宽度
-                    physicalCardAreaHeight // 物理高度
-            );
+            ScissorHelper.EnableScissor(cardAreaX,cardAreaY,cardAreaWidth,cardAreaHeight);
 
             // 绘制卡片（仅在此区域内可见）
             for (ModCard card : modCards) {
                 card.draw(mouseX, mouseY); // 考虑滚动偏移量
             }
 
-            // 关闭裁剪测试
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            ScissorHelper.DisableScissor();
 
             // 计算最大滚动偏移量
             int maxScrollOffset = getMaxScrollOffset();
@@ -258,8 +241,7 @@ public class IngameMenuGui extends BlurGui {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         // 直接绘制图标，不使用任何变换（旋转等）
-        // 注意：drawScaledCustomSizeModalRect 是 Gui 类中的方法
-        this.drawScaledCustomSizeModalRect(iconX, iconY, 0, 0, 64, 64, iconSize, iconSize, 64, 64);
+        ShapeDrawer.drawScaledCustomSizeModalRect(iconX, iconY, 0, 0, 64, 64, iconSize, iconSize, 64, 64);
 
         // 在图标右侧绘制文字 "Parkour Terminal"
         String text = "Parkour Terminal";
@@ -301,7 +283,7 @@ public class IngameMenuGui extends BlurGui {
         int drawY = centerY - scaledExitIconSize / 2;
 
         // 绘制退出图标（无需任何矩阵变换）
-        this.drawScaledCustomSizeModalRect(drawX, drawY, 0, 0, 64, 64, scaledExitIconSize, scaledExitIconSize, 64, 64);
+        ShapeDrawer.drawScaledCustomSizeModalRect(drawX, drawY, 0, 0, 64, 64, scaledExitIconSize, scaledExitIconSize, 64, 64);
 
         ResourceLocation skin = mc.thePlayer.getLocationSkin();
         mc.getTextureManager().bindTexture(skin);
@@ -314,7 +296,7 @@ public class IngameMenuGui extends BlurGui {
         drawX = panelX + (leftAreaWidth - avatarSize) / 2;
         drawY = panelY + (panelHeight - avatarSize) / 2;
 
-        this.drawScaledCustomSizeModalRect(drawX, drawY, 8, 8, 8, 8, avatarSize, avatarSize, 64, 64);
+        ShapeDrawer.drawScaledCustomSizeModalRect(drawX, drawY, 8, 8, 8, 8, avatarSize, avatarSize, 64, 64);
 
         // 绘制玩家 ID
         String playerID = mc.thePlayer.getName();

@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 public class ShapeDrawer {
-    public static void drawRect(int left, int top, int right, int bottom, int color) {
+    public static void drawRect(float left, float top, float right, float bottom, int color) {
         float a = (float)(color >> 24 & 255) / 255.0F;
         float r = (float)(color >> 16 & 255) / 255.0F;
         float g = (float)(color >> 8 & 255) / 255.0F;
@@ -32,7 +32,7 @@ public class ShapeDrawer {
         GlStateManager.disableBlend();
     }
 
-    public static void drawRoundedRect(int x, int y, int width, int height, int color, int radius) {
+    public static void drawRoundedRect(float x, float y, float width, float height, int color, float radius) {
         float a = (float)(color >> 24 & 255) / 255.0F;
         float r = (float)(color >> 16 & 255) / 255.0F;
         float g = (float)(color >> 8 & 255) / 255.0F;
@@ -49,7 +49,7 @@ public class ShapeDrawer {
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
         // 绘制中间矩形主体
-        drawRect(x + radius, y + radius, x + width - radius, y + height - radius, wr);
+        ShapeDrawer.drawRect(x + radius, y + radius, x + width - radius, y + height - radius, wr);
 
         // 绘制四个边矩形
         // 上边
@@ -79,7 +79,7 @@ public class ShapeDrawer {
         GlStateManager.disableBlend();
     }
 
-    public static void drawRoundedRectBorder(int x, int y, int width, int height, int color, int radius) {
+    public static void drawRoundedRectBorder(float x, float y, float width, float height, int color, float radius) {
         // 提取颜色分量
         float a = (float)(color >> 24 & 255) / 255.0F;
         float r = (float)(color >> 16 & 255) / 255.0F;
@@ -134,7 +134,7 @@ public class ShapeDrawer {
         GlStateManager.disableBlend();
     }
 
-    private static void addCornerVertices(WorldRenderer wr, int centerX, int centerY, int radius, int startAngle, int endAngle) {
+    private static void addCornerVertices(WorldRenderer wr, float centerX, float centerY, float radius, int startAngle, int endAngle) {
         int segments = 10;
         float angleStep = (float)(endAngle - startAngle) / segments;
         for (int i = 1; i <= segments; i++) {
@@ -145,14 +145,14 @@ public class ShapeDrawer {
         }
     }
 
-    private static void drawRect(int left, int top, int right, int bottom, WorldRenderer wr) {
+    private static void drawRect(float left, float top, float right, float bottom, WorldRenderer wr) {
         wr.pos(left, bottom, 0).endVertex();
         wr.pos(right, bottom, 0).endVertex();
         wr.pos(right, top, 0).endVertex();
         wr.pos(left, top, 0).endVertex();
     }
 
-    private static void drawCorner(int centerX, int centerY, int radius, int startAngle, int endAngle, WorldRenderer wr) {
+    private static void drawCorner(float centerX, float centerY, float radius, int startAngle, int endAngle, WorldRenderer wr) {
         // 圆心的坐标
         double centerXPos = centerX;
         double centerYPos = centerY;
@@ -176,7 +176,7 @@ public class ShapeDrawer {
         }
     }
 
-    public static void drawLine(int x1, int y1, int x2, int y2, int color) {
+    public static void drawLine(float x1, float y1, float x2, float y2, int color) {
         // 提取颜色分量
         float a = (float)((color >> 24) & 255) / 255.0F;
         float r = (float)((color >> 16) & 255) / 255.0F;
@@ -203,5 +203,18 @@ public class ShapeDrawer {
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+    }
+    public static void drawScaledCustomSizeModalRect(float x, float y, float u, float v, float uWidth, float vHeight, float width, float height, float tileWidth, float tileHeight)
+    {
+        float f = 1.0F / tileWidth;
+        float f1 = 1.0F / tileHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + vHeight) * f1).endVertex();
+        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex();
+        worldrenderer.pos(x + width, y, 0.0D).tex((u + uWidth) * f, v * f1).endVertex();
+        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
+        tessellator.draw();
     }
 }

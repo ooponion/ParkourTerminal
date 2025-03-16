@@ -103,7 +103,7 @@ public class ModDetailGui {
         // 重置颜色，避免纹理被其他颜色影响
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         // 绘制图标，将64x64的原图缩放绘制为8x8
-        Gui.drawScaledCustomSizeModalRect(
+        ShapeDrawer.drawScaledCustomSizeModalRect(
                 iconX, iconY,
                 0, 0,                  // u, v起始坐标
                 64, 64,
