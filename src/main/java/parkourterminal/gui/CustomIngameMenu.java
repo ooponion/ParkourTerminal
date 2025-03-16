@@ -69,7 +69,7 @@ public class CustomIngameMenu extends GuiIngameMenu {
         int textRectY = iconY;
 
         // 绘制展开的圆角矩形
-        if (textRectWidth > 6) {
+        if(textRectWidth>3) {
             BlurRenderer.drawBlurredRoundedRect(texticonX, textRectY, textRectWidth, textRectHeight, blurColor, 3, blurIntensity, partialTicks);
         }
 
@@ -99,10 +99,18 @@ public class CustomIngameMenu extends GuiIngameMenu {
         int textLength = (int) (expandProgress * fullText.length()); // 计算要显示的字符数
         String visibleText = fullText.substring(0, Math.min(textLength, fullText.length()));
 
-        if (!visibleText.isEmpty()) {
-            fontRendererObj.drawString(visibleText, texticonX + 5, textRectY + 4, 0xFFFFFFFF);
-        }
-
+        // 将逻辑坐标转换为物理坐标
+        int physicalX = texticonX * scaleFactor;
+        int physicalY = textRectY * scaleFactor;
+        int physicalWidth = (int) (textRectWidth * scaleFactor);
+        int physicalHeight = (int) (textRectHeight * scaleFactor);
+        GlStateManager.pushMatrix();
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        System.out.printf("width,%s/n",(physicalWidth -5));
+        GL11.glScissor(physicalX,this.mc.displayHeight -physicalHeight- physicalY, (physicalWidth -5), physicalHeight);
+        fontRendererObj.drawString(fullText, texticonX + 5, textRectY + 4, 0xFFFFFFFF);
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        GlStateManager.popMatrix();
         // 恢复 OpenGL 状态
         GlStateManager.enableDepth();
     }
