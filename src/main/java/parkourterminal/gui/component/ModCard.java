@@ -4,7 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.gui.component.scrollBar.intf.AnimationMode;
+import parkourterminal.util.AnimationUtils.AnimationHelper;
+import parkourterminal.util.AnimationUtils.FloatPoint;
+import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.ShapeDrawer;
 
 import static java.lang.Math.abs;
@@ -16,7 +19,7 @@ public abstract class ModCard {
     private int targetX, targetY;
     private int cornerRadius;
     private ResourceLocation icon;
-
+    private final BeizerAnimation animation;
     private int backgroundColor = 0x40000000;
     private int borderColor = 0x80000000;
     private int highlightColor = 0x40FFFFFF;
@@ -26,6 +29,7 @@ public abstract class ModCard {
     // 布局常量：图标固定为8x8，图标与文字间隔，以及按钮内边距
     private static final int ICON_SIZE = 16;
     private static final int ICON_TEXT_GAP = 4;
+    private final float animation_time=4;
 
     // 使用自定义字体渲染器
     private static FontRenderer fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
@@ -38,35 +42,26 @@ public abstract class ModCard {
         this.height = height;
         this.cornerRadius = 3;
         this.icon = icon;
+        animation=new BeizerAnimation(animation_time,new FloatPoint(x,y), AnimationMode.BLENDED);
     }
 
     // 提供一个更新位置和尺寸的方法
     public void setPosition(int x, int y, int width, int height) {
+        if(this.targetX != x||this.targetY != y){animation.RestartAnimation(new FloatPoint(x,y));}
+
+
+
         this.targetX = x;
         this.targetY = y;
         this.width = width;
         this.height = height;
+
     }
 
     public void draw(int mouseX, int mouseY) {
-        if (targetX != x) {
-            float xDistance = ((targetX - x) * 0.15f);
-
-            if (abs(xDistance) <= 0.01f)
-                x = targetX;
-            else
-                x += xDistance;
-        }
-
-        if (targetY != y) {
-            float yDistance = ((targetY - y) * 0.15f);
-
-            if (abs(yDistance) <= 0.01f)
-                y = targetY;
-            else
-                y += yDistance;
-        }
-
+        FloatPoint midpoint=animation.Update();
+        this.x=midpoint.getX();
+        this.y=midpoint.getY();
         // 计算悬停动画进度
         boolean hovering = isMouseOver(mouseX, mouseY);
         if (hovering) {

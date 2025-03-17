@@ -1,12 +1,11 @@
 package parkourterminal.gui.component;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.layout.Container;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;

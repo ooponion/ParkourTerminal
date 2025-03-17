@@ -2,7 +2,7 @@ package parkourterminal.gui.component;
 
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
 public class CustomButton {

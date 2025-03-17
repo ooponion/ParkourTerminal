@@ -17,7 +17,7 @@ import parkourterminal.network.NetworkLoader;
 import parkourterminal.network.SaveCoordinatePacket;
 import parkourterminal.network.SelectCoordinatePacket;
 import parkourterminal.util.NumberWrapper;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.TeleporterHelper;
 
 import java.io.IOException;

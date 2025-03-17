@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.layout.UIComponent;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
 public class ToggleSwitch extends UIComponent {

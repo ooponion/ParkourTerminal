@@ -1,4 +1,4 @@
-package parkourterminal.util;
+package parkourterminal.util.AnimationUtils;
 
 public class AnimationHelper {
     public static int interpolateColor(int startColor, int endColor, float progress) {

@@ -11,7 +11,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.NumberWrapper;
 import parkourterminal.util.ShapeDrawer;
 

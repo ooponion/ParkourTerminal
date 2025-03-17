@@ -1,35 +1,49 @@
 package parkourterminal.gui.component.scrollBar.impl;
 
+import net.minecraft.client.Minecraft;
+import parkourterminal.gui.component.scrollBar.intf.AnimationMode;
+import parkourterminal.util.AnimationUtils.FloatPoint;
+import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
+import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.ShapeDrawer;
 
 public class ScrollBarImpl {
     private int x,y,width,height;
+    private int oldBarX=0,oldBarY=0;
+    private float oldScrollOffset=0f;
     private int min_height;
     private float scrollHeight;//当前滚动条大小(高度)
     private float contentHeight=0.0f;//内容高度
     private float contentOffset=0.0f;
     private float scrollOffset = 0.0f; // 当前滚动偏移量
-    private float scrollSpeed; // 控制滚动平滑的速度（越小越平滑，越大越快）
+    private float scrollTime=3f; // 控制滚动平滑时间
+    private final AbstractAnimation animation;
     private boolean mouseOver=false;
-    private void ChangeSize(int x, int y, int width, int height){
+    private double oldY=0;
+
+    public ScrollBarImpl(int x,int y,int width,int height){
+        if(x<0||y<0||width<=0||height<=0){
+            System.out.print("Illegal args to setup this Scroll bar\n");
+        }
+        this.animation=new BeizerAnimation(scrollTime,new FloatPoint(x,y), AnimationMode.BLENDED);
+        this.oldBarX=x;
+        this.oldBarY=y;
+        ChangeSize(x, y, width, height);
+        this.min_height=10;
+    }
+    public ScrollBarImpl(int x,int y,int width,int height,int min_height,float scrollTime){
+        this(x, y, width, height);
+        this.scrollTime=scrollTime;
+        this.min_height=min_height;
+    }
+    public void ChangeSize(int x, int y, int width, int height){
+        this.oldBarX=x;
+        this.oldBarY=y;
         this.x=x;
         this.y=y;
         this.width=width;
         this.height=height;
         UpdateScrollVariables(contentHeight,scrollOffset,height);
-    }
-    public ScrollBarImpl(int x,int y,int width,int height){
-        if(x<=0||y<=0||width<=0||height<=0){
-            throw new IllegalArgumentException("Illegal args to setup this Scroll bar");
-        }
-        ChangeSize(x, y, width, height);
-        this.scrollSpeed=0.4f;//default
-        this.min_height=10;
-    }
-    public ScrollBarImpl(int x,int y,int width,int height,int min_height,float scrollSpeed){
-        this(x, y, width, height);
-        this.scrollSpeed=scrollSpeed;
-        this.min_height=min_height;
     }
     public void SetScrollScreenHeight(int height){
         if(height<=0){
@@ -38,11 +52,11 @@ public class ScrollBarImpl {
         this.height=height;
         UpdateScrollVariables(contentHeight,scrollOffset,height);
     }
-    public void UpdateContentHeight(int contentHeight){
-        this.contentHeight=contentHeight;
-        UpdateScrollVariables(contentHeight,scrollOffset,height);
+    public void UpdateContentHeight(int contentHeight) {
+        this.contentHeight = contentHeight;
+        UpdateScrollVariables(contentHeight, scrollOffset, height);
     }
-    private void drawScrollBar() {
+    public void drawScrollBar() {
         // 仅当内容总高度大于可见区域时才绘制滑动条
         if (contentHeight > height) {
             // 滑动条宽度固定为 4 像素，绘制在卡片区域右侧
@@ -58,7 +72,7 @@ public class ScrollBarImpl {
             int thumbColor = 0x40000000;
 
             // 绘制拇指
-            ShapeDrawer.drawRoundedRect(x, scrollOffset, width, scrollHeight, thumbColor, cornerRadius);
+            ShapeDrawer.drawRoundedRect(x, animation.Update().getY(), width, scrollHeight, thumbColor, cornerRadius);
         }
     }
 
@@ -73,28 +87,49 @@ public class ScrollBarImpl {
         contentOffset=  scrollOffset/(height-scrollHeight)*Math.max(contentHeight-height,0);
     }
     private void ValidateScrollOffset(float FakeOffset,float scrollHeight,int height){//FakeOffset可能是错误的,所以重新计算位置//0,height-scrollHeight
+        oldScrollOffset=scrollOffset;
         scrollOffset= Math.max(0,Math.min(height-scrollHeight,FakeOffset));
     }
     private void UpdateScrollVariables(float contentHeight,float FakeOffset,int height){
         CalculateScrollHeight(contentHeight,height);
         ValidateScrollOffset(FakeOffset,scrollHeight,height);
+        if(positionChanged()){animation.RestartAnimation(new FloatPoint(x,y+scrollOffset));}
         CalculateContentOffset(scrollOffset,scrollHeight,contentHeight,height);
     }
-    private boolean ValidScrollClick(double mouseX, double mouseY){
-        return (mouseX>x&&mouseX<x+width&&mouseY>y+height&&mouseY<y+height+scrollHeight);
+    public boolean ValidScrollClick(double mouseX, double mouseY){
+        return (mouseX>x&&mouseX<x+width&&mouseY>y+scrollOffset&&mouseY<y+scrollOffset+scrollHeight);
     }
     public void onClick(double mouseX, double mouseY) {
         if(ValidScrollClick(mouseX, mouseY)) {
             mouseOver = true;
+            oldY=mouseY;
         }
     }
     public void onRelease() {
         mouseOver=false;
+        oldY=0;
     }
-    public void onDrag(double deltaY) {
+    public void scrollWheel(float amount){
+        float fakeOffset=scrollOffset+ amount;
+        UpdateScrollVariables(contentHeight,fakeOffset,height);
+    }
+    public void onDrag(float newY) {
         if(mouseOver){
-            float fakeOffset=scrollOffset+ (float) deltaY;
+            float fakeOffset= (float) (scrollOffset+ newY-oldY);
             UpdateScrollVariables(contentHeight,fakeOffset,height);
+            oldY=newY;
         }
+    }
+
+    public float getContentOffset() {
+        return contentOffset;
+    }
+    private boolean positionChanged(){
+        return this.oldBarX!=this.x||this.oldBarY+this.oldScrollOffset!=this.y+this.scrollOffset;
+    }
+    @Override
+    public String toString(){
+
+        return "height:"+this.height+",contentHeight:"+this.contentHeight+",scrollHeight:"+this.scrollHeight+",scrollOffset:"+this.scrollOffset+",contentOffset:"+this.contentOffset;
     }
 }
