@@ -1,23 +1,22 @@
-package parkourterminal.gui;
+package parkourterminal.gui.screens.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.card.TestCard;
 import parkourterminal.gui.component.*;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
-import parkourterminal.gui.component.scrollBar.intf.Scrollable;
-import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
+import parkourterminal.gui.screens.intf.BlurGui;
+import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
-public class IngameMenuGui extends BlurGui implements Scrollable {
+public class IngameMenuGui extends BlurGui {
     public enum State {
         MAIN_MENU,
         MOD_DETAIL
@@ -43,10 +42,6 @@ public class IngameMenuGui extends BlurGui implements Scrollable {
 
     private void registerCards() {
         modCards.add(new TestCard(width - 115, height - 35, 100, 20));
-    }
-    @Override
-    public ScrollBarImpl ScrollBarImpl() {
-        return scrollBar;
     }
     private void UpdateSize(){
         panelMargin = 10; // 背景板与屏幕边界的间距
@@ -119,8 +114,6 @@ public class IngameMenuGui extends BlurGui implements Scrollable {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        // 计算面板参数（与drawDashboardBackground中一致）
-
 
         // 退出图标参数（右上角）
         int exitIconSize = 16;      // 图标尺寸
@@ -365,7 +358,7 @@ public class IngameMenuGui extends BlurGui implements Scrollable {
     private void drawScrollBar() {
         // 仅当内容总高度大于可见区域时才绘制滑动条
         scrollBar.drawScrollBar();
-        fontRendererObj.drawString(scrollBar.toString(),0,0,0xFFFFFFFF);
+        //fontRendererObj.drawString(scrollBar.toString(),0,0,0xFFFFFFFF);
     }
     @Override
     public void onResize(Minecraft mcIn, int w, int h)

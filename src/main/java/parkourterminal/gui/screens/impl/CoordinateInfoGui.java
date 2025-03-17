@@ -1,4 +1,4 @@
-package parkourterminal.gui;
+package parkourterminal.gui.screens.impl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
@@ -8,7 +8,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
-import parkourterminal.gui.component.BlurGui;
+import parkourterminal.gui.screens.impl.ShiftRightClickScreen.ShiftRightClickGui;
+import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
 import parkourterminal.gui.component.CustomButton;
 import parkourterminal.gui.component.CustomGuiTextField;
@@ -16,8 +17,11 @@ import parkourterminal.network.DeleteCoordinatePacket;
 import parkourterminal.network.NetworkLoader;
 import parkourterminal.network.SaveCoordinatePacket;
 import parkourterminal.network.SelectCoordinatePacket;
+import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
+import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
+import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.NumberWrapper;
-import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.TeleporterHelper;
 
 import java.io.IOException;
@@ -62,6 +66,10 @@ public class CoordinateInfoGui extends BlurGui {
     private Map<CustomGuiTextField, Float> fieldHoverProgress = new HashMap<CustomGuiTextField, Float>();
     private GuiTextField focusedField = null;
 
+    private final int startColor = 0x40000000; // 默认边框色（半透明黑）
+    private final int endColor = 0x600099FF;   // 高亮边框色（半透明蓝）
+    private final AbstractAnimation<InterpolatingColor> animation=new ColorInterpolateAnimation(0.25f,new InterpolatingColor(startColor), AnimationMode.BLENDED);
+
     public CoordinateInfoGui(NBTTagCompound location, ItemStack heldItem) {
         this.location = location;
         this.heldItem = heldItem;
@@ -70,7 +78,6 @@ public class CoordinateInfoGui extends BlurGui {
     @Override
     public void initGui() {
         super.initGui();
-
         fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
 
         // 计算整体组高度（6行）和起始Y坐标（垂直居中）
@@ -158,14 +165,12 @@ public class CoordinateInfoGui extends BlurGui {
             boolean isHovered = mouseX >= field.xPosition && mouseX <= field.xPosition + fieldWidth &&
                     mouseY >= field.yPosition && mouseY <= field.yPosition + fieldHeight;
             boolean isFocused = (focusedField == field);
-            float targetProgress = (isHovered || isFocused) ? 1.0f : 0.0f;
-            float currentProgress = fieldHoverProgress.get(field);
-            currentProgress += (targetProgress - currentProgress) * 0.2f;
-            fieldHoverProgress.put(field, currentProgress);
-            int startColor = 0x40000000; // 默认边框色（半透明黑）
-            int endColor = 0x600099FF;   // 高亮边框色（半透明蓝）
-            int currentColor = AnimationHelper.interpolateColor(startColor, endColor, currentProgress);
-            field.setCurrentBorderColor(currentColor);
+            if(isHovered || isFocused){
+                animation.RestartAnimation(new InterpolatingColor(endColor));
+            }else{
+                animation.RestartAnimation(new InterpolatingColor(startColor));
+            }
+            field.setCurrentBorderColor(animation.Update().getColor());
         }
     }
 

@@ -1,10 +1,10 @@
 package parkourterminal.util.AnimationUtils.impls;
 
-import parkourterminal.gui.component.scrollBar.intf.AnimationMode;
-import parkourterminal.util.AnimationUtils.FloatPoint;
+import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
+import parkourterminal.util.AnimationUtils.intf.interpolating;
 
-public class BeizerAnimation extends AbstractAnimation {
+public class BeizerAnimation<T extends interpolating<T>> extends AbstractAnimation<T> {
     // 三阶贝塞尔曲线控制点
     final float P0X = 0, P0Y = 0;
     final float P3X = 1, P3Y = 1;
@@ -34,11 +34,13 @@ public class BeizerAnimation extends AbstractAnimation {
         return (low + high) / 2;
     }
 
-    public BeizerAnimation(float totalTime, FloatPoint startPoint, AnimationMode animationMode) {
+    public BeizerAnimation(float totalTime, T startPoint, AnimationMode animationMode) {
         super(totalTime, startPoint, animationMode);
-//        P1X = 0.64f; P1Y = -0.81f;
-//        P2X =  0.36f; P2Y = 1.92f;
         P1X=0.00f; P1Y=0.36f; P2X=0.17f; P2Y=1.0f;
+    }
+    public BeizerAnimation(float totalTime, T startPoint, AnimationMode animationMode,float P1X, float P1Y, float P2X, float P2Y) {
+        super(totalTime, startPoint, animationMode);
+        SetBeizerPoints(P1X, P1Y, P2X, P2Y);
     }
     public void SetBeizerPoints(float P1X, float P1Y, float P2X, float P2Y){
         this.P1X=P1X;
@@ -46,13 +48,6 @@ public class BeizerAnimation extends AbstractAnimation {
         this.P2X=P2X;
         this.P2Y=P2Y;
     }
-//    @Override
-//    public float speedFunction(float t) {
-//        float P0=0;
-//        float P1=0.5f;
-//        float P2=1f;
-//        return (1 - t) * (1 - t) * P0 + 2 * (1 - t) * t * P1 + t * t * P2;
-//    }
 
     @Override
     public float ProgressFunction(float t) {

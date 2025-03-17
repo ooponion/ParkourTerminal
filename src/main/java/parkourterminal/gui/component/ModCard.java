@@ -4,9 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.gui.component.scrollBar.intf.AnimationMode;
-import parkourterminal.util.AnimationUtils.AnimationHelper;
-import parkourterminal.util.AnimationUtils.FloatPoint;
+import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
+import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
+import parkourterminal.util.AnimationUtils.intf.AnimationMode;
+import parkourterminal.gui.screens.intf.ModDetailGui;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.FloatPoint;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.ShapeDrawer;
 
@@ -19,7 +22,7 @@ public abstract class ModCard {
     private int targetX, targetY;
     private int cornerRadius;
     private ResourceLocation icon;
-    private final BeizerAnimation animation;
+
     private int backgroundColor = 0x40000000;
     private int borderColor = 0x80000000;
     private int highlightColor = 0x40FFFFFF;
@@ -30,6 +33,10 @@ public abstract class ModCard {
     private static final int ICON_SIZE = 16;
     private static final int ICON_TEXT_GAP = 4;
     private final float animation_time=4;
+
+    private final AbstractAnimation<InterpolatingColor> animationColor;
+    private final AbstractAnimation<FloatPoint> animation;
+
 
     // 使用自定义字体渲染器
     private static FontRenderer fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
@@ -42,14 +49,13 @@ public abstract class ModCard {
         this.height = height;
         this.cornerRadius = 3;
         this.icon = icon;
-        animation=new BeizerAnimation(animation_time,new FloatPoint(x,y), AnimationMode.BLENDED);
+        animation=new BeizerAnimation<FloatPoint>(animation_time,new FloatPoint(x,y), AnimationMode.BLENDED);
+        animationColor=new ColorInterpolateAnimation(0.4f,new InterpolatingColor(backgroundColor),AnimationMode.BLENDED);
     }
 
     // 提供一个更新位置和尺寸的方法
     public void setPosition(int x, int y, int width, int height) {
-        if(this.targetX != x||this.targetY != y){animation.RestartAnimation(new FloatPoint(x,y));}
-
-
+        animation.RestartAnimation(new FloatPoint(x,y));
 
         this.targetX = x;
         this.targetY = y;
@@ -64,14 +70,14 @@ public abstract class ModCard {
         this.y=midpoint.getY();
         // 计算悬停动画进度
         boolean hovering = isMouseOver(mouseX, mouseY);
+        int currentHighlightColor;
         if (hovering) {
-            hoverProgress = Math.min(1.0f, hoverProgress + 0.1f); // 平滑进入
+            animationColor.RestartAnimation(new InterpolatingColor(highlightColor));
         } else {
-            hoverProgress = Math.max(0.0f, hoverProgress - 0.1f); // 平滑退出
+            animationColor.RestartAnimation(new InterpolatingColor(backgroundColor));
         }
-
         // 计算渐变颜色
-        int currentHighlightColor = AnimationHelper.interpolateColor(backgroundColor, highlightColor, hoverProgress);
+        currentHighlightColor = animationColor.Update().getColor();
 
         // 绘制圆角背景
         ShapeDrawer.drawRoundedRect(x, y, width, height, currentHighlightColor, cornerRadius);

@@ -1,14 +1,11 @@
-package parkourterminal.gui;
+package parkourterminal.gui.screens.impl;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.ConsolaFontRenderer;
-import parkourterminal.gui.component.ModCard;
 import parkourterminal.util.BlurRenderer;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;

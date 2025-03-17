@@ -1,4 +1,4 @@
-package parkourterminal.gui.component;
+package parkourterminal.gui.screens.intf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -8,6 +8,12 @@ import org.lwjgl.input.Keyboard;
 import parkourterminal.shader.Shader;
 import parkourterminal.shader.ShaderGroup;
 import parkourterminal.shader.ShaderUniform;
+import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
+import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
+import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
+import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.BlurRenderer;
 import parkourterminal.util.ShaderHelper;
 
@@ -20,15 +26,10 @@ public class BlurGui extends GuiScreen {
 
     // 关闭动画
     private boolean isClosing = false;
-    private long closeStartTime = -1;
-
-    // 动画变量
-    private long animationStartTime = -1;
-    private final float animationDuration = 100.0f;
+    private final AbstractAnimation<Interpolatingfloat> animation=new BeizerAnimation<Interpolatingfloat>(0.2f,new Interpolatingfloat(0f), AnimationMode.BLENDED,0,0,1,1);
 
     @Override
     public void initGui() {
-        this.animationStartTime = System.currentTimeMillis();
 
         if (OpenGlHelper.shadersSupported) {
             // 使用 ShaderHelper 加载模糊 Shader
@@ -41,29 +42,17 @@ public class BlurGui extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         if (this.shaderGroup != null) {
-            long elapsed;
-            float progress;
-            float easedProgress;
-            float currentBlur;
-
             if (isClosing) {
                 // 计算淡出动画进度
-                elapsed = System.currentTimeMillis() - closeStartTime;
-                progress = Math.min(elapsed / animationDuration, 1.0f);
-                easedProgress = progress * progress;
-                currentBlur = (1 - easedProgress) * targetBlurIntensity;
-
+                animation.RestartAnimation(new Interpolatingfloat(targetBlurIntensity));
                 // 当动画完成，正式退出 GUI
-                if (progress >= 1.0f) {
+                if (animation.getProgress() >= 1.0f) {
                     this.mc.displayGuiScreen(null);
                     return;
                 }
             } else {
                 // 计算淡入动画进度
-                elapsed = System.currentTimeMillis() - animationStartTime;
-                progress = Math.min(elapsed / animationDuration, 1.0f);
-                easedProgress = progress * progress;
-                currentBlur = easedProgress * targetBlurIntensity;
+                animation.RestartAnimation(new Interpolatingfloat(0f));
             }
 
             // 更新模糊强度
@@ -71,7 +60,7 @@ public class BlurGui extends GuiScreen {
             if (!shaders.isEmpty()) {
                 ShaderUniform radiusUniform = shaders.get(0).getShaderManager().getShaderUniform("Radius");
                 if (radiusUniform != null) {
-                    radiusUniform.set(currentBlur);
+                    radiusUniform.set(animation.Update().getValue());
                 }
             }
             OnResizeBlurShader();
@@ -93,7 +82,6 @@ public class BlurGui extends GuiScreen {
         if (Keyboard.getEventKey() == Keyboard.KEY_ESCAPE && Keyboard.getEventKeyState()) {
             if (!isClosing) {
                 isClosing = true;
-                closeStartTime = System.currentTimeMillis();
             }
             return;
         }

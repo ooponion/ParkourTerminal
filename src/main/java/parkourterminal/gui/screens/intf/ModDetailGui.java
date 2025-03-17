@@ -1,11 +1,10 @@
-package parkourterminal.gui.component;
+package parkourterminal.gui.screens.intf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.layout.Container;
-import parkourterminal.util.AnimationUtils.AnimationHelper;
 import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
@@ -50,10 +49,10 @@ public class ModDetailGui {
         detailHeight = (int) (panelHeight * 0.90) - 2 * detailMargin;
 
         // 更新 detailContainer 的位置和尺寸，使其与详细区域保持一致
-        detailContainer.x = detailX;
-        detailContainer.y = detailY + 20;
-        detailContainer.width = detailWidth;
-        detailContainer.height = detailHeight - 20;
+        detailContainer.setX( detailX);
+        detailContainer.setY( detailY + 20);
+        detailContainer.setWidth( detailWidth);
+        detailContainer.setHeight( detailHeight - 20);
 
         // 更新悬停动画进度
         boolean isHovered = isMouseOverExitButton(mouseX, mouseY);
@@ -61,11 +60,12 @@ public class ModDetailGui {
         hoverProgress = Math.max(0, Math.min(1, hoverProgress)); // 限制在 0~1 之间
 
         // 使用插值后的颜色绘制按钮背景
-        int currentColor = AnimationHelper.interpolateColor(
-                exitButtonColor,
-                exitButtonTargetColor,
-                hoverProgress
-        );
+//        int currentColor = AnimationHelper.interpolateColor(
+//                exitButtonColor,
+//                exitButtonTargetColor,
+//                hoverProgress
+//        );
+        int currentColor = exitButtonColor;
 
         ShapeDrawer.drawRoundedRect(
                 detailX, detailY,

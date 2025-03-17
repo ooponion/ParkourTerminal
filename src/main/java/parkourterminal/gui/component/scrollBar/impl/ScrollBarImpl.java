@@ -1,15 +1,13 @@
 package parkourterminal.gui.component.scrollBar.impl;
 
-import net.minecraft.client.Minecraft;
-import parkourterminal.gui.component.scrollBar.intf.AnimationMode;
-import parkourterminal.util.AnimationUtils.FloatPoint;
+import parkourterminal.util.AnimationUtils.intf.AnimationMode;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.FloatPoint;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.ShapeDrawer;
 
 public class ScrollBarImpl {
     private int x,y,width,height;
-    private int oldBarX=0,oldBarY=0;
     private float oldScrollOffset=0f;
     private int min_height;
     private float scrollHeight;//当前滚动条大小(高度)
@@ -17,18 +15,23 @@ public class ScrollBarImpl {
     private float contentOffset=0.0f;
     private float scrollOffset = 0.0f; // 当前滚动偏移量
     private float scrollTime=3f; // 控制滚动平滑时间
-    private final AbstractAnimation animation;
+    private final AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(scrollTime,new FloatPoint(x,y), AnimationMode.BLENDED);;
     private boolean mouseOver=false;
+
+    private boolean displayable=true;
     private double oldY=0;
 
     public ScrollBarImpl(int x,int y,int width,int height){
         if(x<0||y<0||width<=0||height<=0){
             System.out.print("Illegal args to setup this Scroll bar\n");
         }
-        this.animation=new BeizerAnimation(scrollTime,new FloatPoint(x,y), AnimationMode.BLENDED);
-        this.oldBarX=x;
-        this.oldBarY=y;
+        this.animation.changeWithOutAnimation(new FloatPoint(x,y));
         ChangeSize(x, y, width, height);
+        this.min_height=10;
+    }
+    public ScrollBarImpl(int height){
+        displayable=false;
+        ChangeSize(0,0, 0, height);
         this.min_height=10;
     }
     public ScrollBarImpl(int x,int y,int width,int height,int min_height,float scrollTime){
@@ -37,8 +40,6 @@ public class ScrollBarImpl {
         this.min_height=min_height;
     }
     public void ChangeSize(int x, int y, int width, int height){
-        this.oldBarX=x;
-        this.oldBarY=y;
         this.x=x;
         this.y=y;
         this.width=width;
@@ -93,7 +94,7 @@ public class ScrollBarImpl {
     private void UpdateScrollVariables(float contentHeight,float FakeOffset,int height){
         CalculateScrollHeight(contentHeight,height);
         ValidateScrollOffset(FakeOffset,scrollHeight,height);
-        if(positionChanged()){animation.RestartAnimation(new FloatPoint(x,y+scrollOffset));}
+        animation.RestartAnimation(new FloatPoint(x,y+scrollOffset));
         CalculateContentOffset(scrollOffset,scrollHeight,contentHeight,height);
     }
     public boolean ValidScrollClick(double mouseX, double mouseY){
@@ -123,9 +124,6 @@ public class ScrollBarImpl {
 
     public float getContentOffset() {
         return contentOffset;
-    }
-    private boolean positionChanged(){
-        return this.oldBarX!=this.x||this.oldBarY+this.oldScrollOffset!=this.y+this.scrollOffset;
     }
     @Override
     public String toString(){

@@ -1,4 +1,4 @@
-package parkourterminal.gui.component.scrollBar.intf;
+package parkourterminal.util.AnimationUtils.intf;
 
 public enum AnimationMode {
     FORCED,//不能打断

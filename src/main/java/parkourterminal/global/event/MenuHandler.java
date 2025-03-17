@@ -3,7 +3,7 @@ package parkourterminal.global.event;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import parkourterminal.gui.CustomIngameMenu;
+import parkourterminal.gui.screens.impl.CustomIngameMenu;
 
 public class MenuHandler {
     @SubscribeEvent
