@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import parkourterminal.gui.ShiftRightClickGui;
+import parkourterminal.gui.screens.impl.ShiftRightClickScreen.ShiftRightClickGui;
 import parkourterminal.network.NetworkLoader;
 import parkourterminal.network.TeleportPacket;
 

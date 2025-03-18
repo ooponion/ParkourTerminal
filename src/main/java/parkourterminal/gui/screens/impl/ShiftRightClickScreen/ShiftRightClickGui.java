@@ -1,18 +1,24 @@
-package parkourterminal.gui;
+package parkourterminal.gui.screens.impl.ShiftRightClickScreen;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import parkourterminal.gui.component.BlurGui;
+import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
+import parkourterminal.gui.layout.*;
+import parkourterminal.gui.screens.impl.CoordinateInfoGui;
+import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
+import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
-import parkourterminal.util.AnimationHelper;
+import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
+import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
+import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.NumberWrapper;
+import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
@@ -21,10 +27,17 @@ import java.util.Map;
 
 public class ShiftRightClickGui extends BlurGui {
     // 竖直滑动
-    private int scrollOffset = 0;
-    private int targetScrollOffset = 0;
-    private int maxScroll = 0;
+//    private int scrollOffset = 0;
+//    private int targetScrollOffset = 0;
+//    private int maxScroll = 0;
+    private ScrollBarImpl scrollBar;
 
+    private final int padding = 4;
+    private Container coordLineContainer = new Container(new Margin(0,0,0,0),new Padding(25,0,25,0),new noWarpLinearLayout(LayoutDirection.VERTICAL,padding));
+
+
+    private final AbstractAnimation<Interpolatingfloat> animation= new BeizerAnimation<>(2f, new Interpolatingfloat(0), AnimationMode.BLENDED);
+    //private Margin margin=new Margin();
     // 水平滑动
     private Map<Integer, Integer> horizontalScrollOffsets = new HashMap<Integer, Integer>();
     private Map<Integer, Integer> targetHorizontalScrollOffsets = new HashMap<Integer, Integer>();
@@ -38,11 +51,11 @@ public class ShiftRightClickGui extends BlurGui {
     private Map<Integer, Float> hoverColorProgressMap = new HashMap<Integer, Float>();
     private int hoveredScrollBarEntry = -1;
     private Map<Integer, Float> scrollBarHoverProgress = new HashMap<Integer, Float>();
-
     @Override
     public void initGui() {
         super.initGui();
-
+        coordLineContainer.SetSize(width,height);
+        scrollBar=new ScrollBarImpl(height - 40);
         fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
     }
 
@@ -53,7 +66,10 @@ public class ShiftRightClickGui extends BlurGui {
         int selectedIndex = -1;
 
         // 计算平滑滚动
-        scrollOffset += (int)((targetScrollOffset - scrollOffset) * 0.4);
+        animation.RestartAnimation(new Interpolatingfloat(scrollBar.getContentOffset()));
+        float interpolatingOffset=animation.Update().getValue();
+        fontRendererObj.drawString(String.valueOf(interpolatingOffset),0,0,0xFFFFFFFF);
+
 
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         ItemStack heldItem = player.getHeldItem();
@@ -69,18 +85,19 @@ public class ShiftRightClickGui extends BlurGui {
                 NBTTagList savedLocations = nbt.getTagList("savedLocations", 10);
 
                 // 调整垂直间距，减小条目之间的距离
-                int padding = 4;
+
                 int textHeight = fontRendererObj.FONT_HEIGHT;
                 int entryExtraPadding = 5;
                 int scrollBarHeight = 4; // 仅当需要横向滚动时的滚动条高度
 
                 // 固定横向可见宽度（例如：窗口宽度减去50像素）
-                int fixedEntryWidth = width - 50;
+                int fixedEntryWidth = width - 50; //!@#$
 
                 // 计算所有条目的总高度
                 int totalHeight = 0;
                 for (int i = 0; i < savedLocations.tagCount(); i++) {
                     NBTTagCompound location = savedLocations.getCompoundTagAt(i);
+                    coordLineContainer.addComponent(new CoordLine(location,width-50));
                     String name = location.getString("name");
                     String posText = String.format(
                             "X: %s, Y: %s, Z: %s, Yaw: %s, Pitch: %s",
@@ -103,24 +120,25 @@ public class ShiftRightClickGui extends BlurGui {
                 }
 
                 // 可视区域高度（上下各预留20像素）
-                int availableHeight = height - 40;
-                maxScroll = Math.max(0, totalHeight - availableHeight);
+//                int availableHeight = height - 40;
+//                maxScroll = Math.max(0, totalHeight - availableHeight);
+                scrollBar.UpdateContentHeight(totalHeight);
 
                 // 限制scrollOffset的范围
-                if (scrollOffset > maxScroll)
-                    scrollOffset = maxScroll;
-                if (scrollOffset < 0)
-                    scrollOffset = 0;
+//                if (scrollOffset > maxScroll)
+//                    scrollOffset = maxScroll;
+//                if (scrollOffset < 0)
+//                    scrollOffset = 0;
 
                 // 可视区域起始Y坐标（垂直居中）
-                int visibleStartY = (height - availableHeight) / 2;
+                int visibleStartY = (40) / 2;
 
                 // 绘制背景矩形
                 int backgroundWidth = fixedEntryWidth + 40; // 与各个条目的背景宽度一致
-                int outerX = (width - backgroundWidth) / 2;
-                int outerY = visibleStartY - scrollOffset - 10;  // 第一个条目的顶部
-                int outerWidth = backgroundWidth;
-                int outerHeight = totalHeight + 20;
+                float outerX = (width - backgroundWidth) / 2.0f;
+                float outerY = visibleStartY - interpolatingOffset - 10;  // 第一个条目的顶部
+                float outerWidth = backgroundWidth;
+                float outerHeight = totalHeight + 20;
 
                 ShapeDrawer.drawRoundedRect(outerX, outerY, outerWidth, outerHeight, 0x40FFFFFF, 2);
 
@@ -128,6 +146,14 @@ public class ShiftRightClickGui extends BlurGui {
                 int currentY = visibleStartY;
                 hoveredEntry = -1;
                 hoveredScrollBarEntry = -1;
+
+
+
+
+
+
+
+
 
                 for (int i = 0; i < savedLocations.tagCount(); i++) {
                     NBTTagCompound location = savedLocations.getCompoundTagAt(i);
@@ -168,9 +194,9 @@ public class ShiftRightClickGui extends BlurGui {
                             : (textHeight + entryExtraPadding);
 
                     // 绘制背景（圆角矩形）
-                    int boxX = (width - boxWidth) / 2;
+                    float boxX = (width - boxWidth) / 2.0f;
                     // 当前条目的Y坐标 = 当前累计Y - scrollOffset
-                    int boxY = currentY - scrollOffset;
+                    float boxY =  (currentY - interpolatingOffset);
 
                     boolean isHovered = mouseX >= boxX && mouseX <= boxX + boxWidth &&
                             mouseY >= boxY && mouseY <= boxY + boxHeight;
@@ -189,39 +215,25 @@ public class ShiftRightClickGui extends BlurGui {
                     int endColor = 0x600099FF;   // 半透明淡蓝色
 
                     // 使用 progress 进行颜色插值
-                    int currentColor = AnimationHelper.interpolateColor(startColor, endColor, progress);
+                    //int currentColor = AnimationHelper.interpolateColor(startColor, endColor, progress);
+                    int currentColor = startColor;
 
                     // 绘制背景（应用插值颜色）
                     ShapeDrawer.drawRoundedRect(boxX, boxY, boxWidth, boxHeight, currentColor, 3);
 
-                    if (i == selectedIndex) {
-                        int borderColor = 0xFFFF0000; // 红色边框颜色
-                        ShapeDrawer.drawRoundedRectBorder(
-                                boxX, boxY, // 边框的起始位置
-                                boxWidth, boxHeight, // 边框的宽度和高度
-                                borderColor, 3// 边框颜色和圆角半径
-                        );
-                    }
-
                     // 裁剪区域
-                    GL11.glEnable(GL11.GL_SCISSOR_TEST);
-                    int scaleFactor = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();
-                    int scissorX = boxX * scaleFactor;
-                    int scissorY = (height - (boxY + boxHeight)) * scaleFactor;
-                    int scissorWidth = boxWidth * scaleFactor;
-                    int scissorHeight = boxHeight * scaleFactor;
-                    GL11.glScissor(scissorX, scissorY, scissorWidth, scissorHeight);
+                    ScissorHelper.EnableScissor((int) boxX,(int) boxY,boxWidth,boxHeight+1);
 
                     // 绘制文本，从boxX+10处开始，考虑横向滚动偏移
-                    int textX = boxX + 10 - horizOffset;
-                    int textY = boxY + 5; // 上边距固定为5像素
+                    float textX = boxX + 10 - horizOffset;
+                    float textY = boxY + 5; // 上边距固定为5像素
                     fontRendererObj.drawStringWithShadow(combinedText, textX, textY, 0xFFFFFF);
 
                     // 如果需要横向滚动，则绘制滚动条
                     if (hasScrollbar) {
-                        int scrollBarX = boxX + 10;
-                        int scrollBarY = boxY + textHeight + entryExtraPadding;
-                        int scrollBarWidth = visibleWidth;
+                        float scrollBarX = boxX + 10;
+                        float scrollBarY = boxY + textHeight + entryExtraPadding;
+                        float scrollBarWidth = visibleWidth;
 
                         // 检测鼠标是否悬停在滚动条轨道上
                         boolean isScrollBarHovered =
@@ -242,18 +254,36 @@ public class ShiftRightClickGui extends BlurGui {
                         int thumbStartColor = 0xFFAAAAAA;   // 拇指默认颜色
                         int thumbEndColor = 0xFFCCCCCC;     // 悬停时拇指颜色
 
-                        int currentThumbColor = AnimationHelper.interpolateColor(thumbStartColor, thumbEndColor, progress2);
+                        //int currentThumbColor = AnimationHelper.interpolateColor(thumbStartColor, thumbEndColor, progress2);
+                        int currentThumbColor =thumbStartColor;
 
                         // 计算滚动条拇指宽度，按比例确定，最小值20像素
-                        int thumbWidth = Math.max(20, scrollBarWidth * visibleWidth / fullTextWidth);
-                        int thumbMaxMovement = scrollBarWidth - thumbWidth;
-                        int thumbX = scrollBarX + (maxHorizScroll == 0 ? 0 : (int) ((float) horizOffset / maxHorizScroll * thumbMaxMovement));
+                        float thumbWidth = Math.max(20, scrollBarWidth * visibleWidth / fullTextWidth);
+                        float thumbMaxMovement = scrollBarWidth - thumbWidth;
+                        float thumbX = scrollBarX + (maxHorizScroll == 0 ? 0 : (int) ((float) horizOffset / maxHorizScroll * thumbMaxMovement));
 
                         // 绘制滚动条拇指（应用插值颜色）
                         ShapeDrawer.drawRoundedRect(thumbX, scrollBarY, thumbWidth, scrollBarHeight, currentThumbColor, 2);
                     }
 
-                    GL11.glDisable(GL11.GL_SCISSOR_TEST);
+                    ScissorHelper.DisableScissor();
+                    if (i == selectedIndex) {
+                        int borderColor = 0xFFFF0000; // 红色边框颜色
+                        ShapeDrawer.drawRoundedRectBorder(
+                                boxX, boxY, // 边框的起始位置
+                                boxWidth, boxHeight, // 边框的宽度和高度
+                                borderColor, 3// 边框颜色和圆角半径
+                        );
+                    }
+
+
+
+
+
+
+
+
+
 
                     // 累加当前Y：本条目的高度加上条目间距（最后一个条目不加padding）
                     currentY += boxHeight;
@@ -271,14 +301,7 @@ public class ShiftRightClickGui extends BlurGui {
 
         int dWheel = Mouse.getDWheel(); // 获取鼠标滚轮滚动值
         if (dWheel != 0) {
-            int scrollAmount = 40; // 每次滚动的像素大小
-            if (dWheel > 0)
-                targetScrollOffset -= scrollAmount; // 向上
-            else
-                targetScrollOffset += scrollAmount; // 向下
-
-            // 限制 targetScrollOffset 在合法范围内
-            targetScrollOffset = Math.max(0, Math.min(targetScrollOffset, maxScroll));
+            scrollBar.scrollWheel(dWheel > 0 ? -40 : 40);
         }
     }
 
@@ -327,7 +350,7 @@ public class ShiftRightClickGui extends BlurGui {
                             : (textHeight + entryExtraPadding);
                     int boxWidth = fixedEntryWidth + 20;
                     int boxX = (width - boxWidth) / 2;
-                    int boxY = currentY - scrollOffset;
+                    int boxY = (int) (currentY - scrollBar.getContentOffset());
 
                     // 如果当前条目需要滚动条，则检查是否点击在滚动条区域
                     if (hasScrollbar) {

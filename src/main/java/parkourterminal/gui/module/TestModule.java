@@ -1,6 +1,6 @@
 package parkourterminal.gui.module;
 
-import parkourterminal.gui.component.ModDetailGui;
+import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.gui.component.ToggleSwitch;
 import parkourterminal.gui.layout.LayoutDirection;
 import parkourterminal.gui.layout.LinearLayout;

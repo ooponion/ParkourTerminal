@@ -2,7 +2,7 @@ package parkourterminal.gui.card;
 
 import net.minecraft.util.ResourceLocation;
 import parkourterminal.gui.component.ModCard;
-import parkourterminal.gui.component.ModDetailGui;
+import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.gui.module.TestModule;
 
 public class TestCard extends ModCard {

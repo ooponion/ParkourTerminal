@@ -15,20 +15,20 @@ public class LinearLayout implements LayoutManager {
     @Override
     public void layoutComponents(Container container) {
         if (direction == LayoutDirection.HORIZONTAL) {
-            int containerLeft = container.x;
-            int containerRight = container.x + container.width;
+            int containerLeft = container.getEntryLeft();
+            int containerRight = container.getEntryRight();
             int currentX = containerLeft;
-            int currentY = container.y;
+            int currentY = container.getEntryTop();
             int rowHeight = 0;
             List<UIComponent> row = new ArrayList<UIComponent>();
 
             for (UIComponent comp : container.getComponents()) {
-                int compTotalWidth = comp.margin.left + comp.width + comp.margin.right;
+                int compTotalWidth = comp.getOuterWidth();
                 int additionalSpacing = row.isEmpty() ? 0 : spacing;
 
                 // 如果加上当前组件后超出容器右边界，则先布局当前行，再换行
                 if (currentX + additionalSpacing + compTotalWidth > containerRight) {
-                    layoutRow(row, containerLeft, currentY, rowHeight);
+                    layoutRow(row, containerLeft, currentY, rowHeight,spacing);
                     currentY += rowHeight + spacing;
                     currentX = containerLeft;
                     row.clear();
@@ -38,7 +38,7 @@ public class LinearLayout implements LayoutManager {
                     currentX += spacing;
                 }
                 row.add(comp);
-                int compTotalHeight = comp.margin.top + comp.height + comp.margin.bottom;
+                int compTotalHeight = comp.getOuterHeight();
                 if (compTotalHeight > rowHeight) {
                     rowHeight = compTotalHeight;
                 }
@@ -46,22 +46,22 @@ public class LinearLayout implements LayoutManager {
             }
             // 布局最后一行
             if (!row.isEmpty()) {
-                layoutRow(row, containerLeft, currentY, rowHeight);
+                layoutRow(row, containerLeft, currentY, rowHeight,spacing);
             }
         } else { // VERTICAL 布局
-            int containerTop = container.y;
-            int containerBottom = container.y + container.height;
+            int containerTop = container.getEntryTop();
+            int containerBottom = container.getEntryBottom();
             int currentY = containerTop;
-            int currentX = container.x;
+            int currentX = container.getEntryLeft();
             int columnWidth = 0;
             List<UIComponent> column = new ArrayList<UIComponent>();
 
             for (UIComponent comp : container.getComponents()) {
-                int compTotalHeight = comp.margin.top + comp.height + comp.margin.bottom;
+                int compTotalHeight = comp.getOuterHeight();
                 int additionalSpacing = column.isEmpty() ? 0 : spacing;
 
                 if (currentY + additionalSpacing + compTotalHeight > containerBottom) {
-                    layoutColumn(column, container.x, currentX, containerTop, columnWidth);
+                    layoutColumn(column, currentX, containerTop, columnWidth,spacing);
                     currentX += columnWidth + spacing;
                     currentY = containerTop;
                     column.clear();
@@ -71,55 +71,17 @@ public class LinearLayout implements LayoutManager {
                     currentY += spacing;
                 }
                 column.add(comp);
-                int compTotalWidth = comp.margin.left + comp.width + comp.margin.right;
+                int compTotalWidth = comp.getOuterWidth();
                 if (compTotalWidth > columnWidth) {
                     columnWidth = compTotalWidth;
                 }
                 currentY += compTotalHeight;
             }
             if (!column.isEmpty()) {
-                layoutColumn(column, container.x, currentX, containerTop, columnWidth);
+                layoutColumn(column, currentX, containerTop, columnWidth,spacing);
             }
         }
     }
 
-    /**
-     * 布局一行中的组件：
-     * 从 startX 开始，按顺序排列组件，
-     * 并使每个组件在行内垂直居中（考虑其上下外边距）。
-     */
-    private void layoutRow(List<UIComponent> row, int startX, int y, int rowHeight) {
-        int currentX = startX;
-        int n = row.size();
-        for (int i = 0; i < n; i++) {
-            UIComponent comp = row.get(i);
-            comp.x = currentX + comp.margin.left;
-            int compTotalHeight = comp.margin.top + comp.height + comp.margin.bottom;
-            int extraSpace = rowHeight - compTotalHeight;
-            // 垂直居中：在上边距基础上加上额外空白的一半
-            comp.y = y + comp.margin.top + extraSpace / 2;
-            currentX += comp.margin.left + comp.width + comp.margin.right;
-            // 仅在非最后一个组件后增加间距
-            if (i < n - 1) {
-                currentX += spacing;
-            }
-        }
-    }
 
-    /**
-     * 布局一列中的组件：
-     * 从 startY 开始，按顺序排列组件，
-     * 并使每个组件在列内水平居中（考虑其左右外边距）。
-     */
-    private void layoutColumn(List<UIComponent> column, int startX, int x, int startY, int columnWidth) {
-        int currentY = startY;
-        for (UIComponent comp : column) {
-            comp.y = currentY + comp.margin.top;
-            int compTotalWidth = comp.margin.left + comp.width + comp.margin.right;
-            int extraSpace = columnWidth - compTotalWidth;
-            // 水平居中：在左边距基础上加上额外空白的一半
-            comp.x = x + comp.margin.left + extraSpace / 2;
-            currentY += comp.margin.top + comp.height + comp.margin.bottom + spacing;
-        }
-    }
 }
