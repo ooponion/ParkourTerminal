@@ -12,8 +12,8 @@ public abstract class UIComponent {
     private Margin margin = new Margin(0);
     private Padding padding =new Padding(0);
     protected Alignment alignment = Alignment.START;
-    private final AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(0.5f,new FloatPoint(x,y), AnimationMode.BLENDED);
-    private final AbstractAnimation<InterpolatingColor> animationColor=new ColorInterpolateAnimation(0.5f ,new InterpolatingColor(0),AnimationMode.BLENDED);
+    private AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(0.5f,new FloatPoint(x,y), AnimationMode.BLENDED);
+    private AbstractAnimation<InterpolatingColor> animationColor=new ColorInterpolateAnimation(0.5f ,new InterpolatingColor(0),AnimationMode.BLENDED);
 
     public abstract void draw(int mouseX, int mouseY, float partialTicks);
     public abstract boolean isMouseOver(int mouseX, int mouseY);
@@ -126,5 +126,11 @@ public abstract class UIComponent {
 
     public AbstractAnimation<InterpolatingColor> getAnimationColor() {
         return animationColor;
+    }
+    public void setAnimationColor(AbstractAnimation<InterpolatingColor> animationColor){
+        this.animationColor=animationColor;
+    }
+    public void setAnimation(AbstractAnimation<FloatPoint> animation){
+        this.animation=animation;
     }
 }

@@ -83,5 +83,155 @@ public class LinearLayout implements LayoutManager {
         }
     }
 
+    @Override
+    public int getComponentsTotalHeight(Container container) {
+        if (direction == LayoutDirection.HORIZONTAL) {
+            int containerRight = container.getEntryRight()-container.getEntryLeft();
+            int currentX = 0;
+            int currentY = 0;
+            int rowHeight = 0;
+            List<UIComponent> row = new ArrayList<UIComponent>();
 
+            for (UIComponent comp : container.getComponents()) {
+                int compTotalWidth = comp.getOuterWidth();
+                int additionalSpacing = row.isEmpty() ? 0 : spacing;
+                // 如果加上当前组件后超出容器右边界，则先布局当前行，再换行
+                if (currentX + additionalSpacing + compTotalWidth > containerRight) {
+                    currentX += comp.getOuterWidth();
+                    //return currentX
+                    currentY += rowHeight + spacing;
+                    currentX = 0;
+                    row.clear();
+                    rowHeight = 0;
+                }
+                if (!row.isEmpty()) {
+                    currentX += spacing;
+                }
+                row.add(comp);
+                int compTotalHeight = comp.getOuterHeight();
+                if (compTotalHeight > rowHeight) {
+                    rowHeight = compTotalHeight;
+                }
+                currentX += compTotalWidth;
+            }
+            return currentY+rowHeight;
+        } else { // VERTICAL 布局
+            int containerBottom = container.getEntryBottom()-container.getEntryTop();
+            int currentY = 0;
+            int currentX = container.getEntryLeft();
+            int columnWidth = 0;
+            List<UIComponent> column = new ArrayList<UIComponent>();
+
+            for (UIComponent comp : container.getComponents()) {
+                int compTotalHeight = comp.getOuterHeight();
+                int additionalSpacing = column.isEmpty() ? 0 : spacing;
+
+                if (currentY + additionalSpacing + compTotalHeight > containerBottom) {
+                    currentY+=comp.getOuterHeight();
+                    return currentY;
+                }
+                if (!column.isEmpty()) {
+                    currentY += spacing;
+                }
+                column.add(comp);
+                int compTotalWidth = comp.getOuterWidth();
+                if (compTotalWidth > columnWidth) {
+                    columnWidth = compTotalWidth;
+                }
+                currentY += compTotalHeight;
+            }
+            //return currentX+=columnWidth;
+        }
+        return 0;
+    }
+
+    @Override
+    public int getComponentsTotalWidth(Container container) {
+        if (direction == LayoutDirection.HORIZONTAL) {
+            int containerRight = container.getEntryRight()-container.getEntryLeft();
+            int currentX = 0;
+            int currentY = 0;
+            int rowHeight = 0;
+            List<UIComponent> row = new ArrayList<UIComponent>();
+
+            for (UIComponent comp : container.getComponents()) {
+                int compTotalWidth = comp.getOuterWidth();
+                int additionalSpacing = row.isEmpty() ? 0 : spacing;
+                // 如果加上当前组件后超出容器右边界，则先布局当前行，再换行
+                if (currentX + additionalSpacing + compTotalWidth > containerRight) {
+                    currentX += comp.getOuterWidth();
+                    return currentX;
+                }
+                if (!row.isEmpty()) {
+                    currentX += spacing;
+                }
+                row.add(comp);
+                int compTotalHeight = comp.getOuterHeight();
+                if (compTotalHeight > rowHeight) {
+                    rowHeight = compTotalHeight;
+                }
+                currentX += compTotalWidth;
+            }
+            //return currentY+=rowHeight;
+        } else { // VERTICAL 布局
+            int containerBottom = container.getEntryBottom()-container.getEntryTop();
+            int currentY = 0;
+            int currentX = container.getEntryLeft();
+            int columnWidth = 0;
+            List<UIComponent> column = new ArrayList<UIComponent>();
+
+            for (UIComponent comp : container.getComponents()) {
+                int compTotalHeight = comp.getOuterHeight();
+                int additionalSpacing = column.isEmpty() ? 0 : spacing;
+
+                if (currentY + additionalSpacing + compTotalHeight > containerBottom) {
+                    currentY+=comp.getOuterHeight();
+                    //return currentY;
+                    currentX += columnWidth + spacing;
+                    currentY = 0;
+                    column.clear();
+                    columnWidth = 0;
+                }
+                if (!column.isEmpty()) {
+                    currentY += spacing;
+                }
+                column.add(comp);
+                int compTotalWidth = comp.getOuterWidth();
+                if (compTotalWidth > columnWidth) {
+                    columnWidth = compTotalWidth;
+                }
+                currentY += compTotalHeight;
+            }
+            return currentX+columnWidth;
+        }
+        return 0;
+    }
+    private void layoutRow(List<UIComponent> row, int startX, int y, int rowHeight,int spacing) {
+        int currentX = startX;
+        for (UIComponent comp : row) {
+            comp.setX( currentX + comp.getMargin().left);
+            int compTotalHeight = comp.getOuterHeight();
+            int extraSpace = rowHeight - compTotalHeight;
+            // 垂直居中：在上边距基础上加上额外空白的一半
+            comp.setY( y + comp.getMargin().top + extraSpace / 2);
+            currentX += comp.getOuterWidth()+spacing;
+        }
+    }
+
+    /**
+     * 布局一列中的组件：
+     * 从 startY 开始，按顺序排列组件，
+     * 并使每个组件在列内水平居中（考虑其左右外边距）。
+     */
+    private void layoutColumn(List<UIComponent> column, int x, int startY, int columnWidth,int spacing) {
+        int currentY = startY;
+        for (UIComponent comp : column) {
+            comp.setY( currentY + comp.getMargin().top);
+            int compTotalWidth = comp.getOuterWidth();
+            int extraSpace = columnWidth - compTotalWidth;
+            // 水平居中：在左边距基础上加上额外空白的一半
+            comp.setX(x + comp.getMargin().left + extraSpace / 2);
+            currentY += comp.getOuterHeight() + spacing;
+        }
+    }
 }

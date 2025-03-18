@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.card.TestCard;
 import parkourterminal.gui.component.*;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
+import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.util.ScissorHelper;
@@ -63,8 +64,8 @@ public class IngameMenuGui extends BlurGui {
                 registerCards();
             }
 
-            scrollBar=new ScrollBarImpl(cardAreaX+cardAreaWidth-4, cardAreaY, 4, cardAreaHeight);
-            scrollBar.UpdateContentHeight(getContentHeight());
+            scrollBar=new ScrollBarImpl(cardAreaX+cardAreaWidth-4, cardAreaY, 4, cardAreaHeight, ScrollDirection.VERTICAL);
+            scrollBar.UpdateContentSize(getContentHeight());
         }
         isFirstInit=false;
         super.initGui();
@@ -364,7 +365,8 @@ public class IngameMenuGui extends BlurGui {
     public void onResize(Minecraft mcIn, int w, int h)
     {
         super.onResize(mcIn, w, h);
-        scrollBar.ChangeSize(cardAreaX+cardAreaWidth-4, cardAreaY, 4, cardAreaHeight);
+        scrollBar.ChangeSize( 4, cardAreaHeight);
+        scrollBar.ChangePosition(cardAreaX+cardAreaWidth-4,cardAreaY);
     }
 
 }
