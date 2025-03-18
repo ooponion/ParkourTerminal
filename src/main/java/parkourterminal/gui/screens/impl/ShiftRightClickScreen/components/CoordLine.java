@@ -1,22 +1,38 @@
-//package parkourterminal.gui.screens.impl.ShiftRightClickScreen.components;
-//
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.gui.FontRenderer;
-//import net.minecraft.client.gui.ScaledResolution;
-//import net.minecraft.nbt.NBTTagCompound;
-//import net.minecraft.util.EnumChatFormatting;
-//import org.lwjgl.opengl.GL11;
-//import parkourterminal.gui.layout.UIComponent;
-//import parkourterminal.util.NumberWrapper;
-//import parkourterminal.util.ShapeDrawer;
-//
-//public class CoordLine extends UIComponent {
-//    private NBTTagCompound location;
-//    public CoordLine(NBTTagCompound location){
-//        this.location=location;
-//    }
-//    @Override
-//    public void draw(int mouseX, int mouseY, float partialTicks) {
+package parkourterminal.gui.screens.impl.ShiftRightClickScreen.components;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.gui.layout.Margin;
+import parkourterminal.gui.layout.Padding;
+import parkourterminal.gui.layout.UIComponent;
+import parkourterminal.util.NumberWrapper;
+
+public class CoordLine extends UIComponent {
+    private NBTTagCompound location;
+    private final int textHeight =  Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT;
+    private final int entryExtraPadding = 5;
+    private final int scrollBarHeight = 4; // 仅当需要横向滚动时的滚动条高度
+    public CoordLine(NBTTagCompound location,int width){
+        this.location=location;
+        this.setMargin(new Margin(0));
+        this.setPadding(new Padding(10,5,10,0));
+        SetSize(width,0);
+    }
+    @Override
+    public void SetSize(int width, int _){
+        this.setWidth(width);
+        String text =getDisplayText();
+        int fullTextWidth = Minecraft.getMinecraft().fontRendererObj.getStringWidth(text);
+        boolean hasScrollbar = fullTextWidth > this.getEntryWidth();
+        int boxHeight = hasScrollbar
+                ? (textHeight + entryExtraPadding + scrollBarHeight)
+                : (textHeight + entryExtraPadding);
+
+        this.setHeight(boxHeight);
+    }
+    @Override
+    public void draw(int mouseX, int mouseY, float partialTicks) {
 //        FontRenderer fontRendererObj=Minecraft.getMinecraft().fontRendererObj;
 //        int textHeight = fontRendererObj.FONT_HEIGHT;
 //        int entryExtraPadding = 5;
@@ -147,11 +163,22 @@
 //                    borderColor, 3// 边框颜色和圆角半径
 //            );
 //        }
-//
-//    }
-//
-//    @Override
-//    public boolean isMouseOver(int mouseX, int mouseY) {
-//        return false;
-//    }
-//}
+
+    }
+    public String getDisplayText(){
+        String name = location.getString("name");
+        String posText = String.format(
+                "X: %s, Y: %s, Z: %s, Yaw: %s, Pitch: %s",
+                NumberWrapper.round(location.getDouble("posX")),
+                NumberWrapper.round(location.getDouble("posY")),
+                NumberWrapper.round(location.getDouble("posZ")),
+                NumberWrapper.round(location.getFloat("yaw")),
+                NumberWrapper.round(location.getFloat("pitch"))
+        );
+        return EnumChatFormatting.WHITE + name + " " + EnumChatFormatting.AQUA + posText;
+    }
+    @Override
+    public boolean isMouseOver(int mouseX, int mouseY) {
+        return false;
+    }
+}

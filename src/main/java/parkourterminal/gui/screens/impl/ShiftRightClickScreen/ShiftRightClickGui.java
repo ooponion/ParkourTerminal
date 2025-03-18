@@ -1,21 +1,19 @@
 package parkourterminal.gui.screens.impl.ShiftRightClickScreen;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
+import parkourterminal.gui.layout.*;
 import parkourterminal.gui.screens.impl.CoordinateInfoGui;
+import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
-import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
-import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
@@ -33,7 +31,12 @@ public class ShiftRightClickGui extends BlurGui {
 //    private int targetScrollOffset = 0;
 //    private int maxScroll = 0;
     private ScrollBarImpl scrollBar;
-    private final AbstractAnimation<Interpolatingfloat> animation=new BeizerAnimation<Interpolatingfloat>(2f,new Interpolatingfloat(0), AnimationMode.BLENDED);
+
+    private final int padding = 4;
+    private Container coordLineContainer = new Container(new Margin(0,0,0,0),new Padding(25,0,25,0),new noWarpLinearLayout(LayoutDirection.VERTICAL,padding));
+
+
+    private final AbstractAnimation<Interpolatingfloat> animation= new BeizerAnimation<>(2f, new Interpolatingfloat(0), AnimationMode.BLENDED);
     //private Margin margin=new Margin();
     // 水平滑动
     private Map<Integer, Integer> horizontalScrollOffsets = new HashMap<Integer, Integer>();
@@ -51,6 +54,7 @@ public class ShiftRightClickGui extends BlurGui {
     @Override
     public void initGui() {
         super.initGui();
+        coordLineContainer.SetSize(width,height);
         scrollBar=new ScrollBarImpl(height - 40);
         fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
     }
@@ -62,11 +66,11 @@ public class ShiftRightClickGui extends BlurGui {
         int selectedIndex = -1;
 
         // 计算平滑滚动
-        //scrollOffset += (int)((targetScrollOffset - scrollOffset) * 0.4);
         animation.RestartAnimation(new Interpolatingfloat(scrollBar.getContentOffset()));
         float interpolatingOffset=animation.Update().getValue();
         fontRendererObj.drawString(String.valueOf(interpolatingOffset),0,0,0xFFFFFFFF);
-        System.out.printf(interpolatingOffset+"\n");
+
+
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         ItemStack heldItem = player.getHeldItem();
 
@@ -81,18 +85,19 @@ public class ShiftRightClickGui extends BlurGui {
                 NBTTagList savedLocations = nbt.getTagList("savedLocations", 10);
 
                 // 调整垂直间距，减小条目之间的距离
-                int padding = 4;
+
                 int textHeight = fontRendererObj.FONT_HEIGHT;
                 int entryExtraPadding = 5;
                 int scrollBarHeight = 4; // 仅当需要横向滚动时的滚动条高度
 
                 // 固定横向可见宽度（例如：窗口宽度减去50像素）
-                int fixedEntryWidth = width - 50;
+                int fixedEntryWidth = width - 50; //!@#$
 
                 // 计算所有条目的总高度
                 int totalHeight = 0;
                 for (int i = 0; i < savedLocations.tagCount(); i++) {
                     NBTTagCompound location = savedLocations.getCompoundTagAt(i);
+                    coordLineContainer.addComponent(new CoordLine(location,width-50));
                     String name = location.getString("name");
                     String posText = String.format(
                             "X: %s, Y: %s, Z: %s, Yaw: %s, Pitch: %s",
