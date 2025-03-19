@@ -48,6 +48,9 @@ public abstract class AbstractAnimation<T extends interpolating<T>> {
         new_=end;
         return end;
     }
+    public T getInterpolatingValue(){
+        return new_;
+    }
 
     public float getProgress() {
         return elapsedTime/totalTime;

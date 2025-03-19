@@ -358,7 +358,7 @@ public class IngameMenuGui extends BlurGui {
 
     private void drawScrollBar() {
         // 仅当内容总高度大于可见区域时才绘制滑动条
-        scrollBar.drawScrollBar();
+        scrollBar.draw(0x00000000,0x40000000);
         //fontRendererObj.drawString(scrollBar.toString(),0,0,0xFFFFFFFF);
     }
     @Override

@@ -3,7 +3,6 @@ package parkourterminal.gui.component.scrollBar.impl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
-import parkourterminal.util.AnimationUtils.impls.interpolatingData.FloatPoint;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.ShapeDrawer;
@@ -19,6 +18,9 @@ public class ScrollBarImpl {
     private float scrollOffset = 0.0f; // 当前滚动偏移量
     private float scrollTime=3f; // 控制滚动平滑时间
     private final AbstractAnimation<Interpolatingfloat> animation=new BeizerAnimation<Interpolatingfloat>(scrollTime,new Interpolatingfloat(0), AnimationMode.BLENDED);;
+
+    private final AbstractAnimation<Interpolatingfloat> animationContentOffset=new BeizerAnimation<Interpolatingfloat>(scrollTime,new Interpolatingfloat(0), AnimationMode.BLENDED);;
+
     private boolean mouseOver=false;
 
     private boolean displayable=true;
@@ -55,6 +57,7 @@ public class ScrollBarImpl {
     public void ChangePosition( int x,int y){
         this.x=x;
         this.y=y;
+        this.animation.changeWithOutAnimation(new Interpolatingfloat(direction==ScrollDirection.VERTICAL?x:y));
     }
     public void UpdateContentSize(int contentSize) {
         if(contentSize==0){
@@ -69,35 +72,24 @@ public class ScrollBarImpl {
         }
 
     }
-    public void drawScrollBar() {
+    public void draw(int trackColor, int thumbColor) {
         // 仅当内容总高度大于可见区域时才绘制滑动条
         if (direction==ScrollDirection.VERTICAL&&contentSize > height&&displayable) {
-            // 滑动条宽度固定为 4 像素，绘制在卡片区域右侧
-
-            // 轨道使用透明颜色（本身只绘制边框，内部透明）
-            int trackColor = 0x00000000; // 完全透明
             int cornerRadius = 2;
 
             // 绘制轨道（整个卡片区域高度）
             ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
-
-            // 定义拇指颜色为半透明白色
-            int thumbColor = 0x40000000;
 
             // 绘制拇指
             ShapeDrawer.drawRoundedRect(x, animation.Update().getValue(), width, scrollSize, thumbColor, cornerRadius);
         }else if (contentSize > width&&displayable) {
-            int trackColor = 0x00000000; // 完全透明
             int cornerRadius = 2;
 
             // 绘制轨道（整个卡片区域高度）
             ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
 
-            // 定义拇指颜色为半透明白色
-            int thumbColor = 0x40000000;
-
             // 绘制拇指
-            ShapeDrawer.drawRoundedRect( animation.Update().getValue(),y, width, scrollSize, thumbColor, cornerRadius);
+            ShapeDrawer.drawRoundedRect( animation.Update().getValue(),y, scrollSize, height, thumbColor, cornerRadius);
         }
     }
 
@@ -111,6 +103,7 @@ public class ScrollBarImpl {
             return;
         }
         contentOffset=  scrollOffset/(size-scrollSize)*Math.max(contentSize-size,0);
+        animationContentOffset.RestartAnimation(new Interpolatingfloat(contentOffset));
 
     }
     private void ValidateScrollOffset(float FakeOffset,float scrollSize,int size){//FakeOffset可能是错误的,所以重新计算位置//0,height-scrollHeight
@@ -136,8 +129,10 @@ public class ScrollBarImpl {
         }
     }
     public void onClick(double mouseX, double mouseY) {
+        System.out.printf("onclick:%s\n",ValidScrollClick(mouseX, mouseY));
         if(ValidScrollClick(mouseX, mouseY)&&displayable) {
             mouseOver = true;
+
             if(direction==ScrollDirection.VERTICAL){
                 oldPos =mouseY;
             }
@@ -171,9 +166,14 @@ public class ScrollBarImpl {
             oldPos =newPos;
         }
     }
-
+    public void Update(){
+        animationContentOffset.Update();
+    }
     public float getContentOffset() {
         return contentOffset;
+    }
+    public float getInterpolatingContentOffset() {
+        return animationContentOffset.getInterpolatingValue().getValue();
     }
     public void setScrollTime(float scrollTime){
         this.scrollTime=scrollTime;

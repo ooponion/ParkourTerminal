@@ -7,6 +7,8 @@ import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolating
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 
+import java.io.IOException;
+
 public abstract class UIComponent {
     private int x=0, y=0, width=0, height=0;
     private Margin margin = new Margin(0);
@@ -130,7 +132,17 @@ public abstract class UIComponent {
     public void setAnimationColor(AbstractAnimation<InterpolatingColor> animationColor){
         this.animationColor=animationColor;
     }
-    public void setAnimation(AbstractAnimation<FloatPoint> animation){
-        this.animation=animation;
+    public void setAnimation(AbstractAnimation<FloatPoint> animation) {
+        this.animation = animation;
     }
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        return false;
+    }
+    public void mouseReleased(int mouseX, int mouseY){
+
+    }
+    public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        return false;
+    }
+    public void Update(){};
 }
