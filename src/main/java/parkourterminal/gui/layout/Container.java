@@ -1,5 +1,9 @@
 package parkourterminal.gui.layout;
 
+import net.minecraft.client.Minecraft;
+import parkourterminal.gui.screens.impl.CoordinateInfoGui;
+import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,5 +86,29 @@ public class Container extends UIComponent {
     @Override
     public boolean isMouseOver(int mouseX, int mouseY) {
         return false; // 容器本身不处理点击
+    }
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        for (UIComponent component:getComponents()){
+            if(component.mouseClicked(mouseX, mouseY, mouseButton)){
+                return true;
+            }
+        }
+        return false;
+    }
+    @Override
+    public void mouseReleased(int mouseX, int mouseY){
+        for (UIComponent component:getComponents()){
+            component.mouseReleased(mouseX, mouseY);
+        }
+    }
+    @Override
+    public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        for (UIComponent component:getComponents()){
+            if(component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)){
+                return true;
+            }
+        }
+        return false;
     }
 }

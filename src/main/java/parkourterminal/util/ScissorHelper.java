@@ -3,7 +3,6 @@ package parkourterminal.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.gui.component.ModCard;
 
 public class ScissorHelper {
     public static void EnableScissor(int x,int y,int width,int height){

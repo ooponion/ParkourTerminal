@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.screens.impl.InGameMenuGui.IngameMenuGui;
 import parkourterminal.util.BlurRenderer;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;

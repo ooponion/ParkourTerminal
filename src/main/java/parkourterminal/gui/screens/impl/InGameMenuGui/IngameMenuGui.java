@@ -1,17 +1,19 @@
-package parkourterminal.gui.screens.impl;
+package parkourterminal.gui.screens.impl.InGameMenuGui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.gui.card.TestCard;
+import parkourterminal.gui.layout.UIComponent;
+import parkourterminal.gui.screens.impl.InGameMenuGui.Components.TestCard;
 import parkourterminal.gui.component.*;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
+import parkourterminal.gui.cardIntf.ModCard;
+import parkourterminal.gui.screens.impl.InGameMenuGui.Components.TestCardContainer;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.util.ScissorHelper;
@@ -31,18 +33,25 @@ public class IngameMenuGui extends BlurGui {
     private int cardAreaY;
     private int cardAreaWidth;
     private int cardAreaHeight;
-    private ScrollBarImpl scrollBar;
+    private ScrollBarImpl scrollBar=new ScrollBarImpl(0,0,0,0, ScrollDirection.VERTICAL);
     private boolean isFirstInit = true;  // 记录是否是首次打开 GUI
     private State currentState = State.MAIN_MENU;
-    private List<ModCard> modCards = new ArrayList<ModCard>();
+//    private List<ModCard> modCards = new ArrayList<ModCard>();
     private ModDetailGui currentModDetailGui;
-
+    private final TestCardContainer testCardContainer=new TestCardContainer();
 
     // 动画
     private float exitIconScale = 1.0f;  // 退出图标的当前缩放比例
 
+
+
+    int cardWidth = 80;
+    int fixedMargin = 5;
+    int cardHeight = 20;
+
     private void registerCards() {
-        modCards.add(new TestCard(width - 115, height - 35, 100, 20));
+
+        testCardContainer.addComponent(new TestCard(width - 115, height - 35, 100, 20));
     }
     private void UpdateSize(){
         panelMargin = 10; // 背景板与屏幕边界的间距
@@ -54,6 +63,8 @@ public class IngameMenuGui extends BlurGui {
         cardAreaY = panelMargin + (int) (panelHeight * 0.10);
         cardAreaWidth = (int) (panelWidth * 0.80);
         cardAreaHeight = (int) (panelHeight * 0.90);
+        testCardContainer.SetPosition(cardAreaX,cardAreaY-(int)scrollBar.getContentOffset());
+        testCardContainer.SetSize(cardAreaWidth,cardAreaHeight);
     }
     @Override
     public void initGui() {
@@ -65,7 +76,7 @@ public class IngameMenuGui extends BlurGui {
             }
 
             scrollBar=new ScrollBarImpl(cardAreaX+cardAreaWidth-4, cardAreaY, 4, cardAreaHeight, ScrollDirection.VERTICAL);
-            scrollBar.UpdateContentSize(getContentHeight());
+            scrollBar.UpdateContentSize(testCardContainer.getComponentsTotalHeight());
         }
         isFirstInit=false;
         super.initGui();
@@ -75,12 +86,7 @@ public class IngameMenuGui extends BlurGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        // 每次绘制前更新卡片位置，确保自适应屏幕变化
-
-        updateCardPositions();
-
         // 计算平滑过渡，逐渐更新 scrollOffset
-        //scrollOffset = (int) (scrollOffset + (scrollTargetOffset - scrollOffset) * scrollSpeed);
 
         // 绘制仪表盘背景（例如模糊背景由 BlurGui 实现）
         drawDashboardBackground(mouseX, mouseY);
@@ -91,13 +97,11 @@ public class IngameMenuGui extends BlurGui {
             ScissorHelper.EnableScissor(cardAreaX,cardAreaY,cardAreaWidth,cardAreaHeight);
 
             // 绘制卡片（仅在此区域内可见）
-            for (ModCard card : modCards) {
-                card.draw(mouseX, mouseY); // 考虑滚动偏移量
-            }
+            testCardContainer.draw(mouseX,mouseY,partialTicks);
 
             ScissorHelper.DisableScissor();
 
-            drawScrollBar();
+            scrollBar.draw(0x00000000,0x40000000);
 
 
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
@@ -134,16 +138,12 @@ public class IngameMenuGui extends BlurGui {
 
             // 检查是否点击了滑动条
             scrollBar.onClick(mouseX,mouseY);
-
             // 确保鼠标点击位置在卡片显示区域内
-            if (mouseX >= cardAreaX && mouseX <= cardAreaX + cardAreaWidth && mouseY >= cardAreaY && mouseY <= cardAreaY + cardAreaHeight) {
-                // 检查是否点击了某个卡片，考虑滚动偏移量
-                for (ModCard card : modCards) {
-                    if (card.isMouseOver(mouseX, mouseY)) { // 考虑滚动偏移量
-                        currentModDetailGui = card.getModDetailGui();
-                        currentState = State.MOD_DETAIL;
-                        return;
-                    }
+            for (UIComponent card : testCardContainer.getComponents()) {
+                if (card.isMouseOver(mouseX, mouseY)) { // 考虑滚动偏移量
+                    currentModDetailGui = ((TestCard)card).getModDetailGui();
+                    currentState = State.MOD_DETAIL;
+                    return;
                 }
             }
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
@@ -171,30 +171,26 @@ public class IngameMenuGui extends BlurGui {
         // 处理鼠标滚轮事件
         int scrollAmount = Mouse.getEventDWheel();
         if (scrollAmount != 0) {
-            scrollAmount = scrollAmount > 0 ? -1 : 1; // 反转滚动方向
-            // 更新目标滚动偏移量
-
-            scrollBar.scrollWheel(scrollAmount * 20);// 每次滚动20像素
+            scrollAmount = scrollAmount > 0 ? -20 : 20; // 反转滚动方向
+            scrollBar.scrollWheel(scrollAmount );// 每次滚动20像素
         }
     }
 
-    private int getContentHeight() {
-        int cardHeight = 20;
-        int fixedMargin = 5;
-
-        int rows = (modCards.size() + getColumns() - 1) / getColumns();
-        int totalHeight = rows * (cardHeight + fixedMargin) + fixedMargin;
-
-        return totalHeight;
-    }
-
-    private int getColumns() {
-        int cardWidth = 80;
-        int fixedMargin = 5;
-
-        int columns = (cardAreaWidth - fixedMargin) / (cardWidth + fixedMargin);
-        return Math.max(1, columns);
-    }
+//    private int getContentHeight() {
+//
+//
+//        int rows = (modCards.size() + getColumns() - 1) / getColumns();
+//        int totalHeight = rows * (cardHeight + fixedMargin) + fixedMargin;
+//
+//        return totalHeight;
+//    }
+//
+//    private int getColumns() {
+//
+//
+//        int columns = (cardAreaWidth - fixedMargin) / (cardWidth + fixedMargin);
+//        return Math.max(1, columns);
+//    }
 
     private void drawDashboardBackground(int mouseX, int mouseY) {
 
@@ -324,31 +320,27 @@ public class IngameMenuGui extends BlurGui {
         );
     }
 
-    private void updateCardPositions() {
-
-        int cardWidth = 80;
-        int cardHeight = 20;
-        int fixedMargin = 5; // 卡片与卡片以及卡片与边界之间的固定间距
-
-        // 计算可放置的列数（确保至少 1 列）
-        int columns = getColumns();
-
-        // 计算水平额外空间：每行的最小所需宽度与显示区域宽度的差值均摊到 (columns+1) 个间隙中
-        int requiredWidth = columns * cardWidth + (columns + 1) * fixedMargin;
-        int extraHoriz = cardAreaWidth - requiredWidth;
-        float additionalHoriz = extraHoriz > 0 ? extraHoriz / (float)(columns + 1) : 0;
-        float gapX = fixedMargin + additionalHoriz;
-        float gapY = fixedMargin;
-
-        // 对每个卡片，根据其索引计算所在的行和列，设置目标位置（setPosition 内部实现了动画移动）
-        for (int i = 0; i < modCards.size(); i++) {
-            int col = i % columns;
-            int row = i / columns;
-            int targetX = cardAreaX + Math.round(gapX * (col + 1) + col * cardWidth);
-            int targetY = (int) (cardAreaY + Math.round(gapY * (row + 1) + row * cardHeight) - scrollBar.getContentOffset()); // 考虑滚动偏移量
-            modCards.get(i).setPosition(targetX, targetY, cardWidth, cardHeight);
-        }
-    }
+//    private void updateCardPositions() {
+//
+//        // 计算可放置的列数（确保至少 1 列）
+//        int columns = getColumns();
+//
+//        // 计算水平额外空间：每行的最小所需宽度与显示区域宽度的差值均摊到 (columns+1) 个间隙中
+//        int requiredWidth = columns * cardWidth + (columns + 1) * fixedMargin;
+//        int extraHoriz = cardAreaWidth - requiredWidth;
+//        float additionalHoriz = extraHoriz > 0 ? extraHoriz / (float)(columns + 1) : 0;
+//        float gapX = fixedMargin + additionalHoriz;
+//        float gapY = fixedMargin;
+//
+//        // 对每个卡片，根据其索引计算所在的行和列，设置目标位置（setPosition 内部实现了动画移动）
+//        for (int i = 0; i < modCards.size(); i++) {
+//            int col = i % columns;
+//            int row = i / columns;
+//            int targetX = cardAreaX + Math.round(gapX * (col + 1) + col * cardWidth);
+//            int targetY = (int) (cardAreaY + Math.round(gapY * (row + 1) + row * cardHeight) - scrollBar.getContentOffset()); // 考虑滚动偏移量
+//            modCards.get(i).setPosition(targetX, targetY, cardWidth, cardHeight);
+//        }
+//    }
 
     // 提供给详细界面调用，实现返回主菜单
     public void returnToMainMenu() {
@@ -356,11 +348,7 @@ public class IngameMenuGui extends BlurGui {
         currentModDetailGui = null;
     }
 
-    private void drawScrollBar() {
-        // 仅当内容总高度大于可见区域时才绘制滑动条
-        scrollBar.draw(0x00000000,0x40000000);
-        //fontRendererObj.drawString(scrollBar.toString(),0,0,0xFFFFFFFF);
-    }
+
     @Override
     public void onResize(Minecraft mcIn, int w, int h)
     {
