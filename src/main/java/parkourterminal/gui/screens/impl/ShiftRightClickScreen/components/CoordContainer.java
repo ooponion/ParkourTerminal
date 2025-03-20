@@ -46,7 +46,7 @@ public class CoordContainer extends Container {
         float outerX = getEntryLeft()-20;
         float outerY = getEntryTop() - 10;  // 第一个条目的顶部
         float outerWidth = getEntryWidth()+40;
-        float outerHeight = getOuterBottom()+10;
+        float outerHeight = getEntryHeight()+10;
 
         ShapeDrawer.drawRoundedRect(outerX, outerY, outerWidth, outerHeight, 0x40FFFFFF, 2);
         super.draw(mouseX,mouseY,partialTicks);

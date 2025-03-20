@@ -71,6 +71,7 @@ public class IngameMenuGui extends BlurGui {
         fontRendererObj = new ConsolaFontRenderer(mc);
         UpdateSize();
         if(isFirstInit){
+            testCardContainer.Clear();
             for(int i=0;i<50;i++){
                 registerCards();
             }

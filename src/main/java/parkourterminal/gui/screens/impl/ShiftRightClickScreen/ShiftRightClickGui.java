@@ -43,7 +43,7 @@ public class ShiftRightClickGui extends BlurGui {
         int selectedIndex = -1;
         scrollBar.Update();
         // 计算平滑滚动
-        fontRendererObj.drawString(String.valueOf(scrollBar.getInterpolatingContentOffset()),0,0,0xFFFFFFFF);
+
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         ItemStack heldItem = player.getHeldItem();
         // NBT验证
@@ -73,7 +73,7 @@ public class ShiftRightClickGui extends BlurGui {
 
                 // 可视区域起始Y坐标
                 coordLineContainer.setY((int) -scrollBar.getInterpolatingContentOffset());
-                coordLineContainer.setHeight(totalHeight);
+                coordLineContainer.setHeight(totalHeight+coordLineContainer.getPadding().bottom+coordLineContainer.getPadding().top+10);
                 coordLineContainer.draw(mouseX,mouseY,partialTicks);
             }
             LastHeldItem=heldItem;

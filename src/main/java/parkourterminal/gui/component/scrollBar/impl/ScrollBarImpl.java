@@ -30,7 +30,6 @@ public class ScrollBarImpl {
         if(x<0||y<0||width<=0||height<=0){
             System.out.print("Illegal args to setup this Scroll bar\n");
         }
-        this.animation.changeWithOutAnimation(new Interpolatingfloat(direction==ScrollDirection.VERTICAL?x:y));
         ChangeSize(width, height);
         ChangePosition(x, y);
         this.min_height=10;
@@ -57,7 +56,6 @@ public class ScrollBarImpl {
     public void ChangePosition( int x,int y){
         this.x=x;
         this.y=y;
-        this.animation.changeWithOutAnimation(new Interpolatingfloat(direction==ScrollDirection.VERTICAL?x:y));
     }
     public void UpdateContentSize(int contentSize) {
         if(contentSize==0){
@@ -81,15 +79,16 @@ public class ScrollBarImpl {
             ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
 
             // 绘制拇指
-            ShapeDrawer.drawRoundedRect(x, animation.Update().getValue(), width, scrollSize, thumbColor, cornerRadius);
-        }else if (contentSize > width&&displayable) {
+            ShapeDrawer.drawRoundedRect(x, animation.Update().getValue()+y, width, scrollSize, thumbColor, cornerRadius);
+        }else if (direction==ScrollDirection.HORIZONTAL&&contentSize > width&&displayable) {
             int cornerRadius = 2;
 
             // 绘制轨道（整个卡片区域高度）
             ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
 
             // 绘制拇指
-            ShapeDrawer.drawRoundedRect( animation.Update().getValue(),y, scrollSize, height, thumbColor, cornerRadius);
+            ShapeDrawer.drawRoundedRect( animation.Update().getValue()+x,y, scrollSize, height, thumbColor, cornerRadius);
+            System.out.printf("animation:%s:::%s\n",this,animation.getInterpolatingValue().getValue());
         }
     }
 
@@ -113,10 +112,10 @@ public class ScrollBarImpl {
         CalculateScrollSize(contentSize,size);
         ValidateScrollOffset(FakeOffset, scrollSize,size);
         if(direction==ScrollDirection.VERTICAL){
-            animation.RestartAnimation(new Interpolatingfloat(y+scrollOffset));
+            animation.RestartAnimation(new Interpolatingfloat(scrollOffset));
         }
         else{
-            animation.RestartAnimation(new Interpolatingfloat(x+scrollOffset));
+            animation.RestartAnimation(new Interpolatingfloat(scrollOffset));
         }
         CalculateContentOffset(scrollOffset, scrollSize,contentSize,size);
     }

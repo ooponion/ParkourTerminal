@@ -64,8 +64,10 @@ public class CoordLine extends UIComponent {
         ShapeDrawer.drawRoundedRect(getOuterLeft(),getOuterTop(), getOuterWidth(), getOuterHeight(), getAnimationColor().Update().getColor(), 3);
         // 裁剪区域
         ScissorHelper.EnableScissor(getOuterLeft(),getOuterTop(), getOuterWidth(), getOuterHeight()+1);
+        scrollBar.Update();
         fontRendererObj.drawStringWithShadow(getDisplayText(), getEntryLeft()-scrollBar.getInterpolatingContentOffset(), getEntryTop(), 0xFFFFFF);
         scrollBar.draw(0x00000000,0xFFAAAAAA);
+        //fontRendererObj.drawString(scrollBar.toString(),getOuterLeft(),getOuterTop(),0xFFFFFFFF);
         ScissorHelper.DisableScissor();
         if(selected) {
             ShapeDrawer.drawRoundedRectBorder(getOuterLeft(), getOuterTop(), getOuterWidth(), getOuterHeight(), borderColor, 3);
