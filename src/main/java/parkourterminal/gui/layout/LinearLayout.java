@@ -209,11 +209,10 @@ public class LinearLayout implements LayoutManager {
     private void layoutRow(List<UIComponent> row, int startX, int y, int rowHeight,int spacing) {
         int currentX = startX;
         for (UIComponent comp : row) {
-            comp.setX( currentX + comp.getMargin().left);
             int compTotalHeight = comp.getOuterHeight();
             int extraSpace = rowHeight - compTotalHeight;
             // 垂直居中：在上边距基础上加上额外空白的一半
-            comp.setY( y + comp.getMargin().top + extraSpace / 2);
+            comp.setPosition(currentX + comp.getMargin().left,y + comp.getMargin().top + extraSpace / 2);
             currentX += comp.getOuterWidth()+spacing;
         }
     }
@@ -226,11 +225,11 @@ public class LinearLayout implements LayoutManager {
     private void layoutColumn(List<UIComponent> column, int x, int startY, int columnWidth,int spacing) {
         int currentY = startY;
         for (UIComponent comp : column) {
-            comp.setY( currentY + comp.getMargin().top);
+
             int compTotalWidth = comp.getOuterWidth();
             int extraSpace = columnWidth - compTotalWidth;
             // 水平居中：在左边距基础上加上额外空白的一半
-            comp.setX(x + comp.getMargin().left + extraSpace / 2);
+            comp.setPosition(x + comp.getMargin().left + extraSpace / 2,currentY + comp.getMargin().top);
             currentY += comp.getOuterHeight() + spacing;
         }
     }

@@ -1,4 +1,4 @@
-package parkourterminal.gui.cardIntf;
+package parkourterminal.gui.screens.impl.InGameMenuGui.Components.cardIntf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -14,8 +14,6 @@ import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.FloatPoint;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.ShapeDrawer;
-
-import javax.annotation.Nonnull;
 
 import static java.lang.Math.abs;
 
@@ -43,6 +41,9 @@ public abstract class ModCard extends UIComponent {
     private static FontRenderer fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
 
     public ModCard(String title, ResourceLocation icon, int x, int y, int width, int height) {
+        animation=new BeizerAnimation<FloatPoint>(animation_time,new FloatPoint(x,y), AnimationMode.BLENDED);
+        animationColor=new ColorInterpolateAnimation(0.4f,new InterpolatingColor(backgroundColor),AnimationMode.BLENDED);
+
         this.title = title;
         this.setX(x);
         this.setY(y);
@@ -50,21 +51,17 @@ public abstract class ModCard extends UIComponent {
         this.setHeight(height);
         this.cornerRadius = 3;
         this.icon = icon;
-        animation=new BeizerAnimation<FloatPoint>(animation_time,new FloatPoint(x,y), AnimationMode.BLENDED);
-        animationColor=new ColorInterpolateAnimation(0.4f,new InterpolatingColor(backgroundColor),AnimationMode.BLENDED);
-    }
+        }
 
     // 提供一个更新位置和尺寸的方法
     @Override
-    public void SetPosition(int x, int y){
-        super.SetPosition(x,y);
+    public void setPosition(int x, int y){
+        super.setPosition(x,y);
         animation.RestartAnimation(new FloatPoint(x,y));
     }
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
-        FloatPoint midpoint=animation.Update();
-        this.setX((int) midpoint.getX());
-        this.setY((int) midpoint.getY());
+        this.Update();
         // 计算悬停动画进度
         boolean hovering = isMouseOver(mouseX, mouseY);
         int currentHighlightColor;
@@ -106,7 +103,12 @@ public abstract class ModCard extends UIComponent {
         return mouseX >= getEntryLeft() && mouseX <= getEntryRight()
                 && mouseY >= getEntryTop() && mouseY <= getEntryBottom();
     }
-
+    @Override
+    public void Update(){
+        FloatPoint midpoint=animation.Update();
+        this.setX((int) midpoint.getX());
+        this.setY((int) midpoint.getY());
+    }
     // 点击卡片后返回对应的详细设置界面
     public abstract ModDetailGui getModDetailGui();
 }

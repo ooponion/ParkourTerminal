@@ -7,8 +7,6 @@ import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolating
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 
-import java.io.IOException;
-
 public abstract class UIComponent {
     private int x=0, y=0, width=0, height=0;
     private Margin margin = new Margin(0);
@@ -41,12 +39,10 @@ public abstract class UIComponent {
     }
 
     public void setX(int x) {
-        animation.changeWithOutAnimation(new FloatPoint(x,y));
         this.x = x;
     }
 
     public void setY(int y) {
-        animation.changeWithOutAnimation(new FloatPoint(x,y));
         this.y = y;
     }
 
@@ -114,11 +110,11 @@ public abstract class UIComponent {
         return padding;
     }
 
-    public void SetPosition(int x, int y){
+    public void setPosition(int x, int y){
         this.x=x;
         this.y=y;
     }
-    public void SetSize(int width, int height){
+    public void setSize(int width, int height){
         this.width=width;
         this.height=height;
     }

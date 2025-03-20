@@ -36,14 +36,14 @@ public class CoordLine extends UIComponent {
         this.setMargin(new Margin(10,0,10,0));
         this.setPadding(new Padding(0,5,0,0));
         scrollBar=new ScrollBarImpl(0,0,getWidth(),scrollBarHeight, ScrollDirection.HORIZONTAL);
-        SetSize(width,0);
+        setSize(width,0);
         this.setAnimationColor(new ColorInterpolateAnimation(0.4f,new InterpolatingColor(startColor), AnimationMode.BLENDED));
     }
     public void UpdateSelect(boolean selected){
             this.selected=selected;
     }
     @Override
-    public void SetSize(int width, int height){
+    public void setSize(int width, int height){
         this.setWidth(width);
         int boxHeight = hasScrollbar()
                 ? (textHeight + entryExtraPadding + scrollBarHeight)

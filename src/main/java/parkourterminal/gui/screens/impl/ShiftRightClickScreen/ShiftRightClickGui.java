@@ -5,26 +5,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Mouse;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
-import parkourterminal.gui.layout.*;
-import parkourterminal.gui.screens.impl.CoordinateInfoGui;
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordContainer;
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
-import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
-import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
-import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
-import parkourterminal.util.AnimationUtils.intf.AnimationMode;
-import parkourterminal.util.NumberWrapper;
-import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
 public class ShiftRightClickGui extends BlurGui {
     private ScrollBarImpl scrollBar;
     private ItemStack LastHeldItem;
@@ -32,7 +22,7 @@ public class ShiftRightClickGui extends BlurGui {
     @Override
     public void initGui() {
         super.initGui();
-        coordLineContainer.SetSize(width,height);
+        coordLineContainer.setSize(width,height);
         scrollBar=new ScrollBarImpl(0,height - 40, ScrollDirection.VERTICAL);
         fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
     }
@@ -64,7 +54,7 @@ public class ShiftRightClickGui extends BlurGui {
                 //更新属性
                 for (int i = 0; i < savedLocations.tagCount(); i++) {
                     CoordLine coordLine=(CoordLine) coordLineContainer.getComponents().get(i);
-                    coordLine.SetSize(width-50,0);
+                    coordLine.setSize(width-50,0);
                     coordLine.UpdateSelect(i == selectedIndex);
                 }
                 // 计算所有条目的总高度

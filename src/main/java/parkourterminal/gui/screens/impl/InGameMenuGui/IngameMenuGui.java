@@ -12,7 +12,6 @@ import parkourterminal.gui.screens.impl.InGameMenuGui.Components.TestCard;
 import parkourterminal.gui.component.*;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
-import parkourterminal.gui.cardIntf.ModCard;
 import parkourterminal.gui.screens.impl.InGameMenuGui.Components.TestCardContainer;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.screens.intf.ModDetailGui;
@@ -63,8 +62,12 @@ public class IngameMenuGui extends BlurGui {
         cardAreaY = panelMargin + (int) (panelHeight * 0.10);
         cardAreaWidth = (int) (panelWidth * 0.80);
         cardAreaHeight = (int) (panelHeight * 0.90);
-        testCardContainer.SetPosition(cardAreaX,cardAreaY-(int)scrollBar.getContentOffset());
-        testCardContainer.SetSize(cardAreaWidth,cardAreaHeight);
+        testCardContainer.setPosition(cardAreaX,cardAreaY);
+        testCardContainer.setWidth(cardAreaWidth);
+        scrollBar.ChangeSize(4, cardAreaHeight);
+        scrollBar.ChangePosition(cardAreaX+cardAreaWidth-4, cardAreaY);
+        scrollBar.UpdateContentSize(testCardContainer.getComponentsTotalHeight()+testCardContainer.getPadding().bottom+testCardContainer.getPadding().top);
+        testCardContainer.setHeight(testCardContainer.getComponentsTotalHeight()+testCardContainer.getPadding().bottom+testCardContainer.getPadding().top);
     }
     @Override
     public void initGui() {
@@ -72,12 +75,9 @@ public class IngameMenuGui extends BlurGui {
         UpdateSize();
         if(isFirstInit){
             testCardContainer.Clear();
-            for(int i=0;i<50;i++){
+            for(int i=0;i<100;i++){
                 registerCards();
             }
-
-            scrollBar=new ScrollBarImpl(cardAreaX+cardAreaWidth-4, cardAreaY, 4, cardAreaHeight, ScrollDirection.VERTICAL);
-            scrollBar.UpdateContentSize(testCardContainer.getComponentsTotalHeight());
         }
         isFirstInit=false;
         super.initGui();
@@ -87,8 +87,7 @@ public class IngameMenuGui extends BlurGui {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        // 计算平滑过渡，逐渐更新 scrollOffset
-
+        testCardContainer.setPosition(cardAreaX,cardAreaY-(int)scrollBar.getContentOffset());
         // 绘制仪表盘背景（例如模糊背景由 BlurGui 实现）
         drawDashboardBackground(mouseX, mouseY);
 

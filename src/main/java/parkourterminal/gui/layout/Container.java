@@ -1,9 +1,5 @@
 package parkourterminal.gui.layout;
 
-import net.minecraft.client.Minecraft;
-import parkourterminal.gui.screens.impl.CoordinateInfoGui;
-import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +31,12 @@ public class Container extends UIComponent {
     }
 
     @Override
-    public void SetPosition(int x,int y){
-        super.SetPosition(x,y);
+    public void setPosition(int x, int y){
+        super.setPosition(x,y);
     }
     @Override
-    public void SetSize(int width, int height){
-        super.SetSize(width,height);
+    public void setSize(int width, int height){
+        super.setSize(width,height);
     }
     public void setMargin(Margin margin) {
         super.setMargin(margin);
