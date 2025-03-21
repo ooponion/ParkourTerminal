@@ -36,6 +36,7 @@ public class CoordLine extends UIComponent {
         this.setMargin(new Margin(10,0,10,0));
         this.setPadding(new Padding(0,5,0,0));
         scrollBar=new ScrollBarImpl(0,0,getWidth(),scrollBarHeight, ScrollDirection.HORIZONTAL);
+        scrollBar.setColor(0x00000000,0xFFAAAAAA);
         setSize(width,0);
         this.setAnimationColor(new ColorInterpolateAnimation(0.4f,new InterpolatingColor(startColor), AnimationMode.BLENDED));
     }
@@ -66,7 +67,7 @@ public class CoordLine extends UIComponent {
         ScissorHelper.EnableScissor(getOuterLeft(),getOuterTop(), getOuterWidth(), getOuterHeight()+1);
         scrollBar.Update();
         fontRendererObj.drawStringWithShadow(getDisplayText(), getEntryLeft()-scrollBar.getInterpolatingContentOffset(), getEntryTop(), 0xFFFFFF);
-        scrollBar.draw(0x00000000,0xFFAAAAAA);
+        scrollBar.draw(mouseX, mouseY, partialTicks);
         //fontRendererObj.drawString(scrollBar.toString(),getOuterLeft(),getOuterTop(),0xFFFFFFFF);
         ScissorHelper.DisableScissor();
         if(selected) {
@@ -110,7 +111,7 @@ public class CoordLine extends UIComponent {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         if (isMouseOver(mouseX, mouseY)) {
             getScrollBar().onClick(mouseX, mouseY);
-            return !getScrollBar().ValidScrollClick(mouseX, mouseY);
+            return !getScrollBar().isMouseOver(mouseX, mouseY);
         }
         return false;
     }

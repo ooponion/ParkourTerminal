@@ -74,6 +74,7 @@ public class IngameMenuGui extends BlurGui {
         fontRendererObj = new ConsolaFontRenderer(mc);
         UpdateSize();
         if(isFirstInit){
+            scrollBar.setColor(0x00000000,0x40000000);
             testCardContainer.Clear();
             for(int i=0;i<100;i++){
                 registerCards();
@@ -101,7 +102,7 @@ public class IngameMenuGui extends BlurGui {
 
             ScissorHelper.DisableScissor();
 
-            scrollBar.draw(0x00000000,0x40000000);
+            scrollBar.draw(mouseX,mouseY,partialTicks);
 
 
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {

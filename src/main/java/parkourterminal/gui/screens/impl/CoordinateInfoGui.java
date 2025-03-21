@@ -25,7 +25,9 @@ import parkourterminal.util.NumberWrapper;
 import parkourterminal.util.TeleporterHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CoordinateInfoGui extends BlurGui {
@@ -63,8 +65,8 @@ public class CoordinateInfoGui extends BlurGui {
     private CustomButton selectButton;
 
     // 输入框动画
-    private Map<CustomGuiTextField, Float> fieldHoverProgress = new HashMap<CustomGuiTextField, Float>();
-    private GuiTextField focusedField = null;
+    private List<CustomGuiTextField> fieldHoverProgress = new ArrayList<CustomGuiTextField>();
+    private CustomGuiTextField focusedField = null;
 
     private final int startColor = 0x40000000; // 默认边框色（半透明黑）
     private final int endColor = 0x600099FF;   // 高亮边框色（半透明蓝）
@@ -100,11 +102,11 @@ public class CoordinateInfoGui extends BlurGui {
         pitchField.setText(String.valueOf(location.getFloat("pitch")));
 
         // 初始化输入框动画变量
-        fieldHoverProgress.put(posXField, 0.0f);
-        fieldHoverProgress.put(posYField, 0.0f);
-        fieldHoverProgress.put(posZField, 0.0f);
-        fieldHoverProgress.put(yawField, 0.0f);
-        fieldHoverProgress.put(pitchField, 0.0f);
+        fieldHoverProgress.add(posXField);
+        fieldHoverProgress.add(posYField);
+        fieldHoverProgress.add(posZField);
+        fieldHoverProgress.add(yawField);
+        fieldHoverProgress.add(pitchField);
 
         // 按钮区域位于整体组下方10像素处
         buttonsY = startY + totalGroupHeight + 10;
@@ -139,11 +141,11 @@ public class CoordinateInfoGui extends BlurGui {
         fontRendererObj.drawStringWithShadow(nameValue, fieldX, row0Y, 0xFFFFFF);
 
         // 绘制文本框
-        posXField.drawTextBox();
-        posYField.drawTextBox();
-        posZField.drawTextBox();
-        yawField.drawTextBox();
-        pitchField.drawTextBox();
+        posXField.draw(mouseX,mouseY,partialTicks);
+        posYField.draw(mouseX,mouseY,partialTicks);
+        posZField.draw(mouseX,mouseY,partialTicks);
+        yawField.draw(mouseX,mouseY,partialTicks);
+        pitchField.draw(mouseX,mouseY,partialTicks);
 
         // 绘制文本框标签（X, Y, Z, Yaw, Pitch）
         String[] labels = new String[] {"X:", "Y:", "Z:", "Yaw:", "Pitch:"};
@@ -161,7 +163,7 @@ public class CoordinateInfoGui extends BlurGui {
         selectButton.drawButton(fontRendererObj, mouseX, mouseY);
 
         // 输入框边框动画（悬停/聚焦效果）
-        for (CustomGuiTextField field : fieldHoverProgress.keySet()) {
+        for (CustomGuiTextField field : fieldHoverProgress) {
             boolean isHovered = mouseX >= field.xPosition && mouseX <= field.xPosition + fieldWidth &&
                     mouseY >= field.yPosition && mouseY <= field.yPosition + fieldHeight;
             boolean isFocused = (focusedField == field);

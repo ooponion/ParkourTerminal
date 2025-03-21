@@ -85,12 +85,11 @@ public class Container extends UIComponent {
     }
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        boolean state=false;
         for (UIComponent component:getComponents()){
-            if(component.mouseClicked(mouseX, mouseY, mouseButton)){
-                return true;
-            }
+            state|=component.mouseClicked(mouseX, mouseY, mouseButton);
         }
-        return false;
+        return state;
     }
     @Override
     public void mouseReleased(int mouseX, int mouseY){
@@ -100,11 +99,10 @@ public class Container extends UIComponent {
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        boolean state=false;
         for (UIComponent component:getComponents()){
-            if(component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)){
-                return true;
-            }
+            state|=component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         }
-        return false;
+        return state;
     }
 }

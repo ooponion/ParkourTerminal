@@ -1,5 +1,6 @@
 package parkourterminal.gui.module;
 
+import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.gui.component.ToggleSwitch;
 import parkourterminal.gui.layout.LayoutDirection;
@@ -67,9 +68,7 @@ public class TestModule extends ModDetailGui {
             return true;
 
         // 检测鼠标点击是否作用于 toggleSwitch
-        if (toggleSwitch.isMouseOver(mouseX, mouseY) && mouseButton == 0) {
-            toggleSwitch.toggle();
-        }
+        detailContainer.mouseClicked(mouseX, mouseY, mouseButton);
         return false;
     }
 }

@@ -42,7 +42,11 @@ public class ToggleSwitch extends UIComponent {
         this.getAnimation().changeWithOutAnimation(new FloatPoint(this.getX(),this.getY()));
         this.getAnimationColor().changeWithOutAnimation(new InterpolatingColor(offColor));
     }
-
+    @Override
+    public void setPosition(int x, int y){
+        super.setPosition(x,y);
+        this.getAnimation().changeWithOutAnimation(new FloatPoint(this.getX(),this.getY()));
+    }
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
         // 更新平滑动画
@@ -88,7 +92,12 @@ public class ToggleSwitch extends UIComponent {
     public void toggle() {
         isOn = !isOn;
     }
-
-    // 平滑更新 thumbX，以实现滑块动画（使用按钮部分的宽度计算目标位置）
-
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        if (isMouseOver(mouseX, mouseY) && mouseButton == 0) {
+            toggle();
+            return true;
+        }
+        return false;
+    }
 }

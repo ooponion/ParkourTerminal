@@ -8,6 +8,12 @@ import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 
 public abstract class UIComponent {
+    private int GuiTextField;
+    private boolean canLoseFocus = true;
+
+    private boolean isFocused;
+
+    private boolean isEnabled = true;
     private int x=0, y=0, width=0, height=0;
     private Margin margin = new Margin(0);
     private Padding padding =new Padding(0);

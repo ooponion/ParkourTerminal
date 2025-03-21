@@ -61,7 +61,9 @@ public abstract class ModCard extends UIComponent {
     }
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
-        this.Update();
+        FloatPoint midpoint=animation.Update();
+        this.setX((int) midpoint.getX());
+        this.setY((int) midpoint.getY());
         // 计算悬停动画进度
         boolean hovering = isMouseOver(mouseX, mouseY);
         int currentHighlightColor;
@@ -102,12 +104,6 @@ public abstract class ModCard extends UIComponent {
     public boolean isMouseOver(int mouseX, int mouseY) {
         return mouseX >= getEntryLeft() && mouseX <= getEntryRight()
                 && mouseY >= getEntryTop() && mouseY <= getEntryBottom();
-    }
-    @Override
-    public void Update(){
-        FloatPoint midpoint=animation.Update();
-        this.setX((int) midpoint.getX());
-        this.setY((int) midpoint.getY());
     }
     // 点击卡片后返回对应的详细设置界面
     public abstract ModDetailGui getModDetailGui();

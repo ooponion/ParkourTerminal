@@ -4,11 +4,12 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.util.ShapeDrawer;
 
 import java.lang.reflect.Field;
 
-public class CustomGuiTextField extends GuiTextField {
+public class CustomGuiTextField extends TextField {
     // 颜色优化
     private int backgroundColor = 0x60000000;   // 背景颜色（半透明深灰色）
     private int textColor = 0x80EEEEEE;         // 文本颜色（柔和白）
@@ -25,8 +26,28 @@ public class CustomGuiTextField extends GuiTextField {
         this.fontRendererObj = fontRenderer;
     }
 
+
+    private boolean isEnabled() {
+        try {
+            Field field = GuiTextField.class.getDeclaredField("isEnabled");
+            field.setAccessible(true);
+            return field.getBoolean(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    public void setCurrentBorderColor(int color) {
+        this.currentBorderColor = color;
+    }
+
+    public void setTextColor(int color) {
+        this.textColor = color;
+    }
+
     @Override
-    public void drawTextBox() {
+    public void draw(int mouseX, int mouseY, float partialTicks) {
         // 禁用纹理和启用混合
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
@@ -55,7 +76,7 @@ public class CustomGuiTextField extends GuiTextField {
         int textX = this.xPosition + 6;
         int textY = this.yPosition + (this.height - fontRendererObj.FONT_HEIGHT) / 2;
 
-        this.drawString(this.fontRendererObj, this.getText(), textX, textY, currentTextColor);
+        fontRendererObj.drawString(this.getText(), textX, textY, currentTextColor);
 
         // 绘制光标（带渐变效果）
         if (this.isFocused()) {
@@ -89,24 +110,5 @@ public class CustomGuiTextField extends GuiTextField {
             GlStateManager.disableBlend();
             GlStateManager.enableTexture2D();
         }
-    }
-
-    private boolean isEnabled() {
-        try {
-            Field field = GuiTextField.class.getDeclaredField("isEnabled");
-            field.setAccessible(true);
-            return field.getBoolean(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-    public void setCurrentBorderColor(int color) {
-        this.currentBorderColor = color;
-    }
-
-    public void setTextColor(int color) {
-        this.textColor = color;
     }
 }

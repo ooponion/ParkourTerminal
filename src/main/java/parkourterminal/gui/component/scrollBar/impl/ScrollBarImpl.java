@@ -1,13 +1,15 @@
 package parkourterminal.gui.component.scrollBar.impl;
 
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
+import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.ShapeDrawer;
+import scala.swing.Applet;
 
-public class ScrollBarImpl {
+public class ScrollBarImpl extends UIComponent {
     private int x,y,width,height;
     private final ScrollDirection direction;
 
@@ -22,9 +24,11 @@ public class ScrollBarImpl {
     private final AbstractAnimation<Interpolatingfloat> animationContentOffset=new BeizerAnimation<Interpolatingfloat>(scrollTime,new Interpolatingfloat(0), AnimationMode.BLENDED);;
 
     private boolean mouseOver=false;
-
     private boolean displayable=true;
     private double oldPos =0;
+
+    int trackColor=0x0;
+    int thumbColor=0x40000000;
 
     public ScrollBarImpl(int x,int y,int width,int height,ScrollDirection direction){
         if(x<0||y<0||width<=0||height<=0){
@@ -70,26 +74,9 @@ public class ScrollBarImpl {
         }
 
     }
-    public void draw(int trackColor, int thumbColor) {
-        // 仅当内容总高度大于可见区域时才绘制滑动条
-        if (direction==ScrollDirection.VERTICAL&&contentSize > height&&displayable) {
-            int cornerRadius = 2;
-
-            // 绘制轨道（整个卡片区域高度）
-            ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
-
-            // 绘制拇指
-            ShapeDrawer.drawRoundedRect(x, animation.Update().getValue()+y, width, scrollSize, thumbColor, cornerRadius);
-        }else if (direction==ScrollDirection.HORIZONTAL&&contentSize > width&&displayable) {
-            int cornerRadius = 2;
-
-            // 绘制轨道（整个卡片区域高度）
-            ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
-
-            // 绘制拇指
-            ShapeDrawer.drawRoundedRect( animation.Update().getValue()+x,y, scrollSize, height, thumbColor, cornerRadius);
-            System.out.printf("animation:%s:::%s\n",this,animation.getInterpolatingValue().getValue());
-        }
+    public void setColor(int trackColor, int thumbColor) {
+        this.thumbColor=thumbColor;
+        this.trackColor=trackColor;
     }
 
     private void CalculateScrollSize(float contentHeight, int size){
@@ -119,17 +106,8 @@ public class ScrollBarImpl {
         }
         CalculateContentOffset(scrollOffset, scrollSize,contentSize,size);
     }
-    public boolean ValidScrollClick(double mouseX, double mouseY){
-        if(direction==ScrollDirection.VERTICAL){
-            return (mouseX>x&&mouseX<x+width&&mouseY>y+scrollOffset&&mouseY<y+scrollOffset+ scrollSize);
-        }
-        else{
-            return (mouseX>x+scrollOffset&&mouseX<x+scrollSize+scrollOffset&&mouseY>y&&mouseY<y+ height);
-        }
-    }
     public void onClick(double mouseX, double mouseY) {
-        System.out.printf("onclick:%s\n",ValidScrollClick(mouseX, mouseY));
-        if(ValidScrollClick(mouseX, mouseY)&&displayable) {
+        if(isMouseOver((int) mouseX, (int) mouseY)&&displayable) {
             mouseOver = true;
 
             if(direction==ScrollDirection.VERTICAL){
@@ -165,6 +143,40 @@ public class ScrollBarImpl {
             oldPos =newPos;
         }
     }
+
+    @Override
+    public void draw(int mouseX, int mouseY, float partialTicks) {
+        // 仅当内容总高度大于可见区域时才绘制滑动条
+        if (direction==ScrollDirection.VERTICAL&&contentSize > height&&displayable) {
+            int cornerRadius = 2;
+
+            // 绘制轨道（整个卡片区域高度）
+            ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
+
+            // 绘制拇指
+            ShapeDrawer.drawRoundedRect(x, animation.Update().getValue()+y, width, scrollSize, thumbColor, cornerRadius);
+        }else if (direction==ScrollDirection.HORIZONTAL&&contentSize > width&&displayable) {
+            int cornerRadius = 2;
+
+            // 绘制轨道（整个卡片区域高度）
+            ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
+
+            // 绘制拇指
+            ShapeDrawer.drawRoundedRect( animation.Update().getValue()+x,y, scrollSize, height, thumbColor, cornerRadius);
+            System.out.printf("animation:%s:::%s\n",this,animation.getInterpolatingValue().getValue());
+        }
+    }
+
+    @Override
+    public boolean isMouseOver(int mouseX, int mouseY) {
+        if(direction==ScrollDirection.VERTICAL){
+            return (mouseX>x&&mouseX<x+width&&mouseY>y+scrollOffset&&mouseY<y+scrollOffset+ scrollSize);
+        }
+        else{
+            return (mouseX>x+scrollOffset&&mouseX<x+scrollSize+scrollOffset&&mouseY>y&&mouseY<y+ height);
+        }
+    }
+
     public void Update(){
         animationContentOffset.Update();
     }

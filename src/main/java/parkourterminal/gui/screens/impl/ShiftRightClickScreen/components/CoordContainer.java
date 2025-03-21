@@ -24,21 +24,15 @@ public class CoordContainer extends Container {
     }
     @Override
     public void mouseReleased(int mouseX, int mouseY){
-        for (UIComponent component:getComponents()){
-            CoordLine coordLine =(CoordLine) component;
-            coordLine.mouseReleased(mouseX,mouseY);
-        }
+        super.mouseReleased(mouseX, mouseY);
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
         if(clickedMouseButton!=0){
             return false;
         }
-        for (UIComponent component:getComponents()){
-            CoordLine coordLine =(CoordLine) component;
-            coordLine.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        }
-        return true;
+
+        return super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
     }
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
