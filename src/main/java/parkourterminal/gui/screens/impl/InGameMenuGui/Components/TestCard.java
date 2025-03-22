@@ -1,7 +1,7 @@
-package parkourterminal.gui.card;
+package parkourterminal.gui.screens.impl.InGameMenuGui.Components;
 
 import net.minecraft.util.ResourceLocation;
-import parkourterminal.gui.component.ModCard;
+import parkourterminal.gui.screens.impl.InGameMenuGui.Components.cardIntf.ModCard;
 import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.gui.module.TestModule;
 

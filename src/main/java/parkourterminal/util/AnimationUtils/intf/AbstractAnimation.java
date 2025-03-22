@@ -48,6 +48,9 @@ public abstract class AbstractAnimation<T extends interpolating<T>> {
         new_=end;
         return end;
     }
+    public T getInterpolatingValue(){
+        return new_;
+    }
 
     public float getProgress() {
         return elapsedTime/totalTime;
@@ -59,9 +62,16 @@ public abstract class AbstractAnimation<T extends interpolating<T>> {
     //    public abstract float speedFunction(float t);
     public abstract float ProgressFunction(float t);
     public void changeWithOutAnimation(T p){
-        this.start=p;
-        this.end=p;
-        this.new_=p;
+        if(animationMode==AnimationMode.OVERRIDEABLE){
+            this.start=p;
+            this.end=p;
+            this.new_=p;
+        }else if(animationMode==AnimationMode.FORCED){
+            return;
+        }else if(animationMode==AnimationMode.BLENDED){
+            this.start=p;
+            RestartAnimation(this.end);
+        }
     };
 }
 

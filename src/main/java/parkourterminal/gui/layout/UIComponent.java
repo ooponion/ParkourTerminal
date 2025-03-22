@@ -8,12 +8,18 @@ import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 
 public abstract class UIComponent {
+    private int GuiTextField;
+    private boolean canLoseFocus = true;
+
+    private boolean isFocused;
+
+    private boolean isEnabled = true;
     private int x=0, y=0, width=0, height=0;
     private Margin margin = new Margin(0);
     private Padding padding =new Padding(0);
     protected Alignment alignment = Alignment.START;
-    private final AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(0.5f,new FloatPoint(x,y), AnimationMode.BLENDED);
-    private final AbstractAnimation<InterpolatingColor> animationColor=new ColorInterpolateAnimation(0.5f ,new InterpolatingColor(0),AnimationMode.BLENDED);
+    private AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(0.5f,new FloatPoint(x,y), AnimationMode.BLENDED);
+    private AbstractAnimation<InterpolatingColor> animationColor=new ColorInterpolateAnimation(0.5f ,new InterpolatingColor(0),AnimationMode.BLENDED);
 
     public abstract void draw(int mouseX, int mouseY, float partialTicks);
     public abstract boolean isMouseOver(int mouseX, int mouseY);
@@ -39,12 +45,10 @@ public abstract class UIComponent {
     }
 
     public void setX(int x) {
-        animation.changeWithOutAnimation(new FloatPoint(x,y));
         this.x = x;
     }
 
     public void setY(int y) {
-        animation.changeWithOutAnimation(new FloatPoint(x,y));
         this.y = y;
     }
 
@@ -112,11 +116,11 @@ public abstract class UIComponent {
         return padding;
     }
 
-    public void SetPosition(int x, int y){
+    public void setPosition(int x, int y){
         this.x=x;
         this.y=y;
     }
-    public void SetSize(int width, int height){
+    public void setSize(int width, int height){
         this.width=width;
         this.height=height;
     }
@@ -127,4 +131,20 @@ public abstract class UIComponent {
     public AbstractAnimation<InterpolatingColor> getAnimationColor() {
         return animationColor;
     }
+    public void setAnimationColor(AbstractAnimation<InterpolatingColor> animationColor){
+        this.animationColor=animationColor;
+    }
+    public void setAnimation(AbstractAnimation<FloatPoint> animation) {
+        this.animation = animation;
+    }
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        return false;
+    }
+    public void mouseReleased(int mouseX, int mouseY){
+
+    }
+    public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        return false;
+    }
+    public void Update(){};
 }

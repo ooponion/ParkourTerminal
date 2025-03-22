@@ -1,133 +1,218 @@
 package parkourterminal.gui.component.scrollBar.impl;
 
+import net.minecraft.client.Minecraft;
+import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
+import parkourterminal.gui.layout.UIComponent;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
-import parkourterminal.util.AnimationUtils.impls.interpolatingData.FloatPoint;
 import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.ShapeDrawer;
 
-public class ScrollBarImpl {
-    private int x,y,width,height;
-    private float oldScrollOffset=0f;
+public class ScrollBarImpl extends UIComponent {
+
+    private final ScrollDirection direction;
+
     private int min_height;
-    private float scrollHeight;//当前滚动条大小(高度)
-    private float contentHeight=0.0f;//内容高度
+    private float scrollSize;//当前滚动条大小(高度/宽度)
+    private float contentSize =1.0f;//内容高度/宽度
     private float contentOffset=0.0f;
     private float scrollOffset = 0.0f; // 当前滚动偏移量
     private float scrollTime=3f; // 控制滚动平滑时间
-    private final AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(scrollTime,new FloatPoint(x,y), AnimationMode.BLENDED);;
+    private final AbstractAnimation<Interpolatingfloat> animation=new BeizerAnimation<Interpolatingfloat>(scrollTime,new Interpolatingfloat(0), AnimationMode.BLENDED);;
+
+    private final AbstractAnimation<Interpolatingfloat> animationContentOffset=new BeizerAnimation<Interpolatingfloat>(scrollTime,new Interpolatingfloat(0), AnimationMode.BLENDED);;
+
     private boolean mouseOver=false;
-
     private boolean displayable=true;
-    private double oldY=0;
+    private double oldPos =0;
 
-    public ScrollBarImpl(int x,int y,int width,int height){
+    int trackColor=0x0;
+    int thumbColor=0x40000000;
+
+    public ScrollBarImpl(int x,int y,int width,int height,ScrollDirection direction){
         if(x<0||y<0||width<=0||height<=0){
             System.out.print("Illegal args to setup this Scroll bar\n");
         }
-        this.animation.changeWithOutAnimation(new FloatPoint(x,y));
-        ChangeSize(x, y, width, height);
+        this.setWidth(width);
+        this.setHeight(height);
+        this.setPosition(x,y);
         this.min_height=10;
+        this.direction=direction;
     }
-    public ScrollBarImpl(int height){
-        displayable=false;
-        ChangeSize(0,0, 0, height);
-        this.min_height=10;
+    public ScrollBarImpl(int width,int height,ScrollDirection direction) {
+        displayable = false;
+        this.setWidth(width);
+        this.setHeight(height);
+        setPosition(0, 0);
+        this.min_height = 10;
+        this.direction = direction;
     }
-    public ScrollBarImpl(int x,int y,int width,int height,int min_height,float scrollTime){
-        this(x, y, width, height);
-        this.scrollTime=scrollTime;
-        this.min_height=min_height;
-    }
-    public void ChangeSize(int x, int y, int width, int height){
-        this.x=x;
-        this.y=y;
-        this.width=width;
-        this.height=height;
-        UpdateScrollVariables(contentHeight,scrollOffset,height);
-    }
-    public void SetScrollScreenHeight(int height){
-        if(height<=0){
-            throw new IllegalArgumentException("Illegal height to setup this Scroll bar");
+    public void ResetOffset(){
+        if(direction==ScrollDirection.VERTICAL){
+            UpdateScrollVariables(contentSize,0,getHeight());
         }
-        this.height=height;
-        UpdateScrollVariables(contentHeight,scrollOffset,height);
+        else{
+            UpdateScrollVariables(contentSize,0,getWidth());
+        }
+        animationContentOffset.changeWithOutAnimation(new Interpolatingfloat(0));
     }
-    public void UpdateContentHeight(int contentHeight) {
-        this.contentHeight = contentHeight;
-        UpdateScrollVariables(contentHeight, scrollOffset, height);
-    }
-    public void drawScrollBar() {
-        // 仅当内容总高度大于可见区域时才绘制滑动条
-        if (contentHeight > height) {
-            // 滑动条宽度固定为 4 像素，绘制在卡片区域右侧
-
-            // 轨道使用透明颜色（本身只绘制边框，内部透明）
-            int trackColor = 0x00000000; // 完全透明
-            int cornerRadius = 2;
-
-            // 绘制轨道（整个卡片区域高度）
-            ShapeDrawer.drawRoundedRectBorder(x, y, width, height, trackColor, cornerRadius);
-
-            // 定义拇指颜色为半透明白色
-            int thumbColor = 0x40000000;
-
-            // 绘制拇指
-            ShapeDrawer.drawRoundedRect(x, animation.Update().getY(), width, scrollHeight, thumbColor, cornerRadius);
+    @Override
+    public void setSize(int width, int height){
+        super.setSize(width,height);
+        if(direction==ScrollDirection.VERTICAL){
+            UpdateScrollVariables(contentSize,scrollOffset,height);
+        }
+        else{
+            UpdateScrollVariables(contentSize,scrollOffset,width);
         }
     }
 
-    private void CalculateScrollHeight(float contentHeight,int height){
-        scrollHeight=  Math.max(Math.min(height /contentHeight,1.0f)*height,min_height);
+
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        if(direction==ScrollDirection.VERTICAL){
+            UpdateScrollVariables(contentSize,scrollOffset,height);
+        }
     }
-    private void CalculateContentOffset(float scrollOffset,float scrollHeight,float contentHeight,int height){//0,height-scrollHeight->0,contentHeight-height
-        if(height<=scrollHeight){
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        if(direction==ScrollDirection.HORIZONTAL){
+            UpdateScrollVariables(contentSize,scrollOffset,width);
+        }
+    }
+    public void UpdateContentSize(int contentSize) {
+        if(contentSize==0){
+            contentSize=1;
+        }
+        this.contentSize = contentSize;
+        if(direction==ScrollDirection.VERTICAL){
+            UpdateScrollVariables(contentSize, scrollOffset, getHeight());
+        }
+        else{
+            UpdateScrollVariables(contentSize, scrollOffset, getWidth());
+        }
+
+    }
+    public void setColor(int trackColor, int thumbColor) {
+        this.thumbColor=thumbColor;
+        this.trackColor=trackColor;
+    }
+
+    private void CalculateScrollSize(float contentHeight, int size){
+
+        scrollSize =  Math.max(Math.min(size /contentHeight,1.0f)*size,min_height);
+    }
+    private void CalculateContentOffset(float scrollOffset,float scrollSize,float contentSize,int size){//0,height-scrollHeight->0,contentHeight-height
+        if(size<=scrollSize){
             contentOffset=0;
             return;
         }
-        contentOffset=  scrollOffset/(height-scrollHeight)*Math.max(contentHeight-height,0);
+        contentOffset=  scrollOffset/(size-scrollSize)*Math.max(contentSize-size,0);
+        animationContentOffset.RestartAnimation(new Interpolatingfloat(contentOffset));
+
     }
-    private void ValidateScrollOffset(float FakeOffset,float scrollHeight,int height){//FakeOffset可能是错误的,所以重新计算位置//0,height-scrollHeight
-        oldScrollOffset=scrollOffset;
-        scrollOffset= Math.max(0,Math.min(height-scrollHeight,FakeOffset));
+    private void ValidateScrollOffset(float FakeOffset,float scrollSize,int size){//FakeOffset可能是错误的,所以重新计算位置//0,height-scrollHeight
+        scrollOffset= Math.max(0,Math.min(size-scrollSize,FakeOffset));
     }
-    private void UpdateScrollVariables(float contentHeight,float FakeOffset,int height){
-        CalculateScrollHeight(contentHeight,height);
-        ValidateScrollOffset(FakeOffset,scrollHeight,height);
-        animation.RestartAnimation(new FloatPoint(x,y+scrollOffset));
-        CalculateContentOffset(scrollOffset,scrollHeight,contentHeight,height);
-    }
-    public boolean ValidScrollClick(double mouseX, double mouseY){
-        return (mouseX>x&&mouseX<x+width&&mouseY>y+scrollOffset&&mouseY<y+scrollOffset+scrollHeight);
+    private void UpdateScrollVariables(float contentSize,float FakeOffset,int size){
+        CalculateScrollSize(contentSize,size);
+        ValidateScrollOffset(FakeOffset, scrollSize,size);
+        if(direction==ScrollDirection.VERTICAL){
+            animation.RestartAnimation(new Interpolatingfloat(scrollOffset));
+        }
+        else{
+            animation.RestartAnimation(new Interpolatingfloat(scrollOffset));
+        }
+        CalculateContentOffset(scrollOffset, scrollSize,contentSize,size);
     }
     public void onClick(double mouseX, double mouseY) {
-        if(ValidScrollClick(mouseX, mouseY)) {
+        if(isMouseOver((int) mouseX, (int) mouseY)&&displayable) {
             mouseOver = true;
-            oldY=mouseY;
+
+            if(direction==ScrollDirection.VERTICAL){
+                oldPos =mouseY;
+            }
+            else {
+                oldPos = mouseX;
+            }
         }
     }
     public void onRelease() {
         mouseOver=false;
-        oldY=0;
+        oldPos =0;
     }
     public void scrollWheel(float amount){
         float fakeOffset=scrollOffset+ amount;
-        UpdateScrollVariables(contentHeight,fakeOffset,height);
+        if(direction==ScrollDirection.VERTICAL){
+            UpdateScrollVariables(contentSize,fakeOffset,getHeight());
+        }
+        else{
+            UpdateScrollVariables(contentSize,fakeOffset,getWidth());
+        }
     }
-    public void onDrag(float newY) {
+    public void onDrag(float newPos) {
         if(mouseOver){
-            float fakeOffset= (float) (scrollOffset+ newY-oldY);
-            UpdateScrollVariables(contentHeight,fakeOffset,height);
-            oldY=newY;
+            float fakeOffset= (float) (scrollOffset+ newPos- oldPos);
+            if(direction==ScrollDirection.VERTICAL){
+                UpdateScrollVariables(contentSize,fakeOffset,getHeight());
+            }
+            else{
+                UpdateScrollVariables(contentSize,fakeOffset,getWidth());
+            }
+            oldPos =newPos;
         }
     }
 
+    @Override
+    public void draw(int mouseX, int mouseY, float partialTicks) {
+        // 仅当内容总高度大于可见区域时才绘制滑动条
+        if (direction==ScrollDirection.VERTICAL&&contentSize > getHeight()&&displayable) {
+            int cornerRadius = 2;
+
+            // 绘制轨道（整个卡片区域高度）
+            ShapeDrawer.drawRoundedRectBorder(getX(),getY(),getWidth(),getHeight(), trackColor, cornerRadius);
+
+            // 绘制拇指
+            ShapeDrawer.drawRoundedRect(getX(), animation.Update().getValue()+getY(), getWidth(), scrollSize, thumbColor, cornerRadius);
+        }else if (direction==ScrollDirection.HORIZONTAL&&contentSize > getWidth()&&displayable) {
+            int cornerRadius = 2;
+
+            // 绘制轨道（整个卡片区域高度）
+            ShapeDrawer.drawRoundedRectBorder(getX(),getY(),getWidth(),getHeight(), trackColor, cornerRadius);
+
+            // 绘制拇指
+            ShapeDrawer.drawRoundedRect( animation.Update().getValue()+getX(),getY(), scrollSize, getHeight(), thumbColor, cornerRadius);
+        }
+    }
+
+    @Override
+    public boolean isMouseOver(int mouseX, int mouseY) {
+        if(direction==ScrollDirection.VERTICAL){
+            return (mouseX>getX()&&mouseX<getX()+getWidth()&&mouseY>getY()+scrollOffset&&mouseY<getY()+scrollOffset+ scrollSize);
+        }
+        else{
+            return (mouseX>getX()+scrollOffset&&mouseX<getX()+scrollSize+scrollOffset&&mouseY>getY()&&mouseY<getY()+ getHeight());
+        }
+    }
+
+    public void Update(){
+        animationContentOffset.Update();
+    }
     public float getContentOffset() {
         return contentOffset;
+    }
+    public float getInterpolatingContentOffset() {
+        return animationContentOffset.getInterpolatingValue().getValue();
+    }
+    public void setScrollTime(float scrollTime){
+        this.scrollTime=scrollTime;
     }
     @Override
     public String toString(){
 
-        return "height:"+this.height+",contentHeight:"+this.contentHeight+",scrollHeight:"+this.scrollHeight+",scrollOffset:"+this.scrollOffset+",contentOffset:"+this.contentOffset;
+        return "x:"+this.getX()+"y:"+this.getY()+"width:"+this.getWidth()+"height:"+this.getHeight()+",contentHeight:"+this.contentSize +",scrollHeight:"+this.scrollSize +",scrollOffset:"+this.scrollOffset+",contentOffset:"+this.contentOffset;
     }
 }

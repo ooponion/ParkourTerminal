@@ -25,47 +25,40 @@ public class Container extends UIComponent {
         components.add(component);
     }
 
+
     public List<UIComponent> getComponents() {
         return components;
     }
 
     @Override
-    public void SetPosition(int x,int y){
-        super.SetPosition(x,y);
-        layoutManager.layoutComponents(this);
+    public void setPosition(int x, int y){
+        super.setPosition(x,y);
     }
     @Override
-    public void SetSize(int width, int height){
-        super.SetSize(width,height);
-        layoutManager.layoutComponents(this);
+    public void setSize(int width, int height){
+        super.setSize(width,height);
     }
     public void setMargin(Margin margin) {
         super.setMargin(margin);
-        layoutManager.layoutComponents(this);
     }
 
     public void setPadding(Padding padding) {
         super.setPadding(padding);
-        layoutManager.layoutComponents(this);
     }
     public void setX(int x) {
         super.setX(x);
-        layoutManager.layoutComponents(this);
     }
 
     public void setY(int y) {
         super.setY(y);
-        layoutManager.layoutComponents(this);
     }
 
     public void setHeight(int height) {
         super.setHeight(height);
-        layoutManager.layoutComponents(this);
     }
 
     public void setWidth(int width) {
         super.setWidth(width);
-        layoutManager.layoutComponents(this);
     }
 
     @Override
@@ -77,9 +70,39 @@ public class Container extends UIComponent {
             component.draw(mouseX, mouseY, partialTicks);
         }
     }
-
+    public int getComponentsTotalHeight(){
+        return this.layoutManager.getComponentsTotalHeight(this);
+    };
+    public int getComponentsTotalWidth(){
+        return this.layoutManager.getComponentsTotalWidth(this);
+    };
+    public void Clear(){
+        this.components.clear();
+    }
     @Override
     public boolean isMouseOver(int mouseX, int mouseY) {
         return false; // 容器本身不处理点击
+    }
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        boolean state=false;
+        for (UIComponent component:getComponents()){
+            state|=component.mouseClicked(mouseX, mouseY, mouseButton);
+        }
+        return state;
+    }
+    @Override
+    public void mouseReleased(int mouseX, int mouseY){
+        for (UIComponent component:getComponents()){
+            component.mouseReleased(mouseX, mouseY);
+        }
+    }
+    @Override
+    public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        boolean state=false;
+        for (UIComponent component:getComponents()){
+            state|=component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        }
+        return state;
     }
 }

@@ -1,9 +1,11 @@
-package parkourterminal.gui.component;
+package parkourterminal.gui.screens.impl.InGameMenuGui.Components.cardIntf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
@@ -15,11 +17,8 @@ import parkourterminal.util.ShapeDrawer;
 
 import static java.lang.Math.abs;
 
-public abstract class ModCard {
+public abstract class ModCard extends UIComponent {
     private String title;
-    protected float x, y;
-    protected int width, height;
-    private int targetX, targetY;
     private int cornerRadius;
     private ResourceLocation icon;
 
@@ -42,32 +41,29 @@ public abstract class ModCard {
     private static FontRenderer fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
 
     public ModCard(String title, ResourceLocation icon, int x, int y, int width, int height) {
-        this.title = title;
-        this.x = this.targetX = x;
-        this.y = this.targetY = y;
-        this.width = width;
-        this.height = height;
-        this.cornerRadius = 3;
-        this.icon = icon;
         animation=new BeizerAnimation<FloatPoint>(animation_time,new FloatPoint(x,y), AnimationMode.BLENDED);
         animationColor=new ColorInterpolateAnimation(0.4f,new InterpolatingColor(backgroundColor),AnimationMode.BLENDED);
-    }
+
+        this.title = title;
+        this.setX(x);
+        this.setY(y);
+        this.setWidth(width);
+        this.setHeight(height);
+        this.cornerRadius = 3;
+        this.icon = icon;
+        }
 
     // 提供一个更新位置和尺寸的方法
-    public void setPosition(int x, int y, int width, int height) {
+    @Override
+    public void setPosition(int x, int y){
+        super.setPosition(x,y);
         animation.RestartAnimation(new FloatPoint(x,y));
-
-        this.targetX = x;
-        this.targetY = y;
-        this.width = width;
-        this.height = height;
-
     }
-
-    public void draw(int mouseX, int mouseY) {
+    @Override
+    public void draw(int mouseX, int mouseY, float partialTicks) {
         FloatPoint midpoint=animation.Update();
-        this.x=midpoint.getX();
-        this.y=midpoint.getY();
+        this.setX((int) midpoint.getX());
+        this.setY((int) midpoint.getY());
         // 计算悬停动画进度
         boolean hovering = isMouseOver(mouseX, mouseY);
         int currentHighlightColor;
@@ -80,9 +76,9 @@ public abstract class ModCard {
         currentHighlightColor = animationColor.Update().getColor();
 
         // 绘制圆角背景
-        ShapeDrawer.drawRoundedRect(x, y, width, height, currentHighlightColor, cornerRadius);
+        ShapeDrawer.drawRoundedRect(getX(),getY(),getWidth(),getHeight(), currentHighlightColor, cornerRadius);
         // 绘制边框
-        ShapeDrawer.drawRoundedRectBorder(x, y, width, height, borderColor, cornerRadius);
+        ShapeDrawer.drawRoundedRectBorder(getX(),getY(),getWidth(),getHeight(), borderColor, cornerRadius);
 
         // 绘制图标（如果设置了 icon，则在左侧绘制固定 8×8 的图标，并垂直居中）
         if (icon != null) {
@@ -90,8 +86,8 @@ public abstract class ModCard {
             mc.getTextureManager().bindTexture(icon);
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            float iconX = x + ICON_TEXT_GAP; // 预留间隔
-            float iconY = y + (height - ICON_SIZE) / 2.0f;
+            float iconX = getX() + ICON_TEXT_GAP; // 预留间隔
+            float iconY = getY() + (getHeight() - ICON_SIZE) / 2.0f;
             ShapeDrawer.drawScaledCustomSizeModalRect(iconX, iconY, 0, 0, 64, 64, ICON_SIZE, ICON_SIZE, 64, 64);
         }
 
@@ -100,16 +96,15 @@ public abstract class ModCard {
         // 如果存在图标，则文本区域左边界向右偏移图标宽度和间隔
         int textOffset = (icon != null ? (ICON_SIZE + ICON_TEXT_GAP * 2) : 0);
         // 使文本在剩余区域内居中：剩余宽度为 (width - textOffset)
-        float textX = x + textOffset;
-        float textY = y + (height - fontRendererObj.FONT_HEIGHT) * 13.0f / 20;
+        float textX = getX() + textOffset;
+        float textY = getY() + (getHeight() - fontRendererObj.FONT_HEIGHT) * 13.0f / 20;
         fontRendererObj.drawString(title, textX, textY, textColor,false);
     }
-
+    @Override
     public boolean isMouseOver(int mouseX, int mouseY) {
-        return mouseX >= x && mouseX <= (x + width)
-                && mouseY >= y && mouseY <= (y + height);
+        return mouseX >= getEntryLeft() && mouseX <= getEntryRight()
+                && mouseY >= getEntryTop() && mouseY <= getEntryBottom();
     }
-
     // 点击卡片后返回对应的详细设置界面
     public abstract ModDetailGui getModDetailGui();
 }

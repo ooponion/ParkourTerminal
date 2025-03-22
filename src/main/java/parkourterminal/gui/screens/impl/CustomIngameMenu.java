@@ -2,17 +2,21 @@ package parkourterminal.gui.screens.impl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.screens.impl.InGameMenuGui.IngameMenuGui;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.util.BlurRenderer;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
 
-public class CustomIngameMenu extends GuiIngameMenu {
+public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScreen {
     // 旋转动画
     private float rotationAngle = 0.0f;
     private long lastUpdateTime = System.currentTimeMillis();
@@ -132,5 +136,15 @@ public class CustomIngameMenu extends GuiIngameMenu {
             mc.displayGuiScreen(null); // 关闭当前 GUI，回到游戏界面
             mc.displayGuiScreen(new IngameMenuGui()); // 打开自定义 IngameMenuGui
         }
+    }
+
+    @Override
+    public GuiScreen getScreenInstantiation() {
+        return this;
+    }
+
+    @Override
+    public ScreenID getScreenID() {
+        return new ScreenID("CustomInGameMenu");
     }
 }
