@@ -1,6 +1,7 @@
 package parkourterminal.gui.screens.impl.ShiftRightClickScreen;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,24 +13,26 @@ import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordCo
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 
 import java.io.IOException;
 
-public class ShiftRightClickGui extends BlurGui {
-    private ScrollBarImpl scrollBar;
-    private ItemStack LastHeldItem;
+public class ShiftRightClickGui extends BlurGui implements InstantiationScreen {
+    private final ScrollBarImpl scrollBar=new ScrollBarImpl(1,1, ScrollDirection.VERTICAL);
+    private int LastHeldItemID=-2;
     private CoordContainer coordLineContainer = new CoordContainer();
     @Override
     public void initGui() {
         super.initGui();
         coordLineContainer.setSize(width,height);
-        scrollBar=new ScrollBarImpl(0,height - 40, ScrollDirection.VERTICAL);
+        scrollBar.setHeight(height - 40);
         fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-
+        int id=-1;
         int selectedIndex = -1;
         scrollBar.Update();
         // 计算平滑滚动
@@ -41,15 +44,20 @@ public class ShiftRightClickGui extends BlurGui {
             NBTTagCompound nbt = heldItem.getTagCompound();
             if (nbt.hasKey("selectedIndex"))
                 selectedIndex = nbt.getInteger("selectedIndex");
+            if(nbt.hasKey("ItemStackId")){
+                id=nbt.getInteger("ItemStackId");
+            }
             if (nbt.hasKey("savedLocations")) {
                 NBTTagList savedLocations = nbt.getTagList("savedLocations", 10);
                 // 添加到container
-                if(!heldItem.equals( LastHeldItem)){
+
+                if(id!=LastHeldItemID){
                     coordLineContainer.Clear();
                     for (int i = 0; i < savedLocations.tagCount(); i++) {
                         NBTTagCompound location = savedLocations.getCompoundTagAt(i);
                         coordLineContainer.addComponent(new CoordLine(location,width-50,fontRendererObj,heldItem));
                     }
+                    scrollBar.ResetOffset();
                 }
                 //更新属性
                 for (int i = 0; i < savedLocations.tagCount(); i++) {
@@ -66,7 +74,7 @@ public class ShiftRightClickGui extends BlurGui {
                 coordLineContainer.setHeight(totalHeight+coordLineContainer.getPadding().bottom+coordLineContainer.getPadding().top+10);
                 coordLineContainer.draw(mouseX,mouseY,partialTicks);
             }
-            LastHeldItem=heldItem;
+            LastHeldItemID=id;
         }else{
             coordLineContainer.Clear();
         }
@@ -100,5 +108,15 @@ public class ShiftRightClickGui extends BlurGui {
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
         coordLineContainer.mouseReleased(mouseX, mouseY);
+    }
+
+    @Override
+    public GuiScreen getScreenInstantiation() {
+        return this;
+    }
+
+    @Override
+    public ScreenID getScreenID() {
+        return new ScreenID("ShiftRightClickGui");
     }
 }

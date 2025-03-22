@@ -10,10 +10,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.util.ItemStackUtils;
 import parkourterminal.util.NumberWrapper;
 import parkourterminal.util.TeleporterHelper;
 
 public class CommandSaveLocation extends CommandBase {
+
     @Override
     public String getCommandName() {
         return "sl";
@@ -60,6 +62,11 @@ public class CommandSaveLocation extends CommandBase {
 
                 // Get or create savedLocation list
                 NBTTagList savedLocations = nbt.hasKey("savedLocations") ? nbt.getTagList("savedLocations", 10) : new NBTTagList();
+                int idTag = nbt.hasKey("ItemStackId") ? nbt.getInteger("ItemStackId") : -1;
+                // has no tag
+                if(idTag==-1){
+                    nbt.setInteger("ItemStackId", ItemStackUtils.id++);
+                }
 
                 // Create a new location entry
                 NBTTagCompound location = new NBTTagCompound();

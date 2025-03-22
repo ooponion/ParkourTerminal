@@ -1,4 +1,4 @@
-package parkourterminal.gui.screens.impl;
+package parkourterminal.gui.screens.impl.ShiftRightClickScreen.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
@@ -13,6 +13,8 @@ import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.ConsolaFontRenderer;
 import parkourterminal.gui.component.CustomButton;
 import parkourterminal.gui.component.CustomGuiTextField;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
+import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.network.DeleteCoordinatePacket;
 import parkourterminal.network.NetworkLoader;
 import parkourterminal.network.SaveCoordinatePacket;
@@ -220,7 +222,7 @@ public class CoordinateInfoGui extends BlurGui {
             }
         }
 
-        mc.displayGuiScreen(new ShiftRightClickGui());
+        ScreenManager.SwitchToScreen(new ScreenID("ShiftRightClickGui"));
     }
 
     private void performSaveAction() {
@@ -249,7 +251,7 @@ public class CoordinateInfoGui extends BlurGui {
         // 发送保存网络包
         SaveCoordinatePacket packet = new SaveCoordinatePacket(location);
         NetworkLoader.NETWORK_WRAPPER.sendToServer(packet);
-        mc.displayGuiScreen(new ShiftRightClickGui());
+        ScreenManager.SwitchToScreen(new ScreenID("ShiftRightClickGui"));
     }
 
     private void performDeleteAction() {
@@ -339,18 +341,18 @@ public class CoordinateInfoGui extends BlurGui {
                 NetworkLoader.NETWORK_WRAPPER.sendToServer(packet);
 
                 if (savedLocations.tagCount() == 0) {
-                    mc.displayGuiScreen(null);
+                    ScreenManager.SwitchToGame();
                 } else {
-                    mc.displayGuiScreen(new ShiftRightClickGui());
+                    ScreenManager.SwitchToScreen(new ScreenID("ShiftRightClickGui"));
                 }
                 return;
             }
         }
-        mc.displayGuiScreen(new ShiftRightClickGui());
+        ScreenManager.SwitchToScreen(new ScreenID("ShiftRightClickGui"));
     }
 
     private void performCancelAction() {
-        mc.displayGuiScreen(new ShiftRightClickGui());
+        ScreenManager.SwitchToScreen(new ScreenID("ShiftRightClickGui"));
     }
 
     @Override

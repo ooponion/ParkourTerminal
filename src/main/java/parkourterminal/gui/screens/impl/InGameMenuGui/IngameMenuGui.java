@@ -64,15 +64,14 @@ public class IngameMenuGui extends BlurGui {
         cardAreaHeight = (int) (panelHeight * 0.90);
         testCardContainer.setPosition(cardAreaX,cardAreaY);
         testCardContainer.setWidth(cardAreaWidth);
-        scrollBar.ChangeSize(4, cardAreaHeight);
-        scrollBar.ChangePosition(cardAreaX+cardAreaWidth-4, cardAreaY);
+        scrollBar.setSize(4, cardAreaHeight);
+        scrollBar.setPosition(cardAreaX+cardAreaWidth-4, cardAreaY);
         scrollBar.UpdateContentSize(testCardContainer.getComponentsTotalHeight()+testCardContainer.getPadding().bottom+testCardContainer.getPadding().top);
         testCardContainer.setHeight(testCardContainer.getComponentsTotalHeight()+testCardContainer.getPadding().bottom+testCardContainer.getPadding().top);
     }
     @Override
     public void initGui() {
         fontRendererObj = new ConsolaFontRenderer(mc);
-        UpdateSize();
         if(isFirstInit){
             scrollBar.setColor(0x00000000,0x40000000);
             testCardContainer.Clear();
@@ -80,6 +79,7 @@ public class IngameMenuGui extends BlurGui {
                 registerCards();
             }
         }
+        UpdateSize();
         isFirstInit=false;
         super.initGui();
     }
@@ -354,8 +354,8 @@ public class IngameMenuGui extends BlurGui {
     public void onResize(Minecraft mcIn, int w, int h)
     {
         super.onResize(mcIn, w, h);
-        scrollBar.ChangeSize( 4, cardAreaHeight);
-        scrollBar.ChangePosition(cardAreaX+cardAreaWidth-4,cardAreaY);
+        scrollBar.setSize( 4, cardAreaHeight);
+        scrollBar.setPosition(cardAreaX+cardAreaWidth-4,cardAreaY);
     }
 
 }

@@ -10,6 +10,7 @@ import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.gui.layout.Margin;
 import parkourterminal.gui.layout.Padding;
 import parkourterminal.gui.layout.UIComponent;
+import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
@@ -49,7 +50,7 @@ public class CoordLine extends UIComponent {
         int boxHeight = hasScrollbar()
                 ? (textHeight + entryExtraPadding + scrollBarHeight)
                 : (textHeight + entryExtraPadding);
-        scrollBar.ChangeSize(getEntryWidth(),scrollBarHeight);
+        scrollBar.setSize(getEntryWidth(),scrollBarHeight);
         scrollBar.UpdateContentSize(fontRendererObj.getStringWidth(getDisplayText()));
         this.setHeight(boxHeight);
     }
@@ -77,12 +78,12 @@ public class CoordLine extends UIComponent {
     @Override
     public void setX(int x) {
         super.setX(x);
-        scrollBar.ChangePosition(x,getY()+textHeight + entryExtraPadding);
+        scrollBar.setPosition(x,getY()+textHeight + entryExtraPadding);
     }
     @Override
     public void setY(int y) {
         super.setY(y);
-        scrollBar.ChangePosition(getX(),y+textHeight + entryExtraPadding);
+        scrollBar.setPosition(getX(),y+textHeight + entryExtraPadding);
     }
 
     public boolean hasScrollbar(){
@@ -111,10 +112,14 @@ public class CoordLine extends UIComponent {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         if (isMouseOver(mouseX, mouseY)) {
             getScrollBar().onClick(mouseX, mouseY);
-            return !getScrollBar().isMouseOver(mouseX, mouseY);
+            if(!getScrollBar().isMouseOver(mouseX, mouseY)){
+                ScreenManager.SwitchToScreen(new CoordinateInfoGui(getNbt(), getHeldItem()));
+                return true;
+            }
         }
         return false;
     }
+
     @Override
     public void mouseReleased(int mouseX, int mouseY){
         getScrollBar().onRelease();
