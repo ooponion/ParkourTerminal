@@ -55,7 +55,6 @@ public class CoordinatesOverlay {
 
         int textX = boxX + 10;// 绘制文本，从boxX+10处开始，考虑横向滚动偏移
         int textY = boxY + 5; // 上边距固定为5像素
-
         mc.ingameGUI.drawString(mc.fontRendererObj, name, textX, textY, 0xFFAA00);
         mc.ingameGUI.drawString(mc.fontRendererObj, dx, textX, textY+textInterval, 0x55FFFF);
         mc.ingameGUI.drawString(mc.fontRendererObj, dy, textX, textY+textInterval*2, 0x55FFFF);
