@@ -1,4 +1,4 @@
-package parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer;
+package parkourterminal.gui.screens.impl.GuiScreen.components;
 
 import net.minecraft.client.Minecraft;
 import parkourterminal.gui.layout.UIComponent;
@@ -18,7 +18,7 @@ public class DisableTip extends UIComponent {
     private final int rectY=5;
     private boolean ifEnabled =false;
     private Label label;
-    DisableTip(){
+    public DisableTip(){
         setEnabled(false);
         setSize(width,height);
     }
@@ -41,7 +41,7 @@ public class DisableTip extends UIComponent {
         if(progress>=0.99f){
             ShapeDrawer.drawRoundedRect(getX(),getY(),width,height,0xEE384649,2);
             ShapeDrawer.drawRoundedRectBorder(getX()+rectX,getY()+rectY,rectSize,rectSize,0xFF4a6a71,1);
-            Minecraft.getMinecraft().fontRendererObj.drawString("Disabled",rectX+rectSize+3,rectY-1,0xFF4a6a71);
+            Minecraft.getMinecraft().fontRendererObj.drawString("Disabled",getX()+rectX+rectSize+3,getY()+rectY-1,0xFF4a6a71);
             if(!ifEnabled){
                 ShapeDrawer.drawLine(getX()+rectX+1,getY()+rectY+1,getX()+rectX+rectSize-2,getY()+rectY+rectSize-2,0xFF4a6a71);
                 ShapeDrawer.drawLine(getX()+rectX+rectSize-2,getY()+rectY+1,getX()+rectX+1,getY()+rectY+rectSize-2,0xFF4a6a71);

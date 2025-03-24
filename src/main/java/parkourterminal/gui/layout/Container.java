@@ -89,10 +89,6 @@ public class Container extends UIComponent {
         this.components.clear();
     }
     @Override
-    public boolean isMouseOver(int mouseX, int mouseY) {
-        return false; // 容器本身不处理点击
-    }
-    @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         boolean state=false;
         for (UIComponent component:getComponents()){
@@ -121,5 +117,11 @@ public class Container extends UIComponent {
             };
         }
         return null;
+    }
+    public void deleteComponent(UIComponent component){
+        if (component==null){
+            return;
+        }
+        components.remove(component);
     }
 }

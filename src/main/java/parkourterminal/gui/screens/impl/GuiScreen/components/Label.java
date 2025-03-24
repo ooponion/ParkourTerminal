@@ -73,6 +73,7 @@ public class Label extends UIComponent {
     @Override
     public void mouseReleased(int mouseX, int mouseY){
         isPressing=false;
+
         //判断是否落入unusedContainer
     }
     @Override

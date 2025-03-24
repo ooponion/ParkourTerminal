@@ -1,9 +1,13 @@
 package parkourterminal.gui.screens.impl.GuiScreen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Mouse;
+import parkourterminal.gui.component.ConsolaFontRenderer;
 import parkourterminal.gui.layout.UIComponent;
+import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
-import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer;
+import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer.UnusedLabelContainer;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer.UsedLabelContainer;
 import parkourterminal.gui.screens.impl.GuiScreen.components.manager.LabelManager;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
@@ -12,18 +16,29 @@ import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import java.io.IOException;
 
 public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen {
-    private final UsedLabelContainer usedLabelContainer=new UsedLabelContainer();
-    private final UnusedLabelContainer unusedLabelContainer=new UnusedLabelContainer();
+    private final DisableTip disableTip=new DisableTip();
+    private final UsedLabelContainer usedLabelContainer;
+    private final UnusedLabelContainer unusedLabelContainer;
+
+    public TerminalGuiScreen() {
+
+        usedLabelContainer =new UsedLabelContainer(disableTip);
+        unusedLabelContainer =new UnusedLabelContainer(disableTip,usedLabelContainer);
+        usedLabelContainer.SetUnusedLabelContainer(unusedLabelContainer);
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        disableTip.setFocused(false);
+        unusedLabelContainer.Update();
+    }
+
     @Override
     public GuiScreen getScreenInstantiation() {
         return this;
     }
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks){
-        usedLabelContainer.setIsOverlay(false);
-        LabelManager.UpdateLabelValuesPerTick();
-        usedLabelContainer.draw(mouseX, mouseY, partialTicks);
-    }
+
     public void drawOverlay(){
         usedLabelContainer.setIsOverlay(true);
         LabelManager.UpdateLabelValuesPerTick();
@@ -34,6 +49,18 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
         return new ScreenID("TerminalGuiScreen");
     }
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks){
+        usedLabelContainer.setIsOverlay(false);
+        LabelManager.UpdateLabelValuesPerTick();
+        usedLabelContainer.draw(mouseX, mouseY, partialTicks);
+        unusedLabelContainer.draw(mouseX, mouseY, partialTicks);
+        Label label=(Label) usedLabelContainer.getFocusedUI();
+        if(label!=null){
+            label.draw(mouseX, mouseY, partialTicks);
+        }
+        disableTip.draw(mouseX, mouseY, partialTicks);
+    }
+    @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
         usedLabelContainer.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -42,13 +69,20 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        usedLabelContainer.mouseClicked(mouseX, mouseY, mouseButton);
+        if(disableTip.mouseClicked(mouseX,mouseY,mouseButton)){
+            return;
+        }
+        if(!unusedLabelContainer.mouseClicked(mouseX, mouseY, mouseButton)){
+            usedLabelContainer.mouseClicked(mouseX, mouseY, mouseButton);
+        }
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
+        disableTip.mouseReleased(mouseX,mouseY);
         usedLabelContainer.mouseReleased(mouseX, mouseY);
+        unusedLabelContainer.mouseReleased(mouseX, mouseY);
     }
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
@@ -60,5 +94,16 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
             }
         }
         super.keyTyped(typedChar,keyCode);
+    }
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+
+        // 处理鼠标滚轮事件
+        int scrollAmount = Mouse.getEventDWheel();
+        if (scrollAmount != 0) {
+            scrollAmount = scrollAmount > 0 ? -20 : 20; // 反转滚动方向
+            unusedLabelContainer.getScrollBar().scrollWheel(scrollAmount );// 每次滚动20像素
+        }
     }
 }
