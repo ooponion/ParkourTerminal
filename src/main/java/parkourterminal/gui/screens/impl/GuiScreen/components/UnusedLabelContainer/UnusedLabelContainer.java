@@ -16,11 +16,14 @@ import java.util.HashMap;
 
 public class UnusedLabelContainer extends Container {
     private final DisableTip disableTip;
+    private final ExpansionFrame expansionFrame ;
     private UsedLabelContainer usedLabelContainer;
-    private ScrollBarImpl scrollBar=new ScrollBarImpl(0,0,4,0, ScrollDirection.VERTICAL);
+    private final ScrollBarImpl scrollBar=new ScrollBarImpl(0,0,4,0, ScrollDirection.VERTICAL);
     public UnusedLabelContainer(DisableTip disableTip,UsedLabelContainer usedLabelContainer){
         this.disableTip=disableTip;
         this.usedLabelContainer=usedLabelContainer;
+        this.expansionFrame =new ExpansionFrame(20,20,0xAA312e72,0xFF312e72,3,this);
+        this.setEnabled(false);
         this.setPadding(new Padding(7));
         this.setLayoutManager(new noWarpLinearLayout(LayoutDirection.VERTICAL,2));
         this.setWidth(40);
@@ -34,6 +37,10 @@ public class UnusedLabelContainer extends Container {
 
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
+        expansionFrame.draw(mouseX,mouseY,partialTicks);
+        if(!isEnabled()){
+            return;
+        }
         this.setY((int) (0-scrollBar.getInterpolatingContentOffset()));
         GuiScreen guiScreen=Minecraft.getMinecraft().currentScreen;
         if(guiScreen==null){
@@ -44,6 +51,7 @@ public class UnusedLabelContainer extends Container {
         ShapeDrawer.drawRoundedRectBorder(getX(),getY(),getWidth(),getHeight(),0xFF5d58c8,3);
         super.draw(mouseX, mouseY, partialTicks);
         ScissorHelper.DisableScissor();
+
     }
     @Override
     public void Update(){
@@ -55,25 +63,42 @@ public class UnusedLabelContainer extends Container {
         this.setHeight(guiScreen.height);
         scrollBar.setHeight(this.getComponentsTotalHeight());
         disableTip.setEnabled(false);
+        expansionFrame.Update();
     };
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        if(expansionFrame.mouseClicked(mouseX, mouseY, mouseButton)){
+            return true;
+        }
+        if(!isEnabled()){
+            return false;
+        }
         scrollBar.mouseClicked(mouseX, mouseY, mouseButton);
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
     @Override
     public void mouseReleased(int mouseX, int mouseY){
+        if(!isEnabled()){
+            return;
+        }
         scrollBar.onRelease();
         deleteComponent(getFocusedUI());
         super.mouseReleased(mouseX, mouseY);
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        if(!isEnabled()){
+            return false;
+        }
         scrollBar.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         return super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 
     }
     public ScrollBarImpl getScrollBar(){
         return scrollBar;
+    }
+    @Override
+    public boolean isMouseOver(int mouseX, int mouseY) {
+        return isEnabled()&&super.isMouseOver(mouseX, mouseY);
     }
 }
