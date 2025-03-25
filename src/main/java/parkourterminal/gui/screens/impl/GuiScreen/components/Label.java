@@ -5,17 +5,17 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.layout.UIComponent;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.util.ShapeDrawer;
 
 public class Label extends UIComponent {
     private boolean isPressing=false;
     private final String label;
-    private final LableValue value;
+    private final LabelValue value;
     private int OffsetX;
     private int OffsetY;
     private boolean isOverlay=false;
-    public Label(String label, LableValue value){
+    public Label(String label, LabelValue value){
         this.label = label;
         this.value = value;
         Update();
@@ -27,7 +27,7 @@ public class Label extends UIComponent {
     public String getLabel(){
         return label;
     }
-    public LableValue getValue(){
+    public LabelValue getValue(){
         return value;
     }
     @Override
@@ -68,6 +68,7 @@ public class Label extends UIComponent {
         }
         OffsetX=getX()-mouseX;
         OffsetY=getY()-mouseY;
+
         return true;
     }
     @Override

@@ -2,12 +2,11 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.imp
 
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
 import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
 
-public class LabelValue2DVector implements LableValue<Vector2d> {
+public class LabelValue2DVector implements LabelValue<Vector2d> {
     Vector2d vector2d;
     @Override
     public void Update(Vector2d data) {

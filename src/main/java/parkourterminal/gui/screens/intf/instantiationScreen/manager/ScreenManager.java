@@ -13,12 +13,15 @@ import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import java.util.HashMap;
 
 public class ScreenManager {
+
     private static final HashMap<String,InstantiationScreen> screenMap=new HashMap<String,InstantiationScreen>();
-    static {
+    public static void registerScreens(){
         ScreenManager.addScreen(new CustomIngameMenu());
         ScreenManager.addScreen(new ShiftRightClickGui());
         ScreenManager.addScreen(new TerminalGuiScreen());
+
     }
+
     public static void SwitchToScreen(ScreenID id){
         if(!screenMap.containsKey(id.getID())){
             return;

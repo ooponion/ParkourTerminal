@@ -1,9 +1,9 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
-public class LabelValueString implements LableValue<String> {
+public class LabelValueString implements LabelValue<String> {
     String string="";
 
     @Override

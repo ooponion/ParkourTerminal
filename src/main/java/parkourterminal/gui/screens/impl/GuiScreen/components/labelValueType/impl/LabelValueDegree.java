@@ -1,11 +1,10 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
-import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.util.AngleUtils;
 
-public class LabelValueDegree implements LableValue<Float> {
+public class LabelValueDegree implements LabelValue<Float> {
     Float value;
     @Override
     public void Update(Float data) {

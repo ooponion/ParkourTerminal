@@ -1,12 +1,9 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-public class LableValuePing implements LableValue<Integer> {
+public class LableValuePing implements LabelValue<Integer> {
     String ms="SinglePlayer";
 
     @Override

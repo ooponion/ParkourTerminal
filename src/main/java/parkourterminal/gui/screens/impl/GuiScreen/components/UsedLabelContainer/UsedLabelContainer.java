@@ -14,10 +14,7 @@ public class UsedLabelContainer extends Container {
     public UsedLabelContainer(DisableTip disableTip){
         this.disableTip=disableTip;
         this.setLayoutManagerEnabled(false);
-//        HashMap<String, Label> hashMap = LabelManager.getLabelList();
-//        for(Label label:hashMap.values()){
-//            addComponent(label);
-//        }
+
     }
     public void SetUnusedLabelContainer(UnusedLabelContainer unusedLabelContainer){
         this.unusedLabelContainer=unusedLabelContainer;

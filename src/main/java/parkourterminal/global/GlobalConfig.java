@@ -1,13 +1,18 @@
 package parkourterminal.global;
 
 import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.global.json.TerminalJsonConfig;
+import parkourterminal.global.json.TerminalJsonRoot;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class GlobalConfig {
     private static final String CONFIG_DIR = "config/parkourTerminal";
     private static final String CONFIG_FILE = CONFIG_DIR + "/globalConfig.properties";
+
     private static Properties properties = new Properties();
 
     public static boolean animation = false;
@@ -25,6 +30,7 @@ public class GlobalConfig {
     public static void configInit() {
         ensureConfigDirectoryExists();
         loadConfig();
+        TerminalJsonConfig.ReadConfig();
     }
 
     private static void ensureConfigDirectoryExists() {
@@ -51,11 +57,12 @@ public class GlobalConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public static void saveConfig() {
         try {
-            OutputStream output = new FileOutputStream(CONFIG_FILE);
+            OutputStream output = Files.newOutputStream(Paths.get(CONFIG_FILE));
 
             // 更新配置项
             properties.setProperty("animation", String.valueOf(animation));
@@ -79,5 +86,8 @@ public class GlobalConfig {
 
     public static String getConfig(String key) {
         return properties.getProperty(key);
+    }
+    public static String getConfigDir(){
+        return CONFIG_DIR;
     }
 }
