@@ -11,6 +11,6 @@ public class TerminalJsonRoot {
     }
 
     public void setUsedLabelJsons(HashMap<String, LabelJson> usedLabelJsons) {
-        this.usedLabelJsons=usedLabelJsons;
+        this.usedLabelJsons=new HashMap<String, LabelJson>(usedLabelJsons);
     }
 }

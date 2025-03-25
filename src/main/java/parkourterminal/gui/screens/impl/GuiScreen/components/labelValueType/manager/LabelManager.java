@@ -4,10 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import parkourterminal.global.json.LabelJson;
 import parkourterminal.global.json.TerminalJsonConfig;
+import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueDegree;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueDouble;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
+import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +19,7 @@ import java.util.Map;
 
 public class LabelManager {
     private static final HashMap<String,Label> defaultLabelList=new HashMap<String,Label>();
-    static {
+    public static void InitLabels() {
         addLabel("X",new LabelValueDouble());
         addLabel("Y",new LabelValueDouble());
         addLabel("Z",new LabelValueDouble());
@@ -45,7 +48,29 @@ public class LabelManager {
             defaultLabelList.get(name).getValue().Update(value);
         }
     };
-    public static List<Label> initUsedLabelsFromJson(){
+
+    public static void saveConfigUsedLabels() {
+        TerminalGuiScreen guiScreen=(TerminalGuiScreen)ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
+        if(guiScreen==null){
+            return;
+        }
+        HashMap<String, LabelJson> usedLabel = new HashMap<String, LabelJson>();
+        for (Label label : guiScreen.getUsedLabels()) {
+            LabelJson labelJson = new LabelJson();
+            labelJson.setX(label.getX());
+            labelJson.setY(label.getY());
+            labelJson.setEnabled(label.isEnabled());
+            usedLabel.put(label.getLabel(), labelJson);
+        }
+        TerminalJsonConfig.setLabelList(usedLabel);
+    }
+    public static void TerminalGuiInitContainers(){
+        TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
+        if(guiScreen!=null){
+            guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());
+        }
+    }
+    private static List<Label> initUsedLabelsFromJson(){
         List<Label> usedLabelList=new ArrayList<Label>();
         for(Map.Entry<String, LabelJson> entry : TerminalJsonConfig.getUsedLabelJsons().entrySet()) {
             if(defaultLabelList.containsKey(entry.getKey())){
@@ -59,7 +84,7 @@ public class LabelManager {
         }
         return usedLabelList;
     }
-    public static List<Label> initUnusedLabelsFromJson(){
+    private static List<Label> initUnusedLabelsFromJson(){
         List<Label> list =initUsedLabelsFromJson();
         List<Label> unusedLabelList=new ArrayList<Label>();
         for (Label label : getDefaultLabelList().values()) {
@@ -68,17 +93,5 @@ public class LabelManager {
             }
         }
         return unusedLabelList;
-    }
-    public static void saveConfigUsedLabels(List<Label> usedLabelList){
-        HashMap<String, LabelJson> usedLabel =new HashMap<String, LabelJson>();
-        for(Label label : usedLabelList) {
-            LabelJson labelJson =new LabelJson();
-            labelJson.setX(label.getX());
-            labelJson.setY(label.getY());
-            labelJson.setEnabled(label.isEnabled());
-            usedLabel.put(label.getLabel(), labelJson);
-        }
-        TerminalJsonConfig.setLabelList(usedLabel);
-        TerminalJsonConfig.WriteConfig();
     }
 }

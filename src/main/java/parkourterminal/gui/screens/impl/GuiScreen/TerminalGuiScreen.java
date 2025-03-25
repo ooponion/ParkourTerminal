@@ -5,6 +5,7 @@ import org.lwjgl.input.Mouse;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
+import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer.ListLabel;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer.UnusedLabelContainer;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer.UsedLabelContainer;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
@@ -13,6 +14,7 @@ import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen {
@@ -112,5 +114,13 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
             list.add((Label) component);
         }
         return list;
+    }
+    public void InitContainers(List<Label> used,List<Label> unused){
+        for(Label label:used){
+            usedLabelContainer.addComponent(label);
+        }
+        for(Label label:unused){
+            unusedLabelContainer.addComponent(new ListLabel(label,disableTip,usedLabelContainer,unusedLabelContainer));
+        }
     }
 }

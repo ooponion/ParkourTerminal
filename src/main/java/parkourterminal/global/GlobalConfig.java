@@ -30,6 +30,7 @@ public class GlobalConfig {
     public static void configInit() {
         ensureConfigDirectoryExists();
         loadConfig();
+        TerminalJsonConfig.ReadConfig();
     }
 
     private static void ensureConfigDirectoryExists() {
@@ -56,7 +57,7 @@ public class GlobalConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        TerminalJsonConfig.ReadConfig();
+
     }
 
     public static void saveConfig() {
