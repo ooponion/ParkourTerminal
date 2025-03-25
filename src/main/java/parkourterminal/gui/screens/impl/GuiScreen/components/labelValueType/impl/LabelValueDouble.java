@@ -1,9 +1,9 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
-public class LabelValueDouble implements LableValue<Double> {
+public class LabelValueDouble implements LabelValue<Double> {
     Double value;
     @Override
     public void Update(Double data) {

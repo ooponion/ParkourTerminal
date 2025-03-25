@@ -3,9 +3,9 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.imp
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
-public class LabelValueBlockPos implements LableValue<BlockPos> {
+public class LabelValueBlockPos implements LabelValue<BlockPos> {
     BlockPos blockPos;
 
 

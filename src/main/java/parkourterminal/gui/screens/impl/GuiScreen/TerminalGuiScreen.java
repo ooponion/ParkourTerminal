@@ -1,19 +1,19 @@
 package parkourterminal.gui.screens.impl.GuiScreen;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
-import parkourterminal.gui.component.ConsolaFontRenderer;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer.UnusedLabelContainer;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer.UsedLabelContainer;
-import parkourterminal.gui.screens.impl.GuiScreen.components.manager.LabelManager;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen {
     private final DisableTip disableTip=new DisableTip();
@@ -105,5 +105,12 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
             scrollAmount = scrollAmount > 0 ? -20 : 20; // 反转滚动方向
             unusedLabelContainer.getScrollBar().scrollWheel(scrollAmount );// 每次滚动20像素
         }
+    }
+    public List<Label> getUsedLabels(){
+        List<Label> list=new ArrayList<Label>();
+        for(UIComponent component:usedLabelContainer.getComponents()){
+            list.add((Label) component);
+        }
+        return list;
     }
 }

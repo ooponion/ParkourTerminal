@@ -6,6 +6,10 @@ import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer.ListLabel;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer.UnusedLabelContainer;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class UsedLabelContainer extends Container {
     private final DisableTip disableTip;
@@ -14,10 +18,9 @@ public class UsedLabelContainer extends Container {
     public UsedLabelContainer(DisableTip disableTip){
         this.disableTip=disableTip;
         this.setLayoutManagerEnabled(false);
-//        HashMap<String, Label> hashMap = LabelManager.getLabelList();
-//        for(Label label:hashMap.values()){
-//            addComponent(label);
-//        }
+        for(Label label:LabelManager.initUsedLabelsFromJson()){
+            addComponent(label);
+        }
     }
     public void SetUnusedLabelContainer(UnusedLabelContainer unusedLabelContainer){
         this.unusedLabelContainer=unusedLabelContainer;

@@ -1,9 +1,9 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
-public class LabelValueBoolean implements LableValue<Boolean> {
+public class LabelValueBoolean implements LabelValue<Boolean> {
     String bool="not set";
     @Override
     public void Update(Boolean data) {

@@ -8,7 +8,7 @@ import parkourterminal.gui.layout.*;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer.UsedLabelContainer;
-import parkourterminal.gui.screens.impl.GuiScreen.components.manager.LabelManager;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
@@ -28,8 +28,7 @@ public class UnusedLabelContainer extends Container {
         this.setLayoutManager(new noWarpLinearLayout(LayoutDirection.VERTICAL,2));
         this.setWidth(40);
         scrollBar.setColor(0x00000000,0x40000000);
-        HashMap<String, Label> hashMap = LabelManager.getLabelList();
-        for(Label label:hashMap.values()){
+        for(Label label:LabelManager.initUnusedLabelsFromJson()){
             ListLabel listLabel=new ListLabel(label,disableTip,usedLabelContainer,this);
             addComponent(listLabel);
         }

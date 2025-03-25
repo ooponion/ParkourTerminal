@@ -2,14 +2,12 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContain
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.layout.Padding;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer.UsedLabelContainer;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
 import parkourterminal.util.ShapeDrawer;
 
 public class ListLabel extends UIComponent {
