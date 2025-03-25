@@ -1,0 +1,31 @@
+package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
+
+import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.global.GlobalConfig;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LableValue;
+
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
+
+public class LabelValue2DVector implements LableValue<Vector2d> {
+    Vector2d vector2d;
+    @Override
+    public void Update(Vector2d data) {
+        vector2d=new Vector2d(data);
+    }
+
+    @Override
+    public String getValue() {
+        if(vector2d==null){
+            return GlobalConfig.getValueColor() +"N/A"+GlobalConfig.getLabelColor()+"/"+GlobalConfig.getValueColor()+"N/A";
+        }
+        EnumChatFormatting valueColor=GlobalConfig.getValueColor();
+        EnumChatFormatting labelColor=GlobalConfig.getLabelColor();
+        String slash=labelColor+"/";
+        String x=valueColor+String.format("%." + GlobalConfig.precision + "f", vector2d.getX());
+        String y=valueColor+String.format("%." + GlobalConfig.precision + "f", vector2d.getY());
+        return x+slash+y;
+    }
+
+
+}

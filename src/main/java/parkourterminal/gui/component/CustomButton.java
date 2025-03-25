@@ -48,12 +48,12 @@ public class CustomButton extends UIComponent {
         fontRenderer.drawStringWithShadow(text, textX, textY, 0xFFFFFFFF);
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
 
-    }
-    @Override
-    public boolean isMouseOver(int mouseX, int mouseY) {
-        return mouseX >= getX() && mouseX < getX()+getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
     }
 }

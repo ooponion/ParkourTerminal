@@ -1,8 +1,11 @@
 package parkourterminal.gui.screens.intf.instantiationScreen.manager;
 
 import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiScreen;
 import parkourterminal.gui.screens.impl.CustomIngameMenu;
+
+import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.ShiftRightClickGui;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
@@ -14,6 +17,7 @@ public class ScreenManager {
     static {
         ScreenManager.addScreen(new CustomIngameMenu());
         ScreenManager.addScreen(new ShiftRightClickGui());
+        ScreenManager.addScreen(new TerminalGuiScreen());
     }
     public static void SwitchToScreen(ScreenID id){
         if(!screenMap.containsKey(id.getID())){

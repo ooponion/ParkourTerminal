@@ -26,8 +26,8 @@ public class CustomGuiTextField extends TextField {
         this.fontRendererObj = fontRenderer;
     }
 
-
-    private boolean isEnabled() {
+    @Override
+    public boolean isEnabled() {
         try {
             Field field = GuiTextField.class.getDeclaredField("isEnabled");
             field.setAccessible(true);

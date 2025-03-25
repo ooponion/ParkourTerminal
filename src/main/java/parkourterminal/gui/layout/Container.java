@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Container extends UIComponent {
+    private boolean layoutManagerEnabled=true;
     private List<UIComponent> components = new ArrayList<UIComponent>();
     private LayoutManager layoutManager=new LinearLayout(LayoutDirection.HORIZONTAL,0);
     public Container(Margin margin,Padding padding,LayoutManager layoutManager){
@@ -61,9 +62,17 @@ public class Container extends UIComponent {
         super.setWidth(width);
     }
 
+    public boolean isLayoutManagerEnabled() {
+        return layoutManagerEnabled;
+    }
+
+    public void setLayoutManagerEnabled(boolean layoutManagerEnabled) {
+        this.layoutManagerEnabled = layoutManagerEnabled;
+    }
+
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
-        if (layoutManager != null) {
+        if (layoutManager != null&&layoutManagerEnabled) {
             layoutManager.layoutComponents(this);
         }
         for (UIComponent component : components) {
@@ -78,10 +87,6 @@ public class Container extends UIComponent {
     };
     public void Clear(){
         this.components.clear();
-    }
-    @Override
-    public boolean isMouseOver(int mouseX, int mouseY) {
-        return false; // 容器本身不处理点击
     }
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
@@ -104,5 +109,19 @@ public class Container extends UIComponent {
             state|=component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         }
         return state;
+    }
+    public UIComponent getFocusedUI(){
+        for (UIComponent component:getComponents()){
+            if(component.isFocused()){
+                return component;
+            };
+        }
+        return null;
+    }
+    public void deleteComponent(UIComponent component){
+        if (component==null){
+            return;
+        }
+        components.remove(component);
     }
 }

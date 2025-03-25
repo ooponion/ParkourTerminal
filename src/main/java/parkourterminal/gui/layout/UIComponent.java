@@ -8,12 +8,8 @@ import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 
 public abstract class UIComponent {
-    private int GuiTextField;
-    private boolean canLoseFocus = true;
-
-    private boolean isFocused;
-
-    private boolean isEnabled = true;
+    private boolean isFocused=false;
+    private boolean enabled=true;
     private int x=0, y=0, width=0, height=0;
     private Margin margin = new Margin(0);
     private Padding padding =new Padding(0);
@@ -22,11 +18,30 @@ public abstract class UIComponent {
     private AbstractAnimation<InterpolatingColor> animationColor=new ColorInterpolateAnimation(0.5f ,new InterpolatingColor(0),AnimationMode.BLENDED);
 
     public abstract void draw(int mouseX, int mouseY, float partialTicks);
-    public abstract boolean isMouseOver(int mouseX, int mouseY);
+
+    public boolean isMouseOver(int mouseX, int mouseY) {
+        return mouseX >= getX() && mouseX <= getX() + getWidth() &&
+                mouseY >= getY() && mouseY <= getY() + getHeight();
+    }
 
     public void setAnimationTime(float time){
         animation.SetAnimationTime(time);
         animationColor.SetAnimationTime(time);
+    }
+    public boolean isFocused(){
+        return this.isFocused;
+    }
+
+    public void setFocused(boolean focused) {
+        isFocused = focused;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled=enabled;
     }
     public int getX() {
         return x;
