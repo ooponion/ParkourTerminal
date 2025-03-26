@@ -39,13 +39,13 @@ public class UsedLabelContainer extends Container {
         return false;
     }
     @Override
-    public void mouseReleased(int mouseX, int mouseY){
-        if(this.getFocusedUI()!=null&&unusedLabelContainer.isMouseOver(mouseX,mouseY)){
+    public void mouseReleased(int mouseX, int mouseY,int state){
+        if(this.getFocusedUI()!=null&&((Label)this.getFocusedUI()).isPressing()&&unusedLabelContainer.isMouseOver(mouseX,mouseY)&&state==0){
             this.getFocusedUI().setEnabled(true);
             unusedLabelContainer.addComponent(new ListLabel((Label)this.getFocusedUI(),disableTip,this,unusedLabelContainer));
             this.deleteComponent(this.getFocusedUI());
         }
-        super.mouseReleased(mouseX,mouseY);
+        super.mouseReleased(mouseX,mouseY,state);
     }
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {

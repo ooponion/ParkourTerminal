@@ -72,7 +72,7 @@ public class Label extends UIComponent {
         return true;
     }
     @Override
-    public void mouseReleased(int mouseX, int mouseY){
+    public void mouseReleased(int mouseX, int mouseY,int state){
         isPressing=false;
 
         //判断是否落入unusedContainer
@@ -87,5 +87,8 @@ public class Label extends UIComponent {
     }
     public void setIsOverlay(boolean isOverlay){
         this.isOverlay=isOverlay;
+    }
+    public boolean isPressing(){
+        return isPressing;
     }
 }
