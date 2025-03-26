@@ -82,9 +82,9 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
-        disableTip.mouseReleased(mouseX,mouseY);
-        usedLabelContainer.mouseReleased(mouseX, mouseY);
-        unusedLabelContainer.mouseReleased(mouseX, mouseY);
+        disableTip.mouseReleased(mouseX,mouseY,state);
+        usedLabelContainer.mouseReleased(mouseX, mouseY,state);
+        unusedLabelContainer.mouseReleased(mouseX, mouseY,state);
     }
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException

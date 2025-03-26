@@ -121,7 +121,7 @@ public class CoordLine extends UIComponent {
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY){
+    public void mouseReleased(int mouseX, int mouseY,int state){
         getScrollBar().onRelease();
     }
     @Override

@@ -107,7 +107,7 @@ public class ShiftRightClickGui extends BlurGui implements InstantiationScreen {
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
-        coordLineContainer.mouseReleased(mouseX, mouseY);
+        coordLineContainer.mouseReleased(mouseX, mouseY,state);
     }
 
     @Override

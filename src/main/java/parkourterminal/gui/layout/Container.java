@@ -97,9 +97,9 @@ public class Container extends UIComponent {
         return state;
     }
     @Override
-    public void mouseReleased(int mouseX, int mouseY){
+    public void mouseReleased(int mouseX, int mouseY,int state){
         for (UIComponent component:getComponents()){
-            component.mouseReleased(mouseX, mouseY);
+            component.mouseReleased(mouseX, mouseY,state);
         }
     }
     @Override

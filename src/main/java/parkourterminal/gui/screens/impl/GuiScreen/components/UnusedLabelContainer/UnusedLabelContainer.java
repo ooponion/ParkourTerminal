@@ -72,13 +72,13 @@ public class UnusedLabelContainer extends Container {
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
     @Override
-    public void mouseReleased(int mouseX, int mouseY){
-        if(!isEnabled()){
+    public void mouseReleased(int mouseX, int mouseY,int state){
+        if(!isEnabled()||state!=0){
             return;
         }
         scrollBar.onRelease();
         deleteComponent(getFocusedUI());
-        super.mouseReleased(mouseX, mouseY);
+        super.mouseReleased(mouseX, mouseY,state);
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){

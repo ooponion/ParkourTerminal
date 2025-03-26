@@ -155,7 +155,7 @@ public abstract class UIComponent {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         return false;
     }
-    public void mouseReleased(int mouseX, int mouseY){
+    public void mouseReleased(int mouseX, int mouseY,int state){
 
     }
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
