@@ -1,5 +1,6 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
@@ -18,8 +19,8 @@ public class LableValueTime implements LabelValue<LocalDateTime> {
     @Override
     public String getValue() {
         if(formattedTime==null){
-            return GlobalConfig.getValueColor() +"N/A";
+            return GlobalData.getValueColor() +"N/A";
         }
-        return GlobalConfig.getValueColor() +formattedTime;
+        return GlobalData.getValueColor() +formattedTime;
     }
 }

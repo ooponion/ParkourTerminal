@@ -2,6 +2,7 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.man
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.json.LabelJson;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
@@ -25,6 +26,14 @@ public class LabelManager {
         addLabel("Z",new LabelValueDouble());
         addLabel("F",new LabelValueDegree());
         addLabel("Pitch",new LabelValueDegree());
+
+        //Offset Part
+        addLabel("X Offset",new LabelValueDouble());
+        addLabel("Z Offset",new LabelValueDouble());
+        addLabel("Total Offset",new LabelValueDouble());
+        addLabel("X PB",new LabelValueDouble());
+        addLabel("Z PB",new LabelValueDouble());
+        addLabel("PB",new LabelValueDouble());
     }
     public static HashMap<String,Label> getDefaultLabelList(){
         return  defaultLabelList;
@@ -40,8 +49,18 @@ public class LabelManager {
         UpdateLabel("Z",player.posZ);
         UpdateLabel("F",player.rotationYaw);
         UpdateLabel("Pitch",player.rotationPitch);
-//        labelList.get("F").getValue().Update(player.cameraYaw);
-//        labelList.get("Pitch").getValue().Update(player.cameraPitch);
+
+        //Offset Part
+        Double[] offsets = GlobalData.getLandingBlock().getOffsets();
+        UpdateLabel("X Offset",offsets[0]);
+        UpdateLabel("Z Offset",offsets[1]);
+        UpdateLabel("Total Offset",offsets[2]);
+
+        //PB Part
+        Double[] pb =GlobalData.getLandingBlock().getPb();
+        UpdateLabel("X PB",pb[0]);
+        UpdateLabel("Z PB",pb[1]);
+        UpdateLabel("PB",pb[2]);
     }
     public static <T> void UpdateLabel(String name,T value){
         if(defaultLabelList.containsKey(name)){

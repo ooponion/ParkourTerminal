@@ -2,6 +2,7 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContain
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.layout.Padding;
 import parkourterminal.gui.layout.UIComponent;
@@ -26,7 +27,7 @@ public class ListLabel extends UIComponent {
         Update();
     }
     public String getFormattedString(){
-        return GlobalConfig.getLabelColor()+getLabel().getLabel();
+        return GlobalData.getLabelColor()+getLabel().getLabel();
     }
 
     public Label getLabel(){

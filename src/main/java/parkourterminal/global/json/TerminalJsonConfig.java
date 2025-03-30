@@ -3,20 +3,14 @@ package parkourterminal.global.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import net.minecraft.util.BlockPos;
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
-import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
-import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
-import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class TerminalJsonConfig {
@@ -49,20 +43,20 @@ public class TerminalJsonConfig {
         }
     }
     public static HashMap<String, LabelJson> getUsedLabelJsons() {
-        if(root==null){
-            return new HashMap<String, LabelJson>();
-        }
-        return root.getUsedLabelJsons();
+        return root.getUsedLabels();
     }
 
     public static void setLabelList(HashMap<String, LabelJson> labels) {
-        if(root==null){
-            root = new TerminalJsonRoot();
-        }
-        root.setUsedLabelJsons(labels);
+        root.setUsedLabels(labels);
         WriteConfig();
     }
     public static void saveLabels(){
         LabelManager.saveConfigUsedLabels();
+    }
+    public static LandBlockJson getLandBlockJson(){
+        return root.getLandBlock();
+    }
+    public static void setLandBlockJson(LandBlockJson landBlockJson){
+        root.setLandBlock(landBlockJson);
     }
 }

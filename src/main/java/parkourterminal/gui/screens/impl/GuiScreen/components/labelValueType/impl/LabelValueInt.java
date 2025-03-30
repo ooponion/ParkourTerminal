@@ -1,5 +1,6 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
@@ -13,6 +14,6 @@ public class LabelValueInt implements LabelValue<Integer> {
 
     @Override
     public String getValue() {
-        return GlobalConfig.getValueColor() +String.valueOf(data);
+        return GlobalData.getValueColor() +String.valueOf(data);
     }
 }

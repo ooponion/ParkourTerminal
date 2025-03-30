@@ -3,6 +3,7 @@ package parkourterminal.gui.screens.impl.GuiScreen.components;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
@@ -21,7 +22,7 @@ public class Label extends UIComponent {
         Update();
     }
     public String getFormattedString(){
-        return GlobalConfig.getLabelColor() +label+": "+value.getValue();
+        return GlobalData.getLabelColor() +label+": "+value.getValue();
     }
 
     public String getLabel(){
