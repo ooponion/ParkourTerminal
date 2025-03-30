@@ -1,8 +1,6 @@
 package parkourterminal.global;
 
-import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.global.json.TerminalJsonConfig;
-import parkourterminal.global.json.TerminalJsonRoot;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -17,15 +15,8 @@ public class GlobalConfig {
 
     public static boolean animation = false;
     public static int precision = 5;
-    private static EnumChatFormatting labelColor=EnumChatFormatting.GOLD;
-    private static EnumChatFormatting ValueColor=EnumChatFormatting.WHITE;
-    public static EnumChatFormatting getLabelColor(){
-        return labelColor;
-    }
 
-    public static EnumChatFormatting getValueColor() {
-        return ValueColor;
-    }
+
 
     public static void configInit() {
         ensureConfigDirectoryExists();

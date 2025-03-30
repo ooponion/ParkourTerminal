@@ -1,6 +1,7 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
@@ -16,10 +17,10 @@ public class LabelValue2DDegreeVector implements LabelValue<Vector2f> {
     @Override
     public String getValue() {
         if(vector2f==null){
-            return GlobalConfig.getValueColor() +"N/A"+GlobalConfig.getLabelColor()+"/"+GlobalConfig.getValueColor()+"N/A";
+            return GlobalData.getValueColor() +"N/A"+GlobalData.getLabelColor()+"/"+GlobalData.getValueColor()+"N/A";
         }
-        EnumChatFormatting valueColor=GlobalConfig.getValueColor();
-        EnumChatFormatting labelColor=GlobalConfig.getLabelColor();
+        EnumChatFormatting valueColor=GlobalData.getValueColor();
+        EnumChatFormatting labelColor=GlobalData.getLabelColor();
         String slash=labelColor+"/";
         String x=valueColor+String.format("%." + GlobalConfig.precision + "f", vector2f.getX());
         String y=valueColor+String.format("%." + GlobalConfig.precision + "f", vector2f.getY());
