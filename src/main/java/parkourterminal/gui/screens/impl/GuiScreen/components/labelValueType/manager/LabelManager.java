@@ -9,6 +9,7 @@ import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueDegree;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueDouble;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueString;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
@@ -31,9 +32,15 @@ public class LabelManager {
         addLabel("X Offset",new LabelValueDouble());
         addLabel("Z Offset",new LabelValueDouble());
         addLabel("Total Offset",new LabelValueDouble());
+
+        //PB Part
         addLabel("X PB",new LabelValueDouble());
         addLabel("Z PB",new LabelValueDouble());
         addLabel("PB",new LabelValueDouble());
+
+        //Strat Part
+        addLabel("Last Timing",new LabelValueString());
+        addLabel("Last Input",new LabelValueString());
     }
     public static HashMap<String,Label> getDefaultLabelList(){
         return  defaultLabelList;
@@ -61,6 +68,10 @@ public class LabelManager {
         UpdateLabel("X PB",pb[0]);
         UpdateLabel("Z PB",pb[1]);
         UpdateLabel("PB",pb[2]);
+
+        //Strat Part
+        UpdateLabel("Last Timing",GlobalData.getInputData().getStrat());
+        UpdateLabel("Last Input",GlobalData.getInputData().getOperation().getDirectionKeys());
     }
     public static <T> void UpdateLabel(String name,T value){
         if(defaultLabelList.containsKey(name)){

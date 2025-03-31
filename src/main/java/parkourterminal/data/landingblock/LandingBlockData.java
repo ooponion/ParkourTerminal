@@ -73,11 +73,8 @@ public class LandingBlockData {
         return pb;
     }
 
-    public void Update(){
-        EntityPlayerSP player= Minecraft.getMinecraft().thePlayer;
-        if(player==null){
-            return;
-        }
+    public void Update( EntityPlayerSP player){
+
         UpdateOffsets(player);
         UpdatePB();
     }
