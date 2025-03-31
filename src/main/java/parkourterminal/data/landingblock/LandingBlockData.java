@@ -73,31 +73,25 @@ public class LandingBlockData {
         return pb;
     }
 
-    public void Update(){
-        EntityPlayerSP player= Minecraft.getMinecraft().thePlayer;
-        if(player==null){
-            return;
-        }
+    public void Update( EntityPlayerSP player){
+
         UpdateOffsets(player);
         UpdatePB();
     }
     private void UpdateOffsets(EntityPlayerSP player){
-        double lastPosY=player.lastTickPosY;
-        double posX=player.posX;
+        double lposX=player.lastTickPosX;
+        double lposY=player.lastTickPosY;
+        double lposZ=player.lastTickPosZ;
         double posY=player.posY;
-        double posZ=player.posZ;
-        double minX=posX-0.3;
-        double maxX=posX+0.3;
-        double minZ=posZ-0.3;
-        double maxZ=posZ+0.3;
-        if(lastPosY<=posY){
-            return;
-        }
+        double minX=lposX-0.3;
+        double maxX=lposX+0.3;
+        double minZ=lposZ-0.3;
+        double maxZ=lposZ+0.3;
         AxisAlignedBB union=LandingBlockHelper.UnionAll(getWrappedAABBs());
         if(union==null){
             return;
         }
-        if(!(posY<=union.maxY&&union.maxY<lastPosY)){
+        if(!((posY<=union.maxY&&union.maxY<lposY)||(lposY<union.maxY&&union.maxY<=posY))){
             return;
         }
         double offsetMinXR;
@@ -110,10 +104,10 @@ public class LandingBlockData {
             offsetMinZT= union.maxZ-minZ;
             offsetMinZB= maxZ-union.minZ;
         }else{//Box case
-            offsetMinXR= union.maxX-posX;
-            offsetMinXL= posX-union.minX;
-            offsetMinZT= union.maxZ-posZ;
-            offsetMinZB= posZ-union.minZ;
+            offsetMinXR= union.maxX-lposX;
+            offsetMinXL= lposX-union.minX;
+            offsetMinZT= union.maxZ-lposZ;
+            offsetMinZB= lposZ-union.minZ;
         }
         double totalOffset;
         double Xoffset=Math.min(offsetMinXR,offsetMinXL);
