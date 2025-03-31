@@ -88,6 +88,8 @@ public class SetlbCommand extends TerminalCommandBase {
                 }
                 GlobalData.getLandingBlock().setAABBs(lb);
                 if(!lb.isEmpty()){
+                    GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
+                    GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Set land block successfully"));
                 }else{
                     Block blockIn =BlockUtils.getBlockOnPlayerFeet(worldIn,player);
@@ -102,6 +104,8 @@ public class SetlbCommand extends TerminalCommandBase {
                 }
                 GlobalData.getLandingBlock().setAABBs(lb);
                 if(!lb.isEmpty()){
+                    GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
+                    GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Set land block successfully"));
                 }else{
                     sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Block is out of range"));
@@ -114,6 +118,8 @@ public class SetlbCommand extends TerminalCommandBase {
                 block.addCollisionBoxesToList(worldIn,blockpos,iblockstate,new AxisAlignedBB(blockpos,blockpos.add(1,1,1)),lb,null);
                 GlobalData.getLandingBlock().setAABBs(lb);
                 if(!lb.isEmpty()){
+                    GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
+                    GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Set land block successfully"));
                 }else{
                     sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Sorry, that block doesn't have collision bounding"));

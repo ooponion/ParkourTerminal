@@ -15,8 +15,15 @@ public class TickEventHandler {
             if(player==null){
                 return;
             }
-            GlobalData.getLandingBlock().Update(player);
             GlobalData.getInputData().UpdateOperation(player);
         }
+        if (event.phase == TickEvent.Phase.END) {
+            EntityPlayerSP player= Minecraft.getMinecraft().thePlayer;
+            if(player==null){
+                return;
+            }
+            GlobalData.getLandingBlock().Update(player);
+        }
     }
+
 }
