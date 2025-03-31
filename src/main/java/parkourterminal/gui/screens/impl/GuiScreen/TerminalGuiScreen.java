@@ -43,7 +43,7 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
 
     public void drawOverlay(){
         usedLabelContainer.setIsOverlay(true);
-        LabelManager.UpdateLabelValuesPerTick();
+        LabelManager.UpdateLabelValuesPerTick(0f);
         usedLabelContainer.draw(0,0,0);
     }
     @Override
@@ -53,7 +53,7 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
         usedLabelContainer.setIsOverlay(false);
-        LabelManager.UpdateLabelValuesPerTick();
+        LabelManager.UpdateLabelValuesPerTick(partialTicks);
         usedLabelContainer.draw(mouseX, mouseY, partialTicks);
         unusedLabelContainer.draw(mouseX, mouseY, partialTicks);
         Label label=(Label) usedLabelContainer.getFocusedUI();

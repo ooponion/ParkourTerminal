@@ -1,26 +1,24 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LableValueTime implements LabelValue<LocalDateTime> {
-    String formattedTime;
+public class LabelValueDate implements LabelValue<LocalDateTime> {
+    String formattedDate;
     @Override
     public void Update(LocalDateTime data) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        formattedTime = data.format(formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd");
+        formattedDate = data.format(formatter);
     }
 
     @Override
     public String getValue() {
-        if(formattedTime==null){
+        if(formattedDate==null){
             return GlobalData.getValueColor() +"N/A";
         }
-        return GlobalData.getValueColor() +formattedTime;
+        return GlobalData.getValueColor() +formattedDate;
     }
 }

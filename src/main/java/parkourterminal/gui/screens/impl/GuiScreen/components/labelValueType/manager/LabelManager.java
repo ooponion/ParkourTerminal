@@ -2,18 +2,20 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.man
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
 import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.json.LabelJson;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueDegree;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueDouble;
-import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.LabelValueString;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.*;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 
+import javax.vecmath.Vector3d;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,24 @@ public class LabelManager {
         //Strat Part
         addLabel("Last Timing",new LabelValueString());
         addLabel("Last Input",new LabelValueString());
+
+        //Land Part
+        addLabel("Hit X",new LabelValueDouble());
+        addLabel("Hit Y",new LabelValueDouble());
+        addLabel("Hit Z",new LabelValueDouble());
+        addLabel("Landing X",new LabelValueDouble());
+        addLabel("Landing Y",new LabelValueDouble());
+        addLabel("Landing Z",new LabelValueDouble());
+
+        //SMTH
+        addLabel("Speed (b/t)",new LabelValue3DVector());
+        addLabel("Speed Vector",new LabelValue2DDegreeVector());
+        addLabel("Date",new LabelValueDate());
+        addLabel("Time",new LabelValueTime());
+        addLabel("FPS",new LabelValueInt());
+        addLabel("Looking At",new LabelValueBlockPos());
+        addLabel("Motion (b/t)",new LabelValue3DVector());
+        addLabel("Tier",new LabelValueInt());
     }
     public static HashMap<String,Label> getDefaultLabelList(){
         return  defaultLabelList;
@@ -49,7 +69,7 @@ public class LabelManager {
         Label label=new Label(name,labelValue);
         defaultLabelList.put(label.getLabel(),label);
     }
-    public static void UpdateLabelValuesPerTick(){
+    public static void UpdateLabelValuesPerTick(float partialTicks){
         EntityPlayerSP player =Minecraft.getMinecraft().thePlayer;
         UpdateLabel("X",player.posX);
         UpdateLabel("Y",player.posY);
@@ -72,6 +92,27 @@ public class LabelManager {
         //Strat Part
         UpdateLabel("Last Timing",GlobalData.getInputData().getStrat());
         UpdateLabel("Last Input",GlobalData.getInputData().getOperation().getDirectionKeys());
+
+        //Land Part
+        UpdateLabel("Hit X",GlobalData.getLandData().getHitX());
+        UpdateLabel("Hit Y",GlobalData.getLandData().getHitY());
+        UpdateLabel("Hit Z",GlobalData.getLandData().getHitZ());
+        UpdateLabel("Landing X",GlobalData.getLandData().getLandingX());
+        UpdateLabel("Landing Y",GlobalData.getLandData().getLandingY());
+        UpdateLabel("Landing Z",GlobalData.getLandData().getLandingZ());
+
+        //SMTH
+        UpdateLabel("Speed (b/t)",GlobalData.getSpeedData().getSpeed());
+        UpdateLabel("Speed Vector",GlobalData.getSpeedData().getSpeedVector());
+        UpdateLabel("Date",LocalDateTime.now());
+        UpdateLabel("Time", LocalDateTime.now());
+        UpdateLabel("FPS",Minecraft.getDebugFPS());
+        MovingObjectPosition result = player.rayTrace(10, partialTicks);
+        if(result!=null){
+            UpdateLabel("Looking At",new BlockPos(result.getBlockPos()));
+        }
+        UpdateLabel("Motion (b/t)",new Vector3d(player.motionX,player.motionY,player.motionZ));
+        UpdateLabel("Tier",GlobalData.getLandData().getTier());
     }
     public static <T> void UpdateLabel(String name,T value){
         if(defaultLabelList.containsKey(name)){
