@@ -26,6 +26,7 @@ public class TickEventHandler {
             GlobalData.getInputData().UpdateOperation(player);
             GlobalData.getLandingBlock().Update(player);
             GlobalData.getLandData().Update(player);
+            GlobalData.getJumpData().Update(player);
             GlobalData.getSpeedData().Update(player);
         }
     }

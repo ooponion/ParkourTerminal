@@ -1,6 +1,7 @@
 package parkourterminal.data.globalData;
 
 import net.minecraft.util.EnumChatFormatting;
+import parkourterminal.data.EntityJumpData.JumpData;
 import parkourterminal.data.EntitySpeedData.SpeedData;
 import parkourterminal.data.inputdata.InputData;
 import parkourterminal.data.EntitylandData.LandingData;
@@ -15,6 +16,7 @@ public class GlobalData {
     private static InputData inputData=new InputData();
     private static LandingData landingData =new LandingData();
     private static SpeedData speedData =new SpeedData();
+    private static JumpData jumpData =new JumpData();
     public static EnumChatFormatting getLabelColor(){
         return labelColor;
     }
@@ -26,4 +28,8 @@ public class GlobalData {
     public static InputData getInputData(){return inputData;}
     public static LandingData getLandData(){return landingData;}
     public static  SpeedData getSpeedData(){return speedData;}
+
+    public static JumpData getJumpData() {
+        return jumpData;
+    }
 }

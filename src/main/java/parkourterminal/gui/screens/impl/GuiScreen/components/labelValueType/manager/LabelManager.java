@@ -61,6 +61,20 @@ public class LabelManager {
         addLabel("Looking At",new LabelValueBlockPos());
         addLabel("Motion (b/t)",new LabelValue3DVector());
         addLabel("Tier",new LabelValueInt());
+
+        //Jump
+        addLabel("Jump X",new LabelValueDouble());
+        addLabel("Jump Y",new LabelValueDouble());
+        addLabel("Jump Z",new LabelValueDouble());
+
+        //AngleRelated
+        addLabel("Last turning",new LabelValueDegree());
+        addLabel("Jump Angle",new LabelValueDegree());
+        addLabel("Last 45",new LabelValueDegree());
+        addLabel("First turning",new LabelValueDegree());
+        addLabel("Second turning",new LabelValueDegree());
+        addLabel("Third turning",new LabelValueDegree());
+        addLabel("Airtime",new LabelValueInt());
     }
     public static HashMap<String,Label> getDefaultLabelList(){
         return  defaultLabelList;
@@ -113,6 +127,20 @@ public class LabelManager {
         }
         UpdateLabel("Motion (b/t)",new Vector3d(player.motionX,player.motionY,player.motionZ));
         UpdateLabel("Tier",GlobalData.getLandData().getTier());
+
+        //Jump
+        UpdateLabel("Jump X",GlobalData.getJumpData().getJumpX());
+        UpdateLabel("Jump Y",GlobalData.getJumpData().getJumpY());
+        UpdateLabel("Jump Z",GlobalData.getJumpData().getJumpZ());
+
+        //AngleRelated
+        UpdateLabel("Last turning",GlobalData.getJumpData().getLastTurning());
+        UpdateLabel("Jump Angle",GlobalData.getJumpData().getJumpAngle());
+        UpdateLabel("Last 45",GlobalData.getJumpData().getLast45());
+        UpdateLabel("First turning",GlobalData.getJumpData().getFirstTurning());
+        UpdateLabel("Second turning",GlobalData.getJumpData().getSecondTurning());
+        UpdateLabel("Third turning",GlobalData.getJumpData().getThirdTurning());
+        UpdateLabel("Airtime",GlobalData.getJumpData().getAirTime());
     }
     public static <T> void UpdateLabel(String name,T value){
         if(defaultLabelList.containsKey(name)){
