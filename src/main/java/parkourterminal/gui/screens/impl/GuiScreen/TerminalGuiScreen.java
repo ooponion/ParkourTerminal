@@ -1,6 +1,8 @@
 package parkourterminal.gui.screens.impl.GuiScreen;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@SideOnly(Side.CLIENT)
 public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen {
     private final DisableTip disableTip=new DisableTip();
     private final UsedLabelContainer usedLabelContainer;

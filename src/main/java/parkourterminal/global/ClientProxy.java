@@ -1,8 +1,12 @@
 package parkourterminal.global;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import parkourterminal.command.clientCommand.ClientCommandsHelper;
+import parkourterminal.global.event.LandBlockRendererHandler;
+import parkourterminal.global.event.MenuHandler;
+import parkourterminal.global.event.TickEventHandler;
 import parkourterminal.gui.Overlay.OverlayHandler;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
@@ -22,8 +26,9 @@ public class ClientProxy extends CommonProxy {
 
         // Client-only logic
         ClientCommandsHelper.RegisterClientSideCommands();
-
-
+        MinecraftForge.EVENT_BUS.register(new MenuHandler());
+        MinecraftForge.EVENT_BUS.register(new LandBlockRendererHandler());
+        MinecraftForge.EVENT_BUS.register(new TickEventHandler());
 
         OverlayHandler.RegisterOverlayInit();
         TerminalCommandHandler.terminalCommandInit();

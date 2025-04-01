@@ -5,6 +5,8 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.layout.UIComponent;
@@ -17,7 +19,7 @@ import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.screens.intf.ModDetailGui;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
-
+@SideOnly(Side.CLIENT)
 public class IngameMenuGui extends BlurGui {
     public enum State {
         MAIN_MENU,
