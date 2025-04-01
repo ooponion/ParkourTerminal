@@ -16,8 +16,8 @@ public class TickInput {
         keys.set(5, sprint);
         keys.set(6, jump);
         keys.set(7, onGround);
-        strategy=initStrategy();
         isJump=lastMotionY<=0&&motionY>0;
+        strategy=initStrategy();
     }
     public int[] actualDirectionKey(){//longitudinal & sideways (a:-1,d:+1,w:+1,s:-1)
         int sideways=(isA()?-1:0)+(isD()?1:0);
@@ -25,7 +25,7 @@ public class TickInput {
         return new int[]{longitudinal,sideways};
     };
     public boolean isActualJump(){
-        return keys.get(7)&&isJump()&&isJump;
+        return isOnGround()&&isJump()&&isJump;//isJump true
     }
     public boolean isActualSprint(){
         return actualDirectionKey()[0]==1&&isSprint();
@@ -87,7 +87,7 @@ public class TickInput {
         return "unknown";
     }
     public String toString(){
-        return String.format("name:%s<<a:%s,w:%s,s:%s,d:%s,sneak:%s,sprint:%s,jump:%s,onGround:%s",getStrategy(),keys.get(0),keys.get(1),keys.get(2),keys.get(3),keys.get(4),keys.get(5),keys.get(6),keys.get(7));
+        return String.format("name:%s<<isjump:%s,IsOnGround:%s,IsMotion:%s,Final:%s",getStrategy(),isJump(),isOnGround(),isJump,isActualJump());
     }
     public String getDirectionKeys(){
         String keys="";
