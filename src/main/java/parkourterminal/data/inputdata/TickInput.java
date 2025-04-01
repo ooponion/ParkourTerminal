@@ -5,8 +5,9 @@ import java.util.BitSet;
 public class TickInput {
     private final BitSet keys = new BitSet(8);
     private final String strategy;
+    private final boolean isJump;
 
-    public TickInput(boolean a, boolean w, boolean s, boolean d, boolean sneak, boolean sprint, boolean jump,boolean onGround){
+    public TickInput(boolean a, boolean w, boolean s, boolean d, boolean sneak, boolean sprint, boolean jump,boolean onGround,double motionY,double lastMotionY){
         keys.set(0, a);
         keys.set(1, w);
         keys.set(2, s);
@@ -16,6 +17,7 @@ public class TickInput {
         keys.set(6, jump);
         keys.set(7, onGround);
         strategy=initStrategy();
+        isJump=lastMotionY<=0&&motionY>0;
     }
     public int[] actualDirectionKey(){//longitudinal & sideways (a:-1,d:+1,w:+1,s:-1)
         int sideways=(isA()?-1:0)+(isD()?1:0);
@@ -23,7 +25,7 @@ public class TickInput {
         return new int[]{longitudinal,sideways};
     };
     public boolean isActualJump(){
-        return keys.get(7)&&isJump();
+        return keys.get(7)&&isJump()&&isJump;
     }
     public boolean isActualSprint(){
         return actualDirectionKey()[0]==1&&isSprint();

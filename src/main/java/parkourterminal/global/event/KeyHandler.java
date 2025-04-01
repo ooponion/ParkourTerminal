@@ -1,4 +1,4 @@
-package parkourterminal.input;
+package parkourterminal.global.event;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import parkourterminal.input.TerminalWindowManager;
 
 public class KeyHandler {
     private static final KeyBinding OPEN_TERMINAL = new KeyBinding(
@@ -30,6 +31,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
+
         if (OPEN_TERMINAL.isPressed()) {
             if (windowManager.isWindowVisible()) {
                 windowManager.focusWindow();

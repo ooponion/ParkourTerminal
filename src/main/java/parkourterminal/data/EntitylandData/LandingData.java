@@ -14,9 +14,13 @@ public class LandingData {
     private Double landingZ= Double.NaN;
     private int tier=12;
     private boolean wasInAir = false;
+    private boolean lastOnGround=false;
     public void Update(EntityPlayerSP player){
         if(GlobalData.getInputData().getOperation().isActualJump()){
-            tier=11;
+            tier=12;
+        }
+        else if(lastOnGround&&!player.onGround){
+            tier=1;
         }
         if (!player.onGround) {
             tier--;
@@ -25,6 +29,7 @@ public class LandingData {
             }
             wasInAir = true; // 玩家在空中
         } else if (wasInAir) {
+            tier--;
             wasInAir = false;
             System.out.printf("player::%s\n",player);
             hitX= player.posX;
@@ -34,6 +39,7 @@ public class LandingData {
             landingY=player.lastTickPosY;
             landingZ=player.lastTickPosZ;
         }
+        lastOnGround= player.onGround;
 
     }
     public int getTier(){
