@@ -6,7 +6,7 @@ import parkourterminal.command.clientCommand.ClientCommandsHelper;
 import parkourterminal.gui.Overlay.OverlayHandler;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
-import parkourterminal.input.KeyHandler;
+import parkourterminal.global.event.KeyHandler;
 import parkourterminal.input.TerminalCommandHandler;
 
 public class ClientProxy extends CommonProxy {

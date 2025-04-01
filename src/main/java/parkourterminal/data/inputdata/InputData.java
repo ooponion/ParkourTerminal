@@ -9,19 +9,16 @@ import parkourterminal.data.inputdata.intf.IndexedStack;
 import java.util.Arrays;
 
 public class InputData {
-    private TickInput operation =new TickInput(false,false,false,false,false,false,false,false);
+    private TickInput operation =new TickInput(false,false,false,false,false,false,false,false,0,0);
     private IndexedStack<ActionPulse> pulseStack=new IndexedStack<ActionPulse>(20);
     private String strat="none";
     private boolean lastOnGround=false;
+    private double lastMotionY=0d;
     private String currentStart="unknown";
     public TickInput getOperation() {
         return operation;
     }
     public void UpdateOperation(EntityPlayerSP player){
-        String matchedStrat=getMatchedStrat();
-        if(matchedStrat!=null){
-            strat=matchedStrat;
-        }
         GameSettings settings = Minecraft.getMinecraft().gameSettings;
         boolean forward = settings.keyBindForward.isKeyDown();
         boolean back = settings.keyBindBack.isKeyDown();
@@ -30,14 +27,19 @@ public class InputData {
         boolean sprint = settings.keyBindSprint.isKeyDown();
         boolean jump = settings.keyBindJump.isKeyDown();
         boolean sneak = settings.keyBindSneak.isKeyDown();
-        operation=new TickInput(left,forward,back,right,sneak,sprint,jump, lastOnGround);
+        operation=new TickInput(left,forward,back,right,sneak,sprint,jump, lastOnGround, player.motionY,lastMotionY);
         lastOnGround= player.onGround;
+        lastMotionY=player.motionY;
         if(!operation.equals(currentStart)){
             currentStart=operation.getStrategy();
             pulseStack.push(new ActionPulse(0,operation));
         }
         if(pulseStack.get(0)!=null){
             pulseStack.get(0).setDuration(pulseStack.get(0).getDuration()+1);
+        }
+        String matchedStrat=getMatchedStrat();
+        if(matchedStrat!=null){
+            strat=matchedStrat;
         }
     }
     public String getStrat(){
