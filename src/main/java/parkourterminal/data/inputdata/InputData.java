@@ -27,10 +27,12 @@ public class InputData {
         boolean sprint = settings.keyBindSprint.isKeyDown();
         boolean jump = settings.keyBindJump.isKeyDown();
         boolean sneak = settings.keyBindSneak.isKeyDown();
-        operation=new TickInput(left,forward,back,right,sneak,sprint,jump, lastOnGround, player.motionY,lastMotionY);
-        lastOnGround= player.onGround;
+        operation=new TickInput(left,forward,back,right,sneak,sprint,jump,lastOnGround , player.motionY,lastMotionY);
+        lastOnGround=player.onGround;
+        System.out.printf("-->%s\n",operation.toString());
         lastMotionY=player.motionY;
         if(!operation.equals(currentStart)){
+
             currentStart=operation.getStrategy();
             pulseStack.push(new ActionPulse(0,operation));
         }
