@@ -10,6 +10,7 @@ import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.*;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.BlipLabel;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
@@ -75,6 +76,9 @@ public class LabelManager {
         addLabel("Second turning",new LabelValueDegree());
         addLabel("Third turning",new LabelValueDegree());
         addLabel("Airtime",new LabelValueInt());
+
+        //Blip
+        addLabel("Blip",new LabelValueBlip());
     }
     public static HashMap<String,Label> getDefaultLabelList(){
         return  defaultLabelList;
@@ -141,6 +145,9 @@ public class LabelManager {
         UpdateLabel("Second turning",GlobalData.getJumpData().getSecondTurning());
         UpdateLabel("Third turning",GlobalData.getJumpData().getThirdTurning());
         UpdateLabel("Airtime",GlobalData.getJumpData().getAirTime());
+
+        //Blip
+        UpdateLabel("Blip",new BlipLabel(GlobalData.getLandData().getBlipY(),GlobalData.getLandData().getBlipTimes()));
     }
     public static <T> void UpdateLabel(String name,T value){
         if(defaultLabelList.containsKey(name)){
