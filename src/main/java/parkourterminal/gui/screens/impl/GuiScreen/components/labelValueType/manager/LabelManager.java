@@ -170,6 +170,23 @@ public class LabelManager {
             guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());
         }
     }
+    public static void TerminalGuiResetContainers(){
+        TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
+        int y=0;
+        int padding=1;
+        if(guiScreen!=null){
+            List<Label> list=new ArrayList<Label>();
+            for(String  name:defaultLabelList.keySet()) {
+                Label label=defaultLabelList.get(name);
+                label.setPosition(0,y);
+                label.setEnabled(true);
+                list.add(label);
+                y+=label.getHeight()+padding;
+            }
+            guiScreen.InitContainers(list,new ArrayList<Label>());
+        }
+
+    }
     private static List<Label> initUsedLabelsFromJson(){
         List<Label> usedLabelList=new ArrayList<Label>();
         for(Map.Entry<String, LabelJson> entry : TerminalJsonConfig.getUsedLabelJsons().entrySet()) {

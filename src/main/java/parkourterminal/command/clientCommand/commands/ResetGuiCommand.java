@@ -31,7 +31,7 @@ public class ResetGuiCommand extends TerminalCommandBase {
             sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
         }else{
             GlobalData.getColorData().reset();
-            LabelManager.TerminalGuiInitContainers();
+            LabelManager.TerminalGuiResetContainers();
             sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"Successfully reset gui"));
         }
     }
