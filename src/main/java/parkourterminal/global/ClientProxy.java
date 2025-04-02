@@ -17,6 +17,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        ClientCommandsHelper.RegisterClientSideCommands();
     }
 
     @Override
@@ -25,7 +26,7 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
 
         // Client-only logic
-        ClientCommandsHelper.RegisterClientSideCommands();
+
         MinecraftForge.EVENT_BUS.register(new MenuHandler());
         MinecraftForge.EVENT_BUS.register(new LandBlockRendererHandler());
         MinecraftForge.EVENT_BUS.register(new TickEventHandler());

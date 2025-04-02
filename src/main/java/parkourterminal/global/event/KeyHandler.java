@@ -1,5 +1,6 @@
 package parkourterminal.global.event;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -39,7 +40,13 @@ public class KeyHandler {
                 windowManager.createWindow();
             }
         } else if (OPEN_GUI.isPressed()) {
+            if (Minecraft.getMinecraft().currentScreen != null) {
+                System.out.println("currentScreen:" + Minecraft.getMinecraft().currentScreen.getClass());
+            }
             ScreenManager.SwitchToScreen(new ScreenID("TerminalGuiScreen"));
+            if (Minecraft.getMinecraft().currentScreen != null) {
+                System.out.println("openScreen:" + Minecraft.getMinecraft().currentScreen.getClass());
+            }
         }
     }
 }

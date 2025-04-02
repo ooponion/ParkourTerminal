@@ -124,4 +124,9 @@ public class Container extends UIComponent {
         }
         components.remove(component);
     }
+    public void deleteComponents(){
+
+        components.clear();
+    }
+
 }

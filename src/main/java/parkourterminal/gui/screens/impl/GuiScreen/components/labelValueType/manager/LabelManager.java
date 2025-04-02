@@ -164,6 +164,7 @@ public class LabelManager {
         TerminalJsonConfig.setLabelList(usedLabel);
     }
     public static void TerminalGuiInitContainers(){
+        System.out.printf("???????TerminalGuiInitContainers\n");
         TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
         if(guiScreen!=null){
             guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());

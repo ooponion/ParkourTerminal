@@ -30,7 +30,6 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
         unusedLabelContainer =new UnusedLabelContainer(disableTip,usedLabelContainer);
         usedLabelContainer.SetUnusedLabelContainer(unusedLabelContainer);
     }
-
     @Override
     public void initGui() {
         super.initGui();
@@ -54,6 +53,7 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
+        System.out.printf("enter it\n");
         usedLabelContainer.setIsOverlay(false);
         LabelManager.UpdateLabelValuesPerTick(partialTicks);
         usedLabelContainer.draw(mouseX, mouseY, partialTicks);
@@ -118,6 +118,8 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
         return list;
     }
     public void InitContainers(List<Label> used,List<Label> unused){
+        usedLabelContainer.deleteComponents();
+        unusedLabelContainer.deleteComponents();
         for(Label label:used){
             usedLabelContainer.addComponent(label);
         }

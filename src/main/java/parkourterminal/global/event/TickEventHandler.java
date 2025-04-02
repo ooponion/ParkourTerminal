@@ -29,6 +29,7 @@ public class TickEventHandler {
             GlobalData.getJumpData().Update(player);
             GlobalData.getSpeedData().Update(player);
         }
+        System.out.println("currentScreen:" + Minecraft.getMinecraft().currentScreen+"\n");
     }
 
 }
