@@ -10,6 +10,7 @@ import parkourterminal.command.clientCommand.TerminalCommandBase;
 import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +29,9 @@ public class ColorSetCommand extends TerminalCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length!=2||!(args[0].equalsIgnoreCase("label")||args[0].equalsIgnoreCase("value"))){
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
+            SendMessageHelper.addChatMessage(sender,"Successfully set the color");
             EnumChatFormatting color=getChatFormattingByName(args[1]);
             if(args[0].equalsIgnoreCase("label")){//label
                 GlobalData.getColorData().setLabelColor(color);

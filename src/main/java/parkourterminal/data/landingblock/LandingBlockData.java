@@ -3,10 +3,15 @@ package parkourterminal.data.landingblock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
+import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.data.landingblock.intf.AABB;
 import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
+import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.LandingBlockHelper;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +81,7 @@ public class LandingBlockData {
     public void Update( EntityPlayerSP player){
 
         UpdateOffsets(player);
-        UpdatePB();
+        UpdatePB(player);
     }
     private void UpdateOffsets(EntityPlayerSP player){
         double lposX=player.lastTickPosX;
@@ -112,6 +117,7 @@ public class LandingBlockData {
         double totalOffset;
         double Xoffset=Math.min(offsetMinXR,offsetMinXL);
         double Zoffset=Math.min(offsetMinZB,offsetMinZT);
+
         if(Xoffset<-1.0|Zoffset<-1.0){
             return;
         }
@@ -125,10 +131,37 @@ public class LandingBlockData {
         }
         setOffsets( new Double[]{Xoffset,Zoffset,totalOffset});
     }
-    private void UpdatePB(){
+    private void UpdatePB(EntityPlayerSP player){
+        if(getlBaxis()==LBaxis.X_AXIS){
+            double lastX=getPb()[0].isNaN()?Double.NEGATIVE_INFINITY:getPb()[0];
+            double offsetX=getOffsets()[0].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[0];
+            if(lastX<offsetX){
+                if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
+                    SendMessageHelper.addChatMessage(player,"new pb x:"+
+                            String.format("%." + GlobalConfig.precision + "f", offsetX));
+                }
+                setPb(getOffsets());
+            }
+            return;
+        } else if (getlBaxis()==LBaxis.Z_AXIS) {
+            double lastZ=getPb()[1].isNaN()?Double.NEGATIVE_INFINITY:getPb()[1];
+            double offsetZ=getOffsets()[1].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[1];
+            if(lastZ<offsetZ){
+                if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
+                    SendMessageHelper.addChatMessage(player,"new pb z:"+
+                            String.format("%." + GlobalConfig.precision + "f", offsetZ));
+                }
+                setPb(getOffsets());
+            }
+            return;
+        }
         double lastPB=getPb()[2].isNaN()?Double.NEGATIVE_INFINITY:getPb()[2];
         double offset=getOffsets()[2].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[2];
         if(lastPB<offset){
+            if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
+                SendMessageHelper.addChatMessage(player,"new pb:"+
+                        String.format("%." + GlobalConfig.precision + "f", offset));
+            }
             setPb(getOffsets());
         }
     }

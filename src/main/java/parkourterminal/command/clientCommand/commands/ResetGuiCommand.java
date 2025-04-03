@@ -11,6 +11,7 @@ import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.List;
 
@@ -28,11 +29,11 @@ public class ResetGuiCommand extends TerminalCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length>=1){
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
             GlobalData.getColorData().reset();
             LabelManager.TerminalGuiResetContainers();
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"Successfully reset gui"));
+            SendMessageHelper.addChatMessage(sender,"Successfully reset gui");
         }
     }
 

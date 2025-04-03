@@ -7,6 +7,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
 import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,9 @@ public class ClearPbCommand extends TerminalCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length>=1){
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"Successfully cleared PB value"));
+            SendMessageHelper.addChatMessage(sender,"Successfully cleared PB value");
             GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
             GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
         }

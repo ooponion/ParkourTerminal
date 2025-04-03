@@ -62,4 +62,10 @@ public class TerminalJsonConfig {
     public static ColorData getColors(){
         return root.getColorData();
     }
+    public static String getPrefixWithAngleBrackets(){
+        return "<"+root.getPrefix()+"> ";
+    }
+     public void setPrefix(String prefix){
+        root.setPrefix(prefix);
+     }
 }

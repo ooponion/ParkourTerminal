@@ -11,6 +11,7 @@ import parkourterminal.global.GlobalConfig;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -31,14 +32,14 @@ public class dfCommand extends TerminalCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length!=1){
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
             if(!isPositiveInteger(args[0])){
-                sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
+                SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
                 return;
             }
             GlobalConfig.updateConfig("precision",args[0]);
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"Changed coords precision to "+args[0]+" decimals."));
+            SendMessageHelper.addChatMessage(sender,"Changed coords precision to "+args[0]+" decimals.");
         }
     }
 

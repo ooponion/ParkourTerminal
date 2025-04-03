@@ -10,6 +10,7 @@ import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -30,7 +31,7 @@ public class GuiCommand extends TerminalCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length>=1){
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"No such command"));
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.schedule(new Runnable() {
@@ -41,7 +42,7 @@ public class GuiCommand extends TerminalCommandBase {
                     }
                 }
             }, 100, TimeUnit.MILLISECONDS);
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+"Opens gui"));
+            SendMessageHelper.addChatMessage(sender,"Opens gui");
         }
     }
 
