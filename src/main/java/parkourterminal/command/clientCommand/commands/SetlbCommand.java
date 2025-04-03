@@ -14,6 +14,7 @@ import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
 import parkourterminal.data.landingblock.LandingBlockData;
 import parkourterminal.util.BlockUtils;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,10 +91,10 @@ public class SetlbCommand extends TerminalCommandBase {
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
-                    sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Set land block successfully"));
+                    SendMessageHelper.addChatMessage(sender,"Set land block successfully");
                 }else{
                     Block blockIn =BlockUtils.getBlockOnPlayerFeet(worldIn,player);
-                    sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Sorry, you cannot setlb on "+blockIn.getRegistryName()));
+                    SendMessageHelper.addChatMessage(sender,"Sorry, you cannot setlb on "+blockIn.getRegistryName());
                 }
             }else if(target!=null){
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
@@ -106,9 +107,9 @@ public class SetlbCommand extends TerminalCommandBase {
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
-                    sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Set land block successfully"));
+                    SendMessageHelper.addChatMessage(sender,"Set land block successfully");
                 }else{
-                    sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Block is out of range"));
+                    SendMessageHelper.addChatMessage(sender,"Block is out of range");
                 }
             }else if(num1 != null && num2 != null){
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
@@ -120,13 +121,15 @@ public class SetlbCommand extends TerminalCommandBase {
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
-                    sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Set land block successfully"));
+                    SendMessageHelper.addChatMessage(sender,"Set land block successfully");
                 }else{
-                    sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Sorry, that block doesn't have collision bounding"));
+                    SendMessageHelper.addChatMessage(sender,"Sorry, that block doesn't have collision bounding");
                 }
             }else{
-                sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor() +"Something went wrong, failed to setlb"));
+                SendMessageHelper.addChatMessage(sender,"Something went wrong, failed to setlb");
             }
+        }else{
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }
 
 

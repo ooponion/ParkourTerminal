@@ -10,6 +10,7 @@ import parkourterminal.command.clientCommand.TerminalClientCommandsHandler;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
 import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.util.SendMessageHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class HelpCommand extends TerminalCommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if(args.length>1){
-            sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+""+EnumChatFormatting.BOLD+"wrong format:"));
+            SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
             return;
         }
         sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+""+EnumChatFormatting.BOLD+"TERMINAL Help:"));
@@ -55,7 +56,7 @@ public class HelpCommand extends TerminalCommandBase {
                 return;
             }
         }
-        sender.addChatMessage(new ChatComponentText(GlobalData.getLabelColor()+""+EnumChatFormatting.BOLD+"No such command"));
+        SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
     }
 
     @Override

@@ -1,6 +1,8 @@
 package parkourterminal.gui.screens.impl.GuiScreen;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@SideOnly(Side.CLIENT)
 public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen {
     private final DisableTip disableTip=new DisableTip();
     private final UsedLabelContainer usedLabelContainer;
@@ -28,7 +30,6 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
         unusedLabelContainer =new UnusedLabelContainer(disableTip,usedLabelContainer);
         usedLabelContainer.SetUnusedLabelContainer(unusedLabelContainer);
     }
-
     @Override
     public void initGui() {
         super.initGui();
@@ -52,6 +53,7 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
+        System.out.printf("enter it\n");
         usedLabelContainer.setIsOverlay(false);
         LabelManager.UpdateLabelValuesPerTick(partialTicks);
         usedLabelContainer.draw(mouseX, mouseY, partialTicks);
@@ -116,6 +118,8 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
         return list;
     }
     public void InitContainers(List<Label> used,List<Label> unused){
+        usedLabelContainer.deleteComponents();
+        unusedLabelContainer.deleteComponents();
         for(Label label:used){
             usedLabelContainer.addComponent(label);
         }

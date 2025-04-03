@@ -3,8 +3,8 @@ package parkourterminal.global.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.util.BlockPos;
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.ColorData.ColorData;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
 
 import java.io.File;
@@ -59,4 +59,13 @@ public class TerminalJsonConfig {
     public static void setLandBlockJson(LandBlockJson landBlockJson){
         root.setLandBlock(landBlockJson);
     }
+    public static ColorData getColors(){
+        return root.getColorData();
+    }
+    public static String getPrefixWithAngleBrackets(){
+        return "<"+root.getPrefix()+"> ";
+    }
+     public void setPrefix(String prefix){
+        root.setPrefix(prefix);
+     }
 }

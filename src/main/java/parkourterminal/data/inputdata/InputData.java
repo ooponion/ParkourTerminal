@@ -29,7 +29,6 @@ public class InputData {
         boolean sneak = settings.keyBindSneak.isKeyDown();
         operation=new TickInput(left,forward,back,right,sneak,sprint,jump,lastOnGround , player.motionY,lastMotionY);
         lastOnGround=player.onGround;
-        System.out.printf("-->%s\n",operation.toString());
         lastMotionY=player.motionY;
         if(!operation.equals(currentStart)){
 

@@ -52,8 +52,8 @@ public class LandingBlockHelper {
             return axisAlignedBBs.get(0).getAxisAlignedBB();
         }
         AxisAlignedBB lastUnion=axisAlignedBBs.get(0).getAxisAlignedBB();
-        for (int i=1;i<axisAlignedBBs.size()-1;i++){
-            axisAlignedBBs.get(i).getAxisAlignedBB().union(lastUnion);
+        for (int i=1;i<axisAlignedBBs.size();i++){
+            lastUnion=axisAlignedBBs.get(i).getAxisAlignedBB().union(lastUnion);
         }
         return lastUnion;
     }

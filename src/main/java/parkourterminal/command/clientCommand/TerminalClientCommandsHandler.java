@@ -4,9 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import parkourterminal.command.clientCommand.commands.ClearLbCommand;
-import parkourterminal.command.clientCommand.commands.HelpCommand;
-import parkourterminal.command.clientCommand.commands.SetlbCommand;
+import parkourterminal.command.clientCommand.commands.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +15,15 @@ public class TerminalClientCommandsHandler extends CommandBase {
 
     public TerminalClientCommandsHandler() {
         this.aliases = Arrays.asList("tl", "zhengli");
-        commands=ClientCommandsHelper.parseToList(new HelpCommand(),new SetlbCommand(),new ClearLbCommand());
+        commands=ClientCommandsHelper.parseToList(
+                new HelpCommand(),
+                new SetlbCommand(),
+                new ClearLbCommand(),
+                new ColorSetCommand(),
+                new GuiCommand(),
+                new ResetGuiCommand(),
+                new dfCommand(),
+                new ClearPbCommand());
     }
     @Override
     public List<String> getCommandAliases(){

@@ -1,30 +1,29 @@
 package parkourterminal.command.clientCommand.commands;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import parkourterminal.command.clientCommand.TerminalClientCommandsHandler;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
 import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
+import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
+import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
+import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.util.SendMessageHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ClearLbCommand extends TerminalCommandBase {
+public class ResetGuiCommand extends TerminalCommandBase {
     @Override
     public String getCommandName() {
-        return "clearlb";
+        return "resetgui";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "Clears the saved landing block";
+        return "Resets all labels and colors";
     }
 
     @Override
@@ -32,8 +31,9 @@ public class ClearLbCommand extends TerminalCommandBase {
         if(args.length>=1){
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
-            SendMessageHelper.addChatMessage(sender,"Successfully cleared landing block");
-            GlobalData.getLandingBlock().setAABBs(new ArrayList<AxisAlignedBB>());
+            GlobalData.getColorData().reset();
+            LabelManager.TerminalGuiResetContainers();
+            SendMessageHelper.addChatMessage(sender,"Successfully reset gui");
         }
     }
 

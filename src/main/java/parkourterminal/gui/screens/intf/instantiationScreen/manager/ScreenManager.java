@@ -27,6 +27,7 @@ public class ScreenManager {
             return;
         }
         InstantiationScreen screen=screenMap.get(id.getID());
+        System.out.printf("switchTo?%s\n",screen.getScreenInstantiation());
         Minecraft.getMinecraft().displayGuiScreen(screen.getScreenInstantiation());
     }
     public static void SwitchToScreen(GuiScreen screen){

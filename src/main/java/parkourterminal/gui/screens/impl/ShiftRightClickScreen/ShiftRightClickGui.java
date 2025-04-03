@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
@@ -17,7 +19,7 @@ import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationSc
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 
 import java.io.IOException;
-
+@SideOnly(Side.CLIENT)
 public class ShiftRightClickGui extends BlurGui implements InstantiationScreen {
     private final ScrollBarImpl scrollBar=new ScrollBarImpl(1,1, ScrollDirection.VERTICAL);
     private int LastHeldItemID=-2;

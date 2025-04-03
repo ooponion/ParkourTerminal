@@ -10,6 +10,7 @@ import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.GuiScreen.components.Label;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl.*;
+import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.BlipLabel;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
@@ -75,6 +76,9 @@ public class LabelManager {
         addLabel("Second turning",new LabelValueDegree());
         addLabel("Third turning",new LabelValueDegree());
         addLabel("Airtime",new LabelValueInt());
+
+        //Blip
+        addLabel("Blip",new LabelValueBlip());
     }
     public static HashMap<String,Label> getDefaultLabelList(){
         return  defaultLabelList;
@@ -141,6 +145,9 @@ public class LabelManager {
         UpdateLabel("Second turning",GlobalData.getJumpData().getSecondTurning());
         UpdateLabel("Third turning",GlobalData.getJumpData().getThirdTurning());
         UpdateLabel("Airtime",GlobalData.getJumpData().getAirTime());
+
+        //Blip
+        UpdateLabel("Blip",new BlipLabel(GlobalData.getLandData().getBlipY(),GlobalData.getLandData().getBlipTimes()));
     }
     public static <T> void UpdateLabel(String name,T value){
         if(defaultLabelList.containsKey(name)){
@@ -164,10 +171,28 @@ public class LabelManager {
         TerminalJsonConfig.setLabelList(usedLabel);
     }
     public static void TerminalGuiInitContainers(){
+        System.out.printf("???????TerminalGuiInitContainers\n");
         TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
         if(guiScreen!=null){
             guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());
         }
+    }
+    public static void TerminalGuiResetContainers(){
+        TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
+        int y=0;
+        int padding=1;
+        if(guiScreen!=null){
+            List<Label> list=new ArrayList<Label>();
+            for(String  name:defaultLabelList.keySet()) {
+                Label label=defaultLabelList.get(name);
+                label.setPosition(0,y);
+                label.setEnabled(true);
+                list.add(label);
+                y+=label.getHeight()+padding;
+            }
+            guiScreen.InitContainers(list,new ArrayList<Label>());
+        }
+
     }
     private static List<Label> initUsedLabelsFromJson(){
         List<Label> usedLabelList=new ArrayList<Label>();

@@ -5,6 +5,8 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.ConsolaFontRenderer;
 import parkourterminal.gui.screens.impl.InGameMenuGui.IngameMenuGui;
@@ -15,7 +17,7 @@ import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
-
+@SideOnly(Side.CLIENT)
 public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScreen {
     // 旋转动画
     private float rotationAngle = 0.0f;
