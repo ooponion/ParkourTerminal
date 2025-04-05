@@ -3,8 +3,8 @@ package parkourterminal.util;
 import net.minecraft.util.EnumChatFormatting;
 
 public class ParseHelper {
-    public static boolean isPositiveInteger(String str) {
-        return str != null && str.matches("^[1-9]\\d*$"); // 正整数（不含0）
+    public static boolean isNunNegativeInteger(String str) {
+        return str != null && str.matches("^[0-9]\\d*$");
     }
     public static boolean isBoolean(String str) {
         return str != null && (str.equalsIgnoreCase("true")||str.equalsIgnoreCase("false"));
@@ -32,5 +32,17 @@ public class ParseHelper {
         else if (name.equals("YELLOW")) return EnumChatFormatting.YELLOW;
         else if (name.equals("WHITE")) return EnumChatFormatting.WHITE;
         else return null; // 未找到
+    }
+    public static Integer ParseColor(String color){
+        if(color.isEmpty()){
+            return null;
+        }
+        Integer result=null;
+        try{
+            result=Integer.decode(color);
+        }catch (NumberFormatException e) {
+           e.printStackTrace();
+        }
+        return result;
     }
 }

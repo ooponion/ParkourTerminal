@@ -3,8 +3,9 @@ package parkourterminal.data.properties;
 public class ConfigProperties {
     private boolean animationOn = false;
     private int precision = 5;
-    private String prefix="terminal";
-    private boolean showLabels=true;
+    private String prefix = "terminal";
+    private boolean showLabels = true;
+    private int landBlockColor = 0xf55a44;
 
     public boolean isAnimationOn() {
         return animationOn;
@@ -21,6 +22,7 @@ public class ConfigProperties {
     public void setPrecision(int precision) {
         this.precision = precision;
     }
+
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
@@ -35,5 +37,14 @@ public class ConfigProperties {
 
     public void setShowLabels(boolean showLabels) {
         this.showLabels = showLabels;
+    }
+
+    public int getLandBlockColor() {
+        return landBlockColor;
+    }
+
+    public void setLandBlockColor(int landBlockColor) {
+        landBlockColor=Math.max(0x0,Math.min(0xFFFFFF,landBlockColor));
+        this.landBlockColor = landBlockColor;
     }
 }

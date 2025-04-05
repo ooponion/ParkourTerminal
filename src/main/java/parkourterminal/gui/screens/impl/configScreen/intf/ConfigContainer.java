@@ -10,14 +10,15 @@ public class ConfigContainer extends Container {
     private final static int spacing =7;
     public ConfigContainer(){
         super(new Margin(0),new Padding(0),new noWarpLinearLayout(LayoutDirection.VERTICAL,spacing));
-        addComponent(new ConfigLine("coords precision",ConfigType.TextField,new DFModifier()));
         addComponent(new ConfigLine("display landblock",ConfigType.Switcher,new LandblockDisplayModifier()));
         addComponent(new ConfigLine("send chat pb",ConfigType.Switcher,new LandblockPBModifier()));
         addComponent(new ConfigLine("send chat offset",ConfigType.Switcher,new LandblockOffsetModifier()));
+        addComponent(new ConfigLine("show labels",ConfigType.Switcher,new ShowLabelsModifier()));
+        addComponent(new ConfigLine("coords precision",ConfigType.TextField,new DFModifier()));
         addComponent(new ConfigLine("color label",ConfigType.TextField,new ColorLabelModifier()));
         addComponent(new ConfigLine("color value",ConfigType.TextField,new ColorValueModifier()));
         addComponent(new ConfigLine("prefix",ConfigType.TextField,new PrefixModifier()));
-        addComponent(new ConfigLine("show labels",ConfigType.Switcher,new ShowLabelsModifier()));
+        addComponent(new ConfigLine("landblock color",ConfigType.TextField,new LandBlockColorModifier()));
     }
     @Override
     public void Update(){

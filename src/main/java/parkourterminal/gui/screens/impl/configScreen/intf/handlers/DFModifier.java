@@ -26,7 +26,7 @@ public class DFModifier implements SettingModifier<Integer> {
 
     @Override
     public boolean ifSatisfied(String value) {
-        return ParseHelper.isPositiveInteger(value)&&Integer.parseInt(value)>=0&&Integer.parseInt(value)<=16;
+        return ParseHelper.isNunNegativeInteger(value)&&Integer.parseInt(value)>=0&&Integer.parseInt(value)<=16;
     }
 
 }

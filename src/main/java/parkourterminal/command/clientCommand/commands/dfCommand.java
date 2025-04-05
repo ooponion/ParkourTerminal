@@ -27,7 +27,7 @@ public class dfCommand extends TerminalCommandBase {
         if(args.length!=1){
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
-            if(!ParseHelper.isPositiveInteger(args[0])){
+            if(!ParseHelper.isNunNegativeInteger(args[0])){
                 SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
                 return;
             }
