@@ -9,6 +9,9 @@ public class NumberWrapper {
         return Math.round(number * scale) / scale;
     }
     public static String toDecimalString(double number){
+        if(TerminalJsonConfig.getProperties().isTrimZeros()&&Math.abs(number)<1e-16D){
+            return String.format("%.1f", number);
+        }
         return String.format("%." + TerminalJsonConfig.getProperties().getPrecision() + "f", number);
     }
 }

@@ -5,6 +5,7 @@ public class ConfigProperties {
     private int precision = 5;
     private String prefix = "terminal";
     private boolean showLabels = true;
+    private boolean trimZeros=true;
     private int landBlockColor = 0xf55a44;
 
     public boolean isAnimationOn() {
@@ -46,5 +47,13 @@ public class ConfigProperties {
     public void setLandBlockColor(int landBlockColor) {
         landBlockColor=Math.max(0x0,Math.min(0xFFFFFF,landBlockColor));
         this.landBlockColor = landBlockColor;
+    }
+
+    public boolean isTrimZeros() {
+        return trimZeros;
+    }
+
+    public void setTrimZeros(boolean trimZeros) {
+        this.trimZeros = trimZeros;
     }
 }

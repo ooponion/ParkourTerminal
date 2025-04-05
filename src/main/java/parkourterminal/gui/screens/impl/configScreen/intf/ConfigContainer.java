@@ -14,6 +14,7 @@ public class ConfigContainer extends Container {
         addComponent(new ConfigLine("send chat pb",ConfigType.Switcher,new LandblockPBModifier()));
         addComponent(new ConfigLine("send chat offset",ConfigType.Switcher,new LandblockOffsetModifier()));
         addComponent(new ConfigLine("show labels",ConfigType.Switcher,new ShowLabelsModifier()));
+        addComponent(new ConfigLine("trim zeros",ConfigType.Switcher,new TrimZerosModifier()));
         addComponent(new ConfigLine("coords precision",ConfigType.TextField,new DFModifier()));
         addComponent(new ConfigLine("color label",ConfigType.TextField,new ColorLabelModifier()));
         addComponent(new ConfigLine("color value",ConfigType.TextField,new ColorValueModifier()));
