@@ -1,6 +1,8 @@
 package parkourterminal.input;
 
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
@@ -166,7 +168,7 @@ public class TerminalWindowManager {
             return;
         }
 
-        if (GlobalConfig.animation) {
+        if (TerminalJsonConfig.getProperties().isAnimationOn()) {
             animateTextOutput(response + "\n");
         } else {
             outputArea.append(response + "\n");

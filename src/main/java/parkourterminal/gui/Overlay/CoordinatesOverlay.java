@@ -10,6 +10,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.NumberWrapper;
 
 import java.math.BigDecimal;
@@ -47,11 +48,12 @@ public class CoordinatesOverlay {
         float yaw = location.getFloat("yaw");
         float pitch = location.getFloat("pitch");
         String name = location.getString("name");
-        String dx = "posX: "+ new BigDecimal(x).setScale(GlobalConfig.precision, RoundingMode.HALF_UP);
-        String dy ="posY: "+ new BigDecimal(y).setScale(GlobalConfig.precision, RoundingMode.HALF_UP);
-        String dz ="posZ: "+ new BigDecimal(z).setScale(GlobalConfig.precision, RoundingMode.HALF_UP);
-        String dYaw ="yaw: "+ new BigDecimal(yaw).setScale(GlobalConfig.precision, RoundingMode.HALF_UP);
-        String dPitch ="pitch: "+ new BigDecimal(pitch).setScale(GlobalConfig.precision, RoundingMode.HALF_UP);
+        int precision= TerminalJsonConfig.getProperties().getPrecision();
+        String dx = "posX: "+ new BigDecimal(x).setScale(precision, RoundingMode.HALF_UP);
+        String dy ="posY: "+ new BigDecimal(y).setScale(precision, RoundingMode.HALF_UP);
+        String dz ="posZ: "+ new BigDecimal(z).setScale(precision, RoundingMode.HALF_UP);
+        String dYaw ="yaw: "+ new BigDecimal(yaw).setScale(precision, RoundingMode.HALF_UP);
+        String dPitch ="pitch: "+ new BigDecimal(pitch).setScale(precision, RoundingMode.HALF_UP);
 
         int textX = boxX + 10;// 绘制文本，从boxX+10处开始，考虑横向滚动偏移
         int textY = boxY + 5; // 上边距固定为5像素

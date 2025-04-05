@@ -1,7 +1,6 @@
 package parkourterminal.gui.screens.impl.configScreen.intf.handlers;
 
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.ParseHelper;
 
 public class ColorLabelModifier implements SettingModifier<String>{

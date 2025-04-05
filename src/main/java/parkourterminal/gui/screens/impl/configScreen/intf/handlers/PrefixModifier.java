@@ -1,8 +1,6 @@
 package parkourterminal.gui.screens.impl.configScreen.intf.handlers;
 
-import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.json.TerminalJsonConfig;
-import parkourterminal.util.ParseHelper;
 
 public class PrefixModifier implements SettingModifier<String>{
     @Override
@@ -12,12 +10,12 @@ public class PrefixModifier implements SettingModifier<String>{
 
     @Override
     public String getConfigValue() {
-        return TerminalJsonConfig.getPrefix();
+        return TerminalJsonConfig.getProperties().getPrefix();
     }
 
     @Override
     public void setConfigValue(String value) {
-        TerminalJsonConfig.setPrefix(value);
+        TerminalJsonConfig.getProperties().setPrefix(value);
     }
 
     @Override

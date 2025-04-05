@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.global.json.LabelJson;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;

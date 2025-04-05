@@ -1,8 +1,7 @@
 package parkourterminal.data.EntityJumpData;
 
 import net.minecraft.client.entity.EntityPlayerSP;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.data.inputdata.TickInput;
+import parkourterminal.data.GlobalData;
 
 public class JumpData {
     private Double jumpX= Double.NaN;

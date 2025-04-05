@@ -11,13 +11,13 @@ public class ShowLabelsModifier implements SettingModifier<Boolean>{
 
     @Override
     public Boolean getConfigValue() {
-        return TerminalJsonConfig.isShowLabels();
+        return TerminalJsonConfig.getProperties().isShowLabels();
     }
 
     @Override
     public void setConfigValue(String value) {
         if(ifSatisfied(value)){
-            TerminalJsonConfig.setShowLabels(Boolean.parseBoolean(value));
+            TerminalJsonConfig.getProperties().setShowLabels(Boolean.parseBoolean(value));
         }
     }
 

@@ -1,22 +1,14 @@
 package parkourterminal.data.EntitylandData;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAnvil;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.util.BlockUtils;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.LandingBlockHelper;
 
 import javax.vecmath.Vector3d;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class LandingData {

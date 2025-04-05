@@ -1,23 +1,15 @@
 package parkourterminal.command.clientCommand.commands;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.global.GlobalConfig;
-import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
-import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
-import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.ParseHelper;
 import parkourterminal.util.SendMessageHelper;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class dfCommand extends TerminalCommandBase {
     @Override
@@ -43,7 +35,7 @@ public class dfCommand extends TerminalCommandBase {
                 SendMessageHelper.addChatMessage(sender,"precision is between 0 and 16");
                 return;
             }
-            GlobalConfig.updateConfig("precision",args[0]);
+            TerminalJsonConfig.getProperties().setPrecision(Integer.parseInt(args[0]));
             SendMessageHelper.addChatMessage(sender,"Changed coords precision to "+args[0]+" decimals.");
         }
     }

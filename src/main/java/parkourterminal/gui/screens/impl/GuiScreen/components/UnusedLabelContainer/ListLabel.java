@@ -2,8 +2,7 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContain
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.GlobalData;
 import parkourterminal.gui.layout.Padding;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.DisableTip;

@@ -1,6 +1,6 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 
 import java.time.LocalDateTime;

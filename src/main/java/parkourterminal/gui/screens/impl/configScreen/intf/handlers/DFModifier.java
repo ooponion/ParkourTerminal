@@ -1,6 +1,7 @@
 package parkourterminal.gui.screens.impl.configScreen.intf.handlers;
 
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.ParseHelper;
 
 public class DFModifier implements SettingModifier<Integer> {
@@ -12,14 +13,14 @@ public class DFModifier implements SettingModifier<Integer> {
 
     @Override
     public Integer getConfigValue() {
-        return GlobalConfig.precision;
+        return TerminalJsonConfig.getProperties().getPrecision();
     }
 
     @Override
     public void setConfigValue(String value) {
         if(ifSatisfied(value))
         {
-            GlobalConfig.updateConfig("precision",value);
+            TerminalJsonConfig.getProperties().setPrecision(Integer.parseInt(value));
         }
     }
 

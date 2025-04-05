@@ -31,7 +31,7 @@ public class ArgsOverlay {
             return;
         }
         TerminalGuiScreen screen=(TerminalGuiScreen)ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
-        if(TerminalJsonConfig.isShowLabels()&&screen!=null){
+        if(TerminalJsonConfig.getProperties().isShowLabels()&&screen!=null){
             screen.drawOverlay();
         }
     }

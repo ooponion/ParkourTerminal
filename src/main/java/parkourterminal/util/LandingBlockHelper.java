@@ -2,7 +2,7 @@ package parkourterminal.util;
 
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.data.landingblock.intf.AABB;
 
 import java.util.ArrayList;

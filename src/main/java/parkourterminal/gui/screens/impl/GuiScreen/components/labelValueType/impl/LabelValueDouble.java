@@ -1,8 +1,10 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
+import parkourterminal.util.NumberWrapper;
 
 public class LabelValueDouble implements LabelValue<Double> {
     Double value;
@@ -16,6 +18,6 @@ public class LabelValueDouble implements LabelValue<Double> {
         if(value==null||value.isNaN()){
             return GlobalData.getValueColor() +"N/A";
         }
-        return GlobalData.getValueColor() +String.format("%." + GlobalConfig.precision + "f", value);
+        return GlobalData.getValueColor() + NumberWrapper.toDecimalString(value);
     }
 }

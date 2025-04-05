@@ -1,7 +1,6 @@
 package parkourterminal.gui.screens.impl.configScreen.intf.handlers;
 
-import net.minecraft.util.EnumChatFormatting;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.ParseHelper;
 
 public class ColorValueModifier implements SettingModifier<String>{

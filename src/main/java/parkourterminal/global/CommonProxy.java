@@ -24,6 +24,6 @@ public class CommonProxy {
         new CommandLoader(event);
     }
     public void serverClosing(FMLServerStoppingEvent event) {
-        TerminalJsonConfig.saveLabels();
+        TerminalJsonConfig.WriteConfig();
     }
 }

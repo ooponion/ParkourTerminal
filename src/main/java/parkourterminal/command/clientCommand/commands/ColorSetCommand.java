@@ -4,16 +4,12 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
-import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.ParseHelper;
 import parkourterminal.util.SendMessageHelper;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ColorSetCommand extends TerminalCommandBase {

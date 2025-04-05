@@ -2,14 +2,11 @@ package parkourterminal.command.clientCommand.commands;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.SendMessageHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ClearPbCommand extends TerminalCommandBase {

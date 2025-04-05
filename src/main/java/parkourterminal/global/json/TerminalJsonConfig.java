@@ -3,6 +3,7 @@ package parkourterminal.global.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import parkourterminal.data.properties.ConfigProperties;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.data.ColorData.ColorData;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
@@ -12,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Properties;
 
 public class TerminalJsonConfig {
     private static TerminalJsonRoot root = new TerminalJsonRoot();
@@ -32,6 +34,7 @@ public class TerminalJsonConfig {
         }
     }
     public static void WriteConfig(){
+        LabelManager.saveConfigUsedLabels();
         Gson gson = new GsonBuilder().serializeNulls().create();
         try {
             FileWriter writer = new FileWriter(GlobalConfig.getConfigDir()+ "/config.json");
@@ -48,34 +51,15 @@ public class TerminalJsonConfig {
 
     public static void setLabelList(HashMap<String, LabelJson> labels) {
         root.setUsedLabels(labels);
-        WriteConfig();
-    }
-    public static void saveLabels(){
-        LabelManager.saveConfigUsedLabels();
     }
     public static LandBlockJson getLandBlockJson(){
         return root.getLandBlock();
     }
-    public static void setLandBlockJson(LandBlockJson landBlockJson){
-        root.setLandBlock(landBlockJson);
-    }
     public static ColorData getColors(){
         return root.getColorData();
     }
+    public static ConfigProperties getProperties(){return root.getProperties();}
     public static String getPrefixWithAngleBrackets(){
-        return "<"+root.getPrefix()+"> ";
-    }
-    public static String getPrefix(){
-        return root.getPrefix();
-    }
-     public static void setPrefix(String prefix){
-        root.setPrefix(prefix);
-     }
-    public static boolean isShowLabels() {
-        return root.isShowLabels();
-    }
-
-    public static void setShowLabels(boolean showLabels) {
-        root.setShowLabels(showLabels);
+        return "<"+root.getProperties().getPrefix()+"> ";
     }
 }
