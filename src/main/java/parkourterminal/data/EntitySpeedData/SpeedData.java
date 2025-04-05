@@ -7,9 +7,9 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3d;
 
 public class SpeedData {
-    Double deltaX = Double.NaN;
-    Double deltaY = Double.NaN;
-    Double deltaZ = Double.NaN;
+    Double deltaX = 0D;
+    Double deltaY = 0D;
+    Double deltaZ = 0D;
 
     public SpeedData(){
 
@@ -23,8 +23,7 @@ public class SpeedData {
         return new Vector3d(deltaX,deltaY,deltaZ);
     }
     public Vector2f getSpeedVector(){
-        Vector2d vector=new Vector2d(deltaX,deltaZ);
-        vector.normalize();
+        Vector2d vector=new Vector2d(Math.hypot(deltaX,deltaZ),-Math.toDegrees(Math.atan2(deltaX,deltaZ))+0.0000000000000000001D);
         return new Vector2f(vector);
     }
 }
