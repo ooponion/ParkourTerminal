@@ -7,8 +7,10 @@ public class JumpData {
     private Double jumpX= Double.NaN;
     private Double jumpY= Double.NaN;
     private Double jumpZ= Double.NaN;
+    private float preturn=0f;
     private float firstTurning=0f;
     private float lastTurning=0f;
+    private float lastTickTurning=0f;
     private float jumpAngle=0f;
     private float last45=0f;
     private float secondTurning=0f;
@@ -54,6 +56,10 @@ public class JumpData {
         return last45;
     }
 
+    public float getPreturn() {
+        return preturn;
+    }
+
     public void Update(EntityPlayerSP player){
         if(GlobalData.getInputData().getOperation().isActualJump()){//Jump
             airTick=0;
@@ -67,6 +73,7 @@ public class JumpData {
         lastTurning=player.rotationYaw-lastFacing;
         switch ((int) airTick){
             case 0:
+                preturn=lastTickTurning;
                 firstTurning=lastTurning;
                 jumpAngle=player.rotationYaw;
                 break;
@@ -82,5 +89,6 @@ public class JumpData {
         }
 
         lastFacing=player.rotationYaw;
+        lastTickTurning=lastTurning;
     }
 }

@@ -2,6 +2,7 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.man
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import parkourterminal.data.GlobalData;
@@ -62,6 +63,7 @@ public class LabelManager {
         addLabel("Looking At",new LabelValueBlockPos());
         addLabel("Motion (b/t)",new LabelValue3DVector());
         addLabel("Tier",new LabelValueInt());
+        addLabel("Ping",new LabelValuePing());
 
         //Jump
         addLabel("Jump X",new LabelValueDouble());
@@ -70,6 +72,7 @@ public class LabelManager {
 
         //AngleRelated
         addLabel("Last turning",new LabelValueDegree());
+        addLabel("Preturn",new LabelValueDegree());
         addLabel("Jump Angle",new LabelValueDegree());
         addLabel("Last 45",new LabelValueDegree());
         addLabel("First turning",new LabelValueDegree());
@@ -131,6 +134,7 @@ public class LabelManager {
         }
         UpdateLabel("Motion (b/t)",new Vector3d(player.motionX,player.motionY,player.motionZ));
         UpdateLabel("Tier",GlobalData.getLandData().getTier());
+        UpdateLabel("Ping",getPing());
 
         //Jump
         UpdateLabel("Jump X",GlobalData.getJumpData().getJumpX());
@@ -140,6 +144,7 @@ public class LabelManager {
         //AngleRelated
         UpdateLabel("Last turning",GlobalData.getJumpData().getLastTurning());
         UpdateLabel("Jump Angle",GlobalData.getJumpData().getJumpAngle());
+        UpdateLabel("Preturn",GlobalData.getJumpData().getPreturn());
         UpdateLabel("Last 45",GlobalData.getJumpData().getLast45());
         UpdateLabel("First turning",GlobalData.getJumpData().getFirstTurning());
         UpdateLabel("Second turning",GlobalData.getJumpData().getSecondTurning());
@@ -217,5 +222,10 @@ public class LabelManager {
             }
         }
         return unusedLabelList;
+    }
+    public static int getPing() {
+        Minecraft mc = Minecraft.getMinecraft();
+        NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID());
+        return (info != null) ? info.getResponseTime() : 0;
     }
 }
