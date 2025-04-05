@@ -65,7 +65,17 @@ public class TerminalJsonConfig {
     public static String getPrefixWithAngleBrackets(){
         return "<"+root.getPrefix()+"> ";
     }
-     public void setPrefix(String prefix){
+    public static String getPrefix(){
+        return root.getPrefix();
+    }
+     public static void setPrefix(String prefix){
         root.setPrefix(prefix);
      }
+    public static boolean isShowLabels() {
+        return root.isShowLabels();
+    }
+
+    public static void setShowLabels(boolean showLabels) {
+        root.setShowLabels(showLabels);
+    }
 }

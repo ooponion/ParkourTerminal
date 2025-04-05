@@ -16,28 +16,26 @@ public class ToggleSwitch extends UIComponent {
     private boolean isOn = false;
     private int onColor = 0xFF00FF00;   // 绿色
     private int offColor = 0xFFFF0000;  // 红色
-    private final int thumbWidth = 6;
+    private int thumbWidth = 6;
     // 用于绘制文字的字体渲染器，此处假设 ConsolaFontRenderer 提供 getStringWidth 方法
     private final FontRenderer fontRenderer = new ConsolaFontRenderer(Minecraft.getMinecraft());
     private String labelText; // 右侧显示的标签文字
     private static final int TEXT_PADDING = 5; // 文字与开关的间距
 
     // 按钮部分的宽度（不包括标签部分）
-    private int buttonWidth;
     // 文本区域假定固定宽度 40 像素
-    private static final int FIXED_TEXT_WIDTH = 60;
+
 
 
     /**
      * 构造函数中传入的 buttonWidth 表示仅按钮的宽度，
-     * 整个组件的宽度 = buttonWidth + TEXT_PADDING + FIXED_TEXT_WIDTH
+     * 整个组件的宽度 = buttonWidth + TEXT_PADDING + FIXED_TEXT_WIDTH(discard hehe)
      */
-    public ToggleSwitch(int buttonWidth, int height, String labelText) {
-        this.buttonWidth = buttonWidth;
+    public ToggleSwitch(int width, int height, String labelText) {
         this.labelText = labelText;
         this.setHeight(height);
         // 组件总宽度按按钮宽度 + 间距 + 假定的文本区域宽度计算
-        this.setWidth(buttonWidth + TEXT_PADDING + FIXED_TEXT_WIDTH);
+        this.setWidth(width);
         // 根据按钮宽度初始化 thumbX
         this.getAnimation().changeWithOutAnimation(new FloatPoint(this.getX(),this.getY()));
         this.getAnimationColor().changeWithOutAnimation(new InterpolatingColor(offColor));
@@ -53,14 +51,14 @@ public class ToggleSwitch extends UIComponent {
         FloatPoint point=getAnimation().Update();
 
         // 绘制按钮区域的边框（仅针对按钮区域，不包含标签部分）
-        ShapeDrawer.drawRoundedRectBorder(getX(), getY(), buttonWidth, getHeight(), 0x40000000, 3);
+        ShapeDrawer.drawRoundedRectBorder(getX(), getY(), getWidth(), getHeight(), 0x40000000, (float) thumbWidth /2);
 
         // 根据 thumbX 计算进度（0 表示开启状态，1 表示关闭状态），基于按钮区域宽度
         //float progress = (float) thumbX / (float) (buttonWidth - thumbWidth);
         // 使用插值函数计算当前滑块颜色
         //int interpolatedColor = AnimationHelper.interpolateColor(onColor, offColor, progress);
         if(isOn){
-            getAnimation().RestartAnimation(new FloatPoint(getX()+buttonWidth - thumbWidth,getY()));
+            getAnimation().RestartAnimation(new FloatPoint(getX()+getWidth() - thumbWidth,getY()));
             getAnimationColor().RestartAnimation(new InterpolatingColor(onColor));
         }else{
             getAnimation().RestartAnimation(new FloatPoint(getX(),getY()));
@@ -68,10 +66,10 @@ public class ToggleSwitch extends UIComponent {
         }
 
         // 绘制滑块
-        ShapeDrawer.drawRoundedRect(point.getX(), getY(), thumbWidth, getHeight(), getAnimationColor().Update().getColor(), 3);
+        ShapeDrawer.drawRoundedRect(point.getX(), getY(), thumbWidth, getHeight(), getAnimationColor().Update().getColor(), (float) thumbWidth /2);
 
         // 绘制右侧的标签文字（直接左对齐显示，假定宽度 100）
-        int labelTextX = getX() + buttonWidth + TEXT_PADDING;
+        int labelTextX = getX() + getWidth() + TEXT_PADDING;
         int labelTextY = getY() + (getHeight() - fontRenderer.FONT_HEIGHT) / 2;
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -100,4 +98,26 @@ public class ToggleSwitch extends UIComponent {
         }
         return false;
     }
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        thumbWidth=Math.min(getWidth(),getHeight());
+    }
+    @Override
+    public void setHeight(int height) {
+        super.setHeight(height);
+        thumbWidth=Math.min(getWidth(),getHeight());
+    }
+    @Override
+    public void setSize(int width,int height) {
+        super.setSize(width,height);
+        thumbWidth=Math.min(getWidth(),getHeight());
+    }
+    public boolean isOn() {
+        return isOn;
+    }
+    public void setOn(boolean on){
+        isOn=on;
+    }
+
 }

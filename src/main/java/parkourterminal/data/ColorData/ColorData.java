@@ -3,7 +3,7 @@ package parkourterminal.data.ColorData;
 import net.minecraft.util.EnumChatFormatting;
 
 public class ColorData {
-    private EnumChatFormatting labelColor=EnumChatFormatting.LIGHT_PURPLE;
+    private EnumChatFormatting labelColor=EnumChatFormatting.GOLD;
     private EnumChatFormatting ValueColor=EnumChatFormatting.AQUA;
     public EnumChatFormatting getLabelColor(){
         return labelColor;

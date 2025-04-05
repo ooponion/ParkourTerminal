@@ -53,7 +53,6 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
-        System.out.printf("enter it\n");
         usedLabelContainer.setIsOverlay(false);
         LabelManager.UpdateLabelValuesPerTick(partialTicks);
         usedLabelContainer.draw(mouseX, mouseY, partialTicks);

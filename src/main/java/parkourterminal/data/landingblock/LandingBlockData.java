@@ -96,7 +96,7 @@ public class LandingBlockData {
         if(union==null){
             return;
         }
-        if(!((posY<=union.maxY&&union.maxY<lposY)||(lposY<union.maxY&&union.maxY<=posY))){
+        if(!(posY<=union.maxY&&union.maxY<lposY)){
             return;
         }
         double offsetMinXR;
@@ -128,6 +128,12 @@ public class LandingBlockData {
             }
         }else{
             totalOffset=Math.min(Xoffset,Zoffset);
+        }
+        if (TerminalJsonConfig.getLandBlockJson().isSendChatOffset()){
+            SendMessageHelper.addChatMessage(player,"X Offset:"+
+                    String.format("%." + GlobalConfig.precision + "f", Xoffset));
+            SendMessageHelper.addChatMessage(player,"Z Offset:"+
+                    String.format("%." + GlobalConfig.precision + "f", Zoffset));
         }
         setOffsets( new Double[]{Xoffset,Zoffset,totalOffset});
     }

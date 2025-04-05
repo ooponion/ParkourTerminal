@@ -10,6 +10,7 @@ public class TerminalJsonRoot {
     private LandBlockJson landBlock=new LandBlockJson();
     private ColorData colorData =new ColorData();
     private String prefix="terminal";
+    private boolean showLabels=true;
 
     public HashMap<String, LabelJson> getUsedLabels() {
         return usedLabels;
@@ -41,5 +42,13 @@ public class TerminalJsonRoot {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public boolean isShowLabels() {
+        return showLabels;
+    }
+
+    public void setShowLabels(boolean showLabels) {
+        this.showLabels = showLabels;
     }
 }

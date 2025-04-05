@@ -4,10 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.util.SendMessageHelper;
@@ -17,15 +14,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GuiCommand extends TerminalCommandBase {
+public class SetConfigCommand extends TerminalCommandBase {
     @Override
     public String getCommandName() {
-        return "gui";
+        return "config";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "Opens a GUI for positioning/disabling/removing the labels";
+        return "Opens a GUI for setting configs";
     }
 
     @Override
@@ -42,14 +39,13 @@ public class GuiCommand extends TerminalCommandBase {
                         @Override
                         public void run() {
                             if (Minecraft.getMinecraft().thePlayer != null) {
-                                ScreenManager.SwitchToScreen(new ScreenID("TerminalGuiScreen"));
+                                ScreenManager.SwitchToScreen(new ScreenID("ConfigSettingScreen"));
                             }
                         }
                     });
                 }
             }, 100, TimeUnit.MILLISECONDS);
-
-            SendMessageHelper.addChatMessage(sender,"Opens gui");
+            SendMessageHelper.addChatMessage(sender,"Opens config");
         }
     }
 
