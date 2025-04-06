@@ -5,6 +5,7 @@ import net.minecraft.util.AxisAlignedBB;
 import parkourterminal.data.landingblock.intf.AABB;
 import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
+import parkourterminal.data.landingblock.intf.LBmod;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.LandingBlockHelper;
@@ -18,13 +19,10 @@ public class LandingBlockData {
     private List<AABB> bbs=new ArrayList<AABB>();
     private LBaxis lBaxis =LBaxis.BOTH;
     private LBbox lBbox=LBbox.NON_BOX;
+    private LBmod lBmod=LBmod.Land;
     private Double[] offsets =new Double[]{Double.NaN,Double.NaN,Double.NaN};
     private Double[] pb =new Double[]{Double.NaN,Double.NaN,Double.NaN};
-    public LandingBlockData(List<AABB> bbs,LBaxis lBaxis,LBbox lBbox){
-        this.bbs=bbs;
-        this.lBaxis=lBaxis;
-        this.lBbox=lBbox;
-    }
+    double last2posZ=Double.NEGATIVE_INFINITY;
 
     public LandingBlockData() {
 
@@ -45,6 +43,10 @@ public class LandingBlockData {
         return lBbox;
     }
 
+    public LBmod getlBmod() {
+        return lBmod;
+    }
+
     public void setAABBs(List<AxisAlignedBB> bbs) {
         this.bbs=LandingBlockHelper.WrappedAABBList(bbs);
     }
@@ -58,6 +60,10 @@ public class LandingBlockData {
 
     public void setlBbox(LBbox lBbox) {
         this.lBbox = lBbox;
+    }
+
+    public void setlBmod(LBmod lBmod) {
+        this.lBmod = lBmod;
     }
 
     public Double[] getOffsets() {
@@ -77,40 +83,64 @@ public class LandingBlockData {
     }
 
     public void Update( EntityPlayerSP player){
-
+        if(Double.NEGATIVE_INFINITY==last2posZ){
+            last2posZ=player.lastTickPosZ;
+        }
         UpdateOffsets(player);
         UpdatePB(player);
+        last2posZ=player.lastTickPosZ;
     }
     private void UpdateOffsets(EntityPlayerSP player){
-        double lposX=player.lastTickPosX;
-        double lposY=player.lastTickPosY;
-        double lposZ=player.lastTickPosZ;
-        double posY=player.posY;
-        double minX=lposX-0.3;
-        double maxX=lposX+0.3;
-        double minZ=lposZ-0.3;
-        double maxZ=lposZ+0.3;
         AxisAlignedBB union=LandingBlockHelper.UnionAll(getWrappedAABBs());
         if(union==null){
             return;
         }
-        if(!(posY<=union.maxY&&union.maxY<lposY)){
+        double posX=player.lastTickPosX;
+        double posY=player.lastTickPosY;
+        double posZ=player.lastTickPosZ;
+        if(getlBmod()==LBmod.Land){
+            posX=player.lastTickPosX;
+            posY=player.lastTickPosY;
+            posZ=player.lastTickPosZ;
+        } else if (getlBmod()==LBmod.Hit) {
+            posX=player.posX;
+            posY=player.posY;
+            posZ=player.posZ;
+        } else if (getlBmod()==LBmod.Z_neo) {
+            posX=player.lastTickPosX;
+            posY=player.lastTickPosY;
+            posZ=last2posZ;
+        }else if (getlBmod()==LBmod.Enter){
+            posX=player.posX;
+            posY=player.posY;
+            posZ=player.posZ;
+            if(!(player.posY<union.maxY&&player.posY>union.minY&&player.posY<player.lastTickPosY)){
+                return;
+            }
+        }
+        if(!(player.posY<=union.maxY&&union.maxY<player.lastTickPosY)&&getlBmod()!=LBmod.Enter){
             return;
         }
+        double minX=posX-0.3;
+        double maxX=posX+0.3;
+        double minZ=posZ-0.3;
+        double maxZ=posZ+0.3;
+
         double offsetMinXR;
         double offsetMinXL;
         double offsetMinZT;
         double offsetMinZB;
+        //这部分之后要去掉
         if(getlBbox()== LBbox.NON_BOX){//Non_Box case
             offsetMinXR= union.maxX-minX;
             offsetMinXL= maxX-union.minX;
             offsetMinZT= union.maxZ-minZ;
             offsetMinZB= maxZ-union.minZ;
         }else{//Box case
-            offsetMinXR= union.maxX-lposX;
-            offsetMinXL= lposX-union.minX;
-            offsetMinZT= union.maxZ-lposZ;
-            offsetMinZB= lposZ-union.minZ;
+            offsetMinXR= union.maxX-posX;
+            offsetMinXL= posX-union.minX;
+            offsetMinZT= union.maxZ-posZ;
+            offsetMinZB= posZ-union.minZ;
         }
         double totalOffset;
         double Xoffset=Math.min(offsetMinXR,offsetMinXL);

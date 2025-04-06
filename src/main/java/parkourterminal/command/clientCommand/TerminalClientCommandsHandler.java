@@ -26,7 +26,8 @@ public class TerminalClientCommandsHandler extends CommandBase {
                 new ClearPbCommand(),
                 new SetConfigCommand(),
                 new ToggleSprintCommand(),
-                new ClearMaxSpeedCommand());
+                new ClearMaxSpeedCommand(),
+                new SetLBmodCommand());
     }
     @Override
     public List<String> getCommandAliases(){
