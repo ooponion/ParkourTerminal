@@ -17,11 +17,11 @@ public class BlockUtils {
     public static Vector3d getMinPos(AxisAlignedBB axisAlignedBB){
         return new Vector3d(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ);
     }
-    public static Vector3d getMaxPos(AxisAlignedBB axisAlignedBB){
-        return new Vector3d(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.maxZ);
+    public static Vector3d getMaxPos(AxisAlignedBB axisAlignedBB) {
+        return new Vector3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ);
     }
-    public static List<AxisAlignedBB> getAABBsUnderPlayerFeet(World worldIn, EntityPlayerSP player){
-        BlockPos feetPos1=new BlockPos(player.posX, player.posY-0.001f, player.posZ);
+    public static List<AxisAlignedBB> getAABBsUnderPlayerFeet( EntityPlayerSP player){
+        BlockPos feetPos1=new BlockPos(player.posX, player.posY-0.00000000001f, player.posZ);
         BlockPos feetPos2=feetPos1.add(1,0,0);
         BlockPos feetPos3=feetPos1.add(0,0,1);
         BlockPos feetPos4=feetPos1.add(-1,0,0);
@@ -32,12 +32,12 @@ public class BlockUtils {
         BlockPos feetPos9=feetPos1.add(-1,0,1);
         BlockPos[] posList=new BlockPos[]{feetPos9,feetPos1,feetPos2,feetPos3,feetPos4,feetPos5,feetPos6,feetPos7,feetPos8};
         List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.001f,0);
+        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.00000000001f,0);
         for(BlockPos feetPos:posList){
-            IBlockState state=worldIn.getBlockState(feetPos);
+            IBlockState state=player.worldObj.getBlockState(feetPos);
             Block block=state.getBlock();
             BlockPos fencePos=feetPos.add(0,-0.5,0);
-            IBlockState state2=worldIn.getBlockState(fencePos);
+            IBlockState state2=player.worldObj.getBlockState(fencePos);
             Block block2=state2.getBlock();
             block2.addCollisionBoxesToList(player.worldObj, fencePos,state2,bounding,boxes,null);
             if(block instanceof BlockAnvil){
@@ -47,9 +47,9 @@ public class BlockUtils {
         }
         return boxes;
     }
-    public static AxisAlignedBB getBiggestAABBUnderPlayerFeet(World worldIn, EntityPlayerSP player){
-        List<AxisAlignedBB> boxes = getAABBsUnderPlayerFeet(worldIn, player);
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.001f,0);
+    public static AxisAlignedBB getBiggestAABBUnderPlayerFeet( EntityPlayerSP player){
+        List<AxisAlignedBB> boxes = getAABBsUnderPlayerFeet(player);
+        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.00000000001f,0);
         AxisAlignedBB maxBox=null;
         double maxV=0;
         for(AxisAlignedBB axisAlignedBB:boxes){
@@ -62,7 +62,7 @@ public class BlockUtils {
         return maxBox;
     }
     public static Block getBlockOnPlayerFeet(World worldIn,EntityPlayerSP player){
-        BlockPos feetPos=new BlockPos(player.posX, player.posY-0.001, player.posZ);
+        BlockPos feetPos=new BlockPos(player.posX, player.posY-0.00000000001, player.posZ);
         IBlockState state=worldIn.getBlockState(feetPos);
         return state.getBlock();
     }

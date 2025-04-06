@@ -15,7 +15,7 @@ public class LandingBlockHelper {
         if (lastPosY <= posY) {
             return false;
         }
-        List<AABB> bbs = WrappedAABBList(BlockUtils.getAABBsUnderPlayerFeet(player.worldObj, player));
+        List<AABB> bbs = WrappedAABBList(BlockUtils.getAABBsUnderPlayerFeet(player));
         List<AABB> intersection = new ArrayList<AABB>();
         for (AABB landBb : GlobalData.getLandingBlock().getWrappedAABBs()) {
             for (AABB bb : bbs) {

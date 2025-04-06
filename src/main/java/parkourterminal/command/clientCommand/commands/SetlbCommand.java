@@ -83,9 +83,9 @@ public class SetlbCommand extends TerminalCommandBase {
             if(target==null&&num3==null){
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
                 if(divided!=null){
-                    lb.add(BlockUtils.getBiggestAABBUnderPlayerFeet(worldIn,player));
+                    lb.add(BlockUtils.getBiggestAABBUnderPlayerFeet(player));
                 }else{
-                    lb.addAll(BlockUtils.getAABBsUnderPlayerFeet(worldIn,player));
+                    lb.addAll(BlockUtils.getAABBsUnderPlayerFeet(player));
                 }
                 GlobalData.getLandingBlock().setAABBs(lb);
                 if(!lb.isEmpty()){
