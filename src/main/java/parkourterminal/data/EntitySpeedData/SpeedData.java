@@ -56,4 +56,8 @@ public class SpeedData {
     public Vector3d getMaxSpeed() {
         return maxSpeed;
     }
+    public void resetMaxSpeed(){
+        maxSpeed=new Vector3d(0,0,0);
+        maxSpeedVector=new Vector2d(0,0);
+    }
 }
