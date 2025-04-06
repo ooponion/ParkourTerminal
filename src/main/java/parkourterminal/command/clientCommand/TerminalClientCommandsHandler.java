@@ -24,7 +24,8 @@ public class TerminalClientCommandsHandler extends CommandBase {
                 new ResetGuiCommand(),
                 new dfCommand(),
                 new ClearPbCommand(),
-                new SetConfigCommand());
+                new SetConfigCommand(),
+                new ToggleSprintCommand());
     }
     @Override
     public List<String> getCommandAliases(){

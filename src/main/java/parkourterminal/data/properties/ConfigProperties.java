@@ -7,6 +7,7 @@ public class ConfigProperties {
     private boolean showLabels = true;
     private boolean trimZeros=true;
     private int landBlockColor = 0xf55a44;
+    private boolean toggleSprint=false;
 
     public boolean isAnimationOn() {
         return animationOn;
@@ -55,5 +56,16 @@ public class ConfigProperties {
 
     public void setTrimZeros(boolean trimZeros) {
         this.trimZeros = trimZeros;
+    }
+
+    public boolean isToggleSprint() {
+        return toggleSprint;
+    }
+
+    public void setToggleSprint(boolean toggleSprint) {
+        this.toggleSprint = toggleSprint;
+    }
+    public void toggleSprint() {
+        this.toggleSprint = !this.toggleSprint;
     }
 }

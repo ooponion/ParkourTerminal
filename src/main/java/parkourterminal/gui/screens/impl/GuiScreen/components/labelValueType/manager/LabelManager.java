@@ -66,6 +66,7 @@ public class LabelManager {
         addLabel("Motion (b/t)",new LabelValue3DVector());
         addLabel("Tier",new LabelValueInt());
         addLabel("Ping",new LabelValuePing());
+        addLabel("ToggleSprint",new LabelValueBoolean());
 
         //Jump
         addLabel("Jump X",new LabelValueDouble());
@@ -139,6 +140,7 @@ public class LabelManager {
         UpdateLabel("Motion (b/t)",new Vector3d(player.motionX,player.motionY,player.motionZ));
         UpdateLabel("Tier",GlobalData.getLandData().getTier());
         UpdateLabel("Ping",getPing());
+        UpdateLabel("ToggleSprint",TerminalJsonConfig.getProperties().isToggleSprint());
 
         //Jump
         UpdateLabel("Jump X",GlobalData.getJumpData().getJumpX());
