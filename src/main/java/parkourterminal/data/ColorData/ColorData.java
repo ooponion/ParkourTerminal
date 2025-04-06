@@ -14,7 +14,7 @@ public class ColorData {
     }
 
     public void reset(){
-        labelColor=EnumChatFormatting.LIGHT_PURPLE;
+        labelColor=EnumChatFormatting.GOLD;
         ValueColor=EnumChatFormatting.AQUA;
     }
     public void setLabelColor(EnumChatFormatting labelColor) {

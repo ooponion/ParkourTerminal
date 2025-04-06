@@ -57,6 +57,8 @@ public class LabelManager {
         //SMTH
         addLabel("Speed (b/t)",new LabelValue3DVector());
         addLabel("Speed Vector",new LabelValue2DDegreeVector());
+        addLabel("Max Speed (b/t)",new LabelValue3DVector());
+        addLabel("Max Speed Vector",new LabelValue2DDegreeVector());
         addLabel("Date",new LabelValueDate());
         addLabel("Time",new LabelValueTime());
         addLabel("FPS",new LabelValueInt());
@@ -125,6 +127,8 @@ public class LabelManager {
         //SMTH
         UpdateLabel("Speed (b/t)",GlobalData.getSpeedData().getSpeed());
         UpdateLabel("Speed Vector",GlobalData.getSpeedData().getSpeedVector());
+        UpdateLabel("Max Speed (b/t)",GlobalData.getSpeedData().getMaxSpeed());
+        UpdateLabel("Max Speed Vector",GlobalData.getSpeedData().getMaxSpeedVector());
         UpdateLabel("Date",LocalDateTime.now());
         UpdateLabel("Time", LocalDateTime.now());
         UpdateLabel("FPS",Minecraft.getDebugFPS());
