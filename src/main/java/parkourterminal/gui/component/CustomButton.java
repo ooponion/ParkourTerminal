@@ -1,5 +1,6 @@
 package parkourterminal.gui.component;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.layout.UIComponent;
@@ -8,6 +9,7 @@ import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolating
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.ShapeDrawer;
+import scala.collection.parallel.ParIterableLike;
 
 public class CustomButton extends UIComponent {
     private int normalColor, hoverColor;
@@ -45,7 +47,7 @@ public class CustomButton extends UIComponent {
         int textWidth = fontRenderer.getStringWidth(text);
         int textX = getX() + (getWidth() - textWidth) / 2;
         int textY = getY() + (getHeight() - fontRenderer.FONT_HEIGHT) / 2;
-        fontRenderer.drawStringWithShadow(text, textX, textY, 0xFFFFFFFF);
+        fontRenderer.drawStringWithShadow(text, textX, textY, isEnabled()?0xFFFFFFFF:0xFFaaaaaa);
     }
 
     public void setText(String text) {
@@ -54,6 +56,10 @@ public class CustomButton extends UIComponent {
 
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
-
+        this.drawButton(Minecraft.getMinecraft().fontRendererObj,mouseX,mouseY);
+    }
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        return isMouseOver(mouseX, mouseY)&&isEnabled();
     }
 }

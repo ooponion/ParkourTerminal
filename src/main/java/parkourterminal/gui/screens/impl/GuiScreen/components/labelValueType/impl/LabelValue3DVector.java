@@ -1,9 +1,11 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
 import net.minecraft.util.EnumChatFormatting;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.global.GlobalConfig;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
+import parkourterminal.util.NumberWrapper;
 
 import javax.vecmath.Vector3d;
 
@@ -22,9 +24,9 @@ public class LabelValue3DVector implements LabelValue<Vector3d> {
         EnumChatFormatting valueColor=GlobalData.getValueColor();
         EnumChatFormatting labelColor=GlobalData.getLabelColor();
         String slash=labelColor+"/";
-        String x=valueColor+String.format("%." + GlobalConfig.precision + "f", vector3d.getX());
-        String y=valueColor+String.format("%." + GlobalConfig.precision + "f", vector3d.getY());
-        String z=valueColor+String.format("%." + GlobalConfig.precision + "f", vector3d.getZ());
+        String x=valueColor+NumberWrapper.toDecimalString(vector3d.getX());
+        String y=valueColor+NumberWrapper.toDecimalString(vector3d.getY());
+        String z=valueColor+NumberWrapper.toDecimalString(vector3d.getZ());
         return x+slash+y+slash+z;
     }
 

@@ -9,6 +9,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
@@ -30,6 +31,8 @@ public class ArgsOverlay {
             return;
         }
         TerminalGuiScreen screen=(TerminalGuiScreen)ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
-        screen.drawOverlay();
+        if(TerminalJsonConfig.getProperties().isShowLabels()&&screen!=null){
+            screen.drawOverlay();
+        }
     }
 }

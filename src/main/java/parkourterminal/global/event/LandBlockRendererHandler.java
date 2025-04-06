@@ -9,8 +9,7 @@ import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.GlobalData;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.BlockUtils;
 
@@ -36,7 +35,7 @@ public class LandBlockRendererHandler {
 
         if(TerminalJsonConfig.getLandBlockJson().isDisplayable()){
             for (AxisAlignedBB bb: GlobalData.getLandingBlock().getAABBs()) {
-                renderCube(x, y, z, BlockUtils.getMinPos(bb), BlockUtils.getMaxPos(bb), 0xf55a44);
+                renderCube(x, y, z, BlockUtils.getMinPos(bb), BlockUtils.getMaxPos(bb), TerminalJsonConfig.getProperties().getLandBlockColor());
             }
         }
         GlStateManager.enableTexture2D();

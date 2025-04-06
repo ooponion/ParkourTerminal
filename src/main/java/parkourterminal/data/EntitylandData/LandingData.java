@@ -1,22 +1,14 @@
 package parkourterminal.data.EntitylandData;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAnvil;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.util.BlockUtils;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.LandingBlockHelper;
 
 import javax.vecmath.Vector3d;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class LandingData {
@@ -31,9 +23,14 @@ public class LandingData {
     private int tier=12;
     private boolean wasInAir = false;
     private boolean lastOnGround=false;
+    private boolean continuousBlip=true;
     public void Update(EntityPlayerSP player){
         if(GlobalData.getInputData().getOperation().isActualJump()){
             tier=12;
+            if(!continuousBlip){
+                blipTimes=0;
+                continuousBlip=true;
+            }
         }
         else if(lastOnGround&&!player.onGround){
             tier=1;
@@ -57,12 +54,17 @@ public class LandingData {
         lastOnGround= player.onGround;
         if(!player.onGround){//空中的每一tick
             Double groundY=fallingTouchGroundBlocks(player);
-            if(groundY==null){
+            if(groundY==null){//在空中
                 return;
             }
             //接触地面的tick
             if(!touchBlock(player,new Vector3d(player.motionX,groundY-player.posY,player.motionZ))){
                 //未接触墙;
+                if(!GlobalData.getInputData().getOperation().isActualJump()){//如果没跳不清空blipTimes
+                    continuousBlip=false;
+                    return;
+                }
+                blipY=Double.NaN;
                 blipTimes=0;
                 return;
             }
@@ -73,10 +75,12 @@ public class LandingData {
                 maxOffset=ceilingY;
             }
             if(touchBlock(player,new Vector3d(player.motionX,maxOffset,player.motionZ))){
+                blipY=Double.NaN;
                 blipTimes=0;
                 return;
             }
             if(touchBlock(player,new Vector3d(player.motionX, maxOffset-0.6, player.motionZ))){
+                blipY=Double.NaN;
                 blipTimes=0;
                 return;
             }

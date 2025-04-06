@@ -4,15 +4,12 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
-import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import parkourterminal.data.GlobalData;
+import parkourterminal.util.ParseHelper;
 import parkourterminal.util.SendMessageHelper;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ColorSetCommand extends TerminalCommandBase {
@@ -32,7 +29,7 @@ public class ColorSetCommand extends TerminalCommandBase {
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
             SendMessageHelper.addChatMessage(sender,"Successfully set the color");
-            EnumChatFormatting color=getChatFormattingByName(args[1]);
+            EnumChatFormatting color= ParseHelper.parseEnumChatFormatting(args[1]);
             if(args[0].equalsIgnoreCase("label")){//label
                 GlobalData.getColorData().setLabelColor(color);
             }else{//value
@@ -67,28 +64,5 @@ public class ColorSetCommand extends TerminalCommandBase {
         }
         return null;
     }
-    private static EnumChatFormatting getChatFormattingByName(String name) {
-        if (name == null) {
-            return null;
-        }
-        name = name.toUpperCase();
 
-        if (name.equals("BLACK")) return EnumChatFormatting.BLACK;
-        else if (name.equals("DARK_BLUE")) return EnumChatFormatting.DARK_BLUE;
-        else if (name.equals("DARK_GREEN")) return EnumChatFormatting.DARK_GREEN;
-        else if (name.equals("DARK_AQUA")) return EnumChatFormatting.DARK_AQUA;
-        else if (name.equals("DARK_RED")) return EnumChatFormatting.DARK_RED;
-        else if (name.equals("DARK_PURPLE")) return EnumChatFormatting.DARK_PURPLE;
-        else if (name.equals("GOLD")) return EnumChatFormatting.GOLD;
-        else if (name.equals("GRAY")) return EnumChatFormatting.GRAY;
-        else if (name.equals("DARK_GRAY")) return EnumChatFormatting.DARK_GRAY;
-        else if (name.equals("BLUE")) return EnumChatFormatting.BLUE;
-        else if (name.equals("GREEN")) return EnumChatFormatting.GREEN;
-        else if (name.equals("AQUA")) return EnumChatFormatting.AQUA;
-        else if (name.equals("RED")) return EnumChatFormatting.RED;
-        else if (name.equals("LIGHT_PURPLE")) return EnumChatFormatting.LIGHT_PURPLE;
-        else if (name.equals("YELLOW")) return EnumChatFormatting.YELLOW;
-        else if (name.equals("WHITE")) return EnumChatFormatting.WHITE;
-        else return null; // 未找到
-    }
 }

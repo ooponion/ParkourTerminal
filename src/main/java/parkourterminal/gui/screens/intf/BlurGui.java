@@ -31,8 +31,10 @@ public class BlurGui extends GuiScreen {
     @Override
     public void initGui() {
         isClosing = false;
+        System.out.printf("initGui!!!\n");
         if (OpenGlHelper.shadersSupported) {
             // 使用 ShaderHelper 加载模糊 Shader
+            System.out.printf("loadingShader!!!\n");
             this.shaderGroup = ShaderHelper.loadBlurShader(targetBlurIntensity);
         }
     }

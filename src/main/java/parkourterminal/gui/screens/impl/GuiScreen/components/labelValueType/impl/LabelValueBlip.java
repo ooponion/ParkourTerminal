@@ -1,10 +1,8 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.impl;
 
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.BlipLabel;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
-
-import javax.vecmath.Vector3d;
 
 public class LabelValueBlip implements LabelValue<BlipLabel> {
     BlipLabel blipLabel=new BlipLabel(Double.NaN,0);

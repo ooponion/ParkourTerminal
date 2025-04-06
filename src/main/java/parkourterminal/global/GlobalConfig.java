@@ -13,15 +13,11 @@ public class GlobalConfig {
 
     private static Properties properties = new Properties();
 
-    public static boolean animation = false;
-    public static int precision = 5;
-
 
 
     public static void configInit() {
         ensureConfigDirectoryExists();
         loadConfig();
-        TerminalJsonConfig.ReadConfig();
     }
 
     private static void ensureConfigDirectoryExists() {
@@ -36,13 +32,14 @@ public class GlobalConfig {
     }
 
     private static void loadConfig() {
+        TerminalJsonConfig.ReadConfig();
         try {
             InputStream input = new FileInputStream(CONFIG_FILE);
             properties.load(input);
 
             // 读取配置项
-            animation = Boolean.parseBoolean(properties.getProperty("animation", String.valueOf(animation)));
-            precision = Integer.parseInt(properties.getProperty("precision", String.valueOf(precision)));
+//            animation = Boolean.parseBoolean(properties.getProperty("animation", String.valueOf(animation)));
+//            precision = Integer.parseInt(properties.getProperty("precision", String.valueOf(precision)));
         } catch (FileNotFoundException e) {
             System.err.println("Config file not found. Using default values.");
         } catch (IOException e) {
@@ -56,8 +53,8 @@ public class GlobalConfig {
             OutputStream output = Files.newOutputStream(Paths.get(CONFIG_FILE));
 
             // 更新配置项
-            properties.setProperty("animation", String.valueOf(animation));
-            properties.setProperty("precision", String.valueOf(precision));
+//            properties.setProperty("animation", String.valueOf(animation));
+//            properties.setProperty("precision", String.valueOf(precision));
 
             // 读取配置项
             properties.store(output, "Application Configuration");
@@ -69,10 +66,10 @@ public class GlobalConfig {
     public static void updateConfig(String key, String value) {
         properties.setProperty(key, value);
 
-        if (key.equals("animation"))
-            animation = Boolean.valueOf(value);
-        else if (key.equals("precision"))
-            precision = Integer.valueOf(value);
+//        if (key.equals("animation"))
+//            animation = Boolean.valueOf(value);
+//        else if (key.equals("precision"))
+//            precision = Integer.valueOf(value);
     }
 
     public static String getConfig(String key) {

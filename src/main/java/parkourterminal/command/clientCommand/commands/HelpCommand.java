@@ -8,12 +8,10 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.command.clientCommand.TerminalClientCommandsHandler;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.GlobalData;
 import parkourterminal.util.SendMessageHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HelpCommand extends TerminalCommandBase {

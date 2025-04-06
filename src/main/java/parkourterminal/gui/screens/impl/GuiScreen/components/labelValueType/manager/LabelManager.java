@@ -2,9 +2,10 @@ package parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.man
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.global.json.LabelJson;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
@@ -56,12 +57,16 @@ public class LabelManager {
         //SMTH
         addLabel("Speed (b/t)",new LabelValue3DVector());
         addLabel("Speed Vector",new LabelValue2DDegreeVector());
+        addLabel("Max Speed (b/t)",new LabelValue3DVector());
+        addLabel("Max Speed Vector",new LabelValue2DDegreeVector());
         addLabel("Date",new LabelValueDate());
         addLabel("Time",new LabelValueTime());
         addLabel("FPS",new LabelValueInt());
         addLabel("Looking At",new LabelValueBlockPos());
         addLabel("Motion (b/t)",new LabelValue3DVector());
         addLabel("Tier",new LabelValueInt());
+        addLabel("Ping",new LabelValuePing());
+        addLabel("ToggleSprint",new LabelValueBoolean());
 
         //Jump
         addLabel("Jump X",new LabelValueDouble());
@@ -70,6 +75,7 @@ public class LabelManager {
 
         //AngleRelated
         addLabel("Last turning",new LabelValueDegree());
+        addLabel("Preturn",new LabelValueDegree());
         addLabel("Jump Angle",new LabelValueDegree());
         addLabel("Last 45",new LabelValueDegree());
         addLabel("First turning",new LabelValueDegree());
@@ -122,6 +128,8 @@ public class LabelManager {
         //SMTH
         UpdateLabel("Speed (b/t)",GlobalData.getSpeedData().getSpeed());
         UpdateLabel("Speed Vector",GlobalData.getSpeedData().getSpeedVector());
+        UpdateLabel("Max Speed (b/t)",GlobalData.getSpeedData().getMaxSpeed());
+        UpdateLabel("Max Speed Vector",GlobalData.getSpeedData().getMaxSpeedVector());
         UpdateLabel("Date",LocalDateTime.now());
         UpdateLabel("Time", LocalDateTime.now());
         UpdateLabel("FPS",Minecraft.getDebugFPS());
@@ -131,6 +139,8 @@ public class LabelManager {
         }
         UpdateLabel("Motion (b/t)",new Vector3d(player.motionX,player.motionY,player.motionZ));
         UpdateLabel("Tier",GlobalData.getLandData().getTier());
+        UpdateLabel("Ping",getPing());
+        UpdateLabel("ToggleSprint",TerminalJsonConfig.getProperties().isToggleSprint());
 
         //Jump
         UpdateLabel("Jump X",GlobalData.getJumpData().getJumpX());
@@ -140,6 +150,7 @@ public class LabelManager {
         //AngleRelated
         UpdateLabel("Last turning",GlobalData.getJumpData().getLastTurning());
         UpdateLabel("Jump Angle",GlobalData.getJumpData().getJumpAngle());
+        UpdateLabel("Preturn",GlobalData.getJumpData().getPreturn());
         UpdateLabel("Last 45",GlobalData.getJumpData().getLast45());
         UpdateLabel("First turning",GlobalData.getJumpData().getFirstTurning());
         UpdateLabel("Second turning",GlobalData.getJumpData().getSecondTurning());
@@ -217,5 +228,10 @@ public class LabelManager {
             }
         }
         return unusedLabelList;
+    }
+    public static int getPing() {
+        Minecraft mc = Minecraft.getMinecraft();
+        NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID());
+        return (info != null) ? info.getResponseTime() : 0;
     }
 }

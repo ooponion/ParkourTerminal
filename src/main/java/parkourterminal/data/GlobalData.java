@@ -1,4 +1,4 @@
-package parkourterminal.data.globalData;
+package parkourterminal.data;
 
 import net.minecraft.util.EnumChatFormatting;
 import parkourterminal.data.EntityJumpData.JumpData;

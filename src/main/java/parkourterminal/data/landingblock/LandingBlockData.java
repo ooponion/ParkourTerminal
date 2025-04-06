@@ -1,16 +1,14 @@
 package parkourterminal.data.landingblock;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import parkourterminal.data.globalData.GlobalData;
 import parkourterminal.data.landingblock.intf.AABB;
 import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.LandingBlockHelper;
+import parkourterminal.util.NumberWrapper;
 import parkourterminal.util.SendMessageHelper;
 
 import java.util.ArrayList;
@@ -96,7 +94,7 @@ public class LandingBlockData {
         if(union==null){
             return;
         }
-        if(!((posY<=union.maxY&&union.maxY<lposY)||(lposY<union.maxY&&union.maxY<=posY))){
+        if(!(posY<=union.maxY&&union.maxY<lposY)){
             return;
         }
         double offsetMinXR;
@@ -129,6 +127,10 @@ public class LandingBlockData {
         }else{
             totalOffset=Math.min(Xoffset,Zoffset);
         }
+        if (TerminalJsonConfig.getLandBlockJson().isSendChatOffset()){
+            SendMessageHelper.addChatMessage(player,"X Offset:"+NumberWrapper.toDecimalString(Xoffset));
+            SendMessageHelper.addChatMessage(player,"Z Offset:"+NumberWrapper.toDecimalString(Zoffset));
+        }
         setOffsets( new Double[]{Xoffset,Zoffset,totalOffset});
     }
     private void UpdatePB(EntityPlayerSP player){
@@ -137,8 +139,7 @@ public class LandingBlockData {
             double offsetX=getOffsets()[0].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[0];
             if(lastX<offsetX){
                 if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
-                    SendMessageHelper.addChatMessage(player,"new pb x:"+
-                            String.format("%." + GlobalConfig.precision + "f", offsetX));
+                    SendMessageHelper.addChatMessage(player,"new pb x:"+NumberWrapper.toDecimalString(offsetX));
                 }
                 setPb(getOffsets());
             }
@@ -148,8 +149,7 @@ public class LandingBlockData {
             double offsetZ=getOffsets()[1].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[1];
             if(lastZ<offsetZ){
                 if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
-                    SendMessageHelper.addChatMessage(player,"new pb z:"+
-                            String.format("%." + GlobalConfig.precision + "f", offsetZ));
+                    SendMessageHelper.addChatMessage(player,"new pb z:"+NumberWrapper.toDecimalString(offsetZ));
                 }
                 setPb(getOffsets());
             }
@@ -159,8 +159,7 @@ public class LandingBlockData {
         double offset=getOffsets()[2].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[2];
         if(lastPB<offset){
             if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
-                SendMessageHelper.addChatMessage(player,"new pb:"+
-                        String.format("%." + GlobalConfig.precision + "f", offset));
+                SendMessageHelper.addChatMessage(player,"new pb:"+NumberWrapper.toDecimalString(offset));
             }
             setPb(getOffsets());
         }

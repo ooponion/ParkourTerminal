@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
+import parkourterminal.data.GlobalData;
 import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
 import parkourterminal.data.landingblock.LandingBlockData;

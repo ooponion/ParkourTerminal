@@ -4,10 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.util.SendMessageHelper;
@@ -33,15 +30,22 @@ public class GuiCommand extends TerminalCommandBase {
         if(args.length>=1){
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
+            Minecraft.getMinecraft().inGameHasFocus=true;
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.schedule(new Runnable() {
                 @Override
                 public void run() {
-                    if (Minecraft.getMinecraft().thePlayer != null) {
-                        ScreenManager.SwitchToScreen(new ScreenID("TerminalGuiScreen"));
-                    }
+                    Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Minecraft.getMinecraft().thePlayer != null) {
+                                ScreenManager.SwitchToScreen(new ScreenID("TerminalGuiScreen"));
+                            }
+                        }
+                    });
                 }
             }, 100, TimeUnit.MILLISECONDS);
+
             SendMessageHelper.addChatMessage(sender,"Opens gui");
         }
     }

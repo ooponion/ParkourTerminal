@@ -2,10 +2,12 @@ package parkourterminal.global.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.data.inputdata.InputData;
+import parkourterminal.data.GlobalData;
+import parkourterminal.global.json.TerminalJsonConfig;
+import parkourterminal.util.SendMessageHelper;
 
 public class TickEventHandler {
     @SubscribeEvent
@@ -22,6 +24,10 @@ public class TickEventHandler {
             EntityPlayerSP player= Minecraft.getMinecraft().thePlayer;
             if(player==null){
                 return;
+            }
+            boolean toggled=TerminalJsonConfig.getProperties().isToggleSprint();
+            if (toggled) {
+                player.setSprinting(true);
             }
             GlobalData.getInputData().UpdateOperation(player);
             GlobalData.getLandingBlock().Update(player);

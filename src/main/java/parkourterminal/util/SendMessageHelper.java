@@ -3,8 +3,7 @@ package parkourterminal.util;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.GlobalData;
 import parkourterminal.global.json.TerminalJsonConfig;
 
 public class SendMessageHelper {

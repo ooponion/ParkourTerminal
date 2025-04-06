@@ -3,14 +3,9 @@ package parkourterminal.command.clientCommand.commands;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
-import parkourterminal.data.globalData.GlobalData;
-import parkourterminal.global.json.TerminalJsonConfig;
-import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
+import parkourterminal.data.GlobalData;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
-import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
-import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.util.SendMessageHelper;
 
 import java.util.List;

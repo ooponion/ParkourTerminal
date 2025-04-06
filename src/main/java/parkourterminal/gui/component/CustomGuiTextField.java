@@ -26,17 +26,7 @@ public class CustomGuiTextField extends TextField {
         this.fontRendererObj = fontRenderer;
     }
 
-    @Override
-    public boolean isEnabled() {
-        try {
-            Field field = GuiTextField.class.getDeclaredField("isEnabled");
-            field.setAccessible(true);
-            return field.getBoolean(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return true;
-        }
-    }
+
 
     public void setCurrentBorderColor(int color) {
         this.currentBorderColor = color;

@@ -25,11 +25,6 @@ public class TextField extends UIComponent {
     public void draw(int mouseX, int mouseY, float partialTicks) {
         drawTextBox();
     }
-
-    @Override
-    public boolean isMouseOver(int mouseX, int mouseY) {
-        return false;
-    }
     private final int id;
     private final FontRenderer fontRendererInstance;
     public int xPosition;
@@ -809,4 +804,38 @@ public class TextField extends UIComponent {
     {
         this.visible = p_146189_1_;
     }
+    @Override
+    public boolean isEnabled() {
+        return this.isEnabled;
+    }
+
+    public int getX() {
+        return xPosition;
+    }
+
+    public int getY() {
+        return yPosition;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+
+    public void setX(int x) {
+        this.xPosition = x;
+    }
+
+    public void setY(int y) {
+        this.yPosition = y;
+    }
+    public void setSize(int width, int height){
+        this.width=width;
+        this.height=height;
+    }
+    public void setPosition(int x, int y){
+        this.xPosition=x;
+        this.yPosition=y;
+    }
+
 }

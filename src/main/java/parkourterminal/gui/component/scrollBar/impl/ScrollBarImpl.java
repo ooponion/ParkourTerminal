@@ -108,11 +108,11 @@ public class ScrollBarImpl extends UIComponent {
     private void CalculateContentOffset(float scrollOffset,float scrollSize,float contentSize,int size){//0,height-scrollHeight->0,contentHeight-height
         if(size<=scrollSize){
             contentOffset=0;
+            animationContentOffset.RestartAnimation(new Interpolatingfloat(0));
             return;
         }
         contentOffset=  scrollOffset/(size-scrollSize)*Math.max(contentSize-size,0);
         animationContentOffset.RestartAnimation(new Interpolatingfloat(contentOffset));
-
     }
     private void ValidateScrollOffset(float FakeOffset,float scrollSize,int size){//FakeOffset可能是错误的,所以重新计算位置//0,height-scrollHeight
         scrollOffset= Math.max(0,Math.min(size-scrollSize,FakeOffset));
