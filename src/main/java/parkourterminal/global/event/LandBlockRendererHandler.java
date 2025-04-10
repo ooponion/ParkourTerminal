@@ -10,10 +10,16 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.data.GlobalData;
+import parkourterminal.data.landingblock.intf.Segment;
+import parkourterminal.data.landingblock.intf.Vertex;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.BlockUtils;
+import parkourterminal.util.renderhelper.LandBlockRendererHelper;
 
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LandBlockRendererHandler {
 
@@ -33,15 +39,16 @@ public class LandBlockRendererHandler {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        if(TerminalJsonConfig.getLandBlockJson().isDisplayable()){
-            for (AxisAlignedBB bb: GlobalData.getLandingBlock().getAABBs()) {
-                renderCube(x, y, z, BlockUtils.getMinPos(bb), BlockUtils.getMaxPos(bb), TerminalJsonConfig.getProperties().getLandBlockColor());
-            }
-        }
+        GlobalData.getLandingBlock().getWholeCollisionBox().setClipAgainstWall(true);
+        GlobalData.getLandingBlock().getWholeCollisionBox().subtractWalls(mc.theWorld);
+        LandBlockRendererHelper.RenderWholeCollisionBox(x,y,z,GlobalData.getLandingBlock().getWholeCollisionBox());
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
 
+    }
+    private void renderCube(double viewerX, double viewerY, double viewerZ, AxisAlignedBB box, int color) {
+        renderCube(viewerX,viewerY,viewerZ,BlockUtils.getMinPos(box), BlockUtils.getMaxPos(box),color);
     }
     private void renderCube(double viewerX, double viewerY, double viewerZ, Vec3 ps1, Vec3 ps2, int color) {
         renderCube(viewerX,viewerY,viewerZ,new Vector3d(ps1.xCoord,ps1.yCoord,ps1.zCoord),new Vector3d(ps2.xCoord,ps2.yCoord,ps2.zCoord),color);
@@ -56,18 +63,18 @@ public class LandBlockRendererHandler {
 
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         double distance = player.getDistance(x1, y1, z1); // 计算与线条的距离
-        float lineWidth = (float) Math.max(3.0, 3.0 * (1.0 / distance)); // 远离时缩小
-        double thickness=0.02d;
-        GL11.glLineWidth(lineWidth);
+//        float lineWidth = (float) Math.max(3.0, 3.0 * (1.0 / (distance*distance))); // 远离时缩小
+        double thickness=0.01d;
+//        GL11.glLineWidth(lineWidth);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldRenderer = tessellator.getWorldRenderer();
         worldRenderer.begin(GL11.GL_QUADS, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR);
-        addCube(worldRenderer, x1-thickness, y1-thickness, z1-thickness, x2+thickness, y2+thickness, z2+thickness,0x66000000+color);
+        addCube(worldRenderer, x1-thickness, y1-thickness, z1-thickness, x2+thickness, y2+thickness, z2+thickness,0x33000000+color);
         tessellator.draw();
-        GL11.glLineWidth(lineWidth);
-        worldRenderer.begin(GL11.GL_LINES, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR);
-        renderCubeOutline(worldRenderer, x1-thickness, y1-thickness, z1-thickness, x2+thickness, y2+thickness, z2+thickness, 0xFF000000+color);
-        tessellator.draw();
+//        GL11.glLineWidth(lineWidth);
+//        worldRenderer.begin(GL11.GL_LINES, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR);
+//        renderCubeOutline(worldRenderer, x1-thickness, y1-thickness, z1-thickness, x2+thickness, y2+thickness, z2+thickness, 0xFF000000+color);
+//        tessellator.draw();
 
     }
 

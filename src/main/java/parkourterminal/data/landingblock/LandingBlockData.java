@@ -2,21 +2,19 @@ package parkourterminal.data.landingblock;
 
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
-import parkourterminal.data.landingblock.intf.AABB;
-import parkourterminal.data.landingblock.intf.LBaxis;
-import parkourterminal.data.landingblock.intf.LBbox;
-import parkourterminal.data.landingblock.intf.LBmod;
-import parkourterminal.global.GlobalConfig;
+import parkourterminal.data.landingblock.intf.*;
 import parkourterminal.global.json.TerminalJsonConfig;
-import parkourterminal.util.LandingBlockHelper;
+import parkourterminal.util.BlockUtils;
 import parkourterminal.util.NumberWrapper;
 import parkourterminal.util.SendMessageHelper;
 
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LandingBlockData {
-    private List<AABB> bbs=new ArrayList<AABB>();
+    private WholeCollisionBox wholeCollisionBox=new WholeCollisionBox(new ArrayList<AxisAlignedBB>(),LBbox.NON_BOX);
     private LBaxis lBaxis =LBaxis.BOTH;
     private LBbox lBbox=LBbox.NON_BOX;
     private LBmod lBmod=LBmod.Land;
@@ -28,13 +26,13 @@ public class LandingBlockData {
 
     }
 
-    public List<AxisAlignedBB> getAABBs() {
-        return LandingBlockHelper.UnwrappedAABBList(this.bbs);
-    }
-    public List<AABB> getWrappedAABBs() {
-        return bbs;
+    public WholeCollisionBox getWholeCollisionBox() {
+        return wholeCollisionBox;
     }
 
+    public List<AxisAlignedBB> getAABBs() {
+        return this.wholeCollisionBox.getBoxes();
+    }
     public LBaxis getlBaxis() {
         return lBaxis;
     }
@@ -47,11 +45,8 @@ public class LandingBlockData {
         return lBmod;
     }
 
-    public void setAABBs(List<AxisAlignedBB> bbs) {
-        this.bbs=LandingBlockHelper.WrappedAABBList(bbs);
-    }
-    public void setWrappedAABBs(List<AABB> bbs) {
-        this.bbs = bbs;
+    public void setAABBs(WholeCollisionBox wholeCollisionBox) {
+        this.wholeCollisionBox=wholeCollisionBox;
     }
 
     public void setlBaxis(LBaxis lBaxis) {
@@ -91,7 +86,7 @@ public class LandingBlockData {
         last2posZ=player.lastTickPosZ;
     }
     private void UpdateOffsets(EntityPlayerSP player){
-        AxisAlignedBB union=LandingBlockHelper.UnionAll(getWrappedAABBs());
+        AxisAlignedBB union= BlockUtils.UnionAll(getAABBs());
         if(union==null){
             return;
         }
@@ -121,47 +116,12 @@ public class LandingBlockData {
         if(!(player.posY<=union.maxY&&union.maxY<player.lastTickPosY)&&getlBmod()!=LBmod.Enter){
             return;
         }
-        double minX=posX-0.3;
-        double maxX=posX+0.3;
-        double minZ=posZ-0.3;
-        double maxZ=posZ+0.3;
-
-        double offsetMinXR;
-        double offsetMinXL;
-        double offsetMinZT;
-        double offsetMinZB;
-        //这部分之后要去掉
-        if(getlBbox()== LBbox.NON_BOX){//Non_Box case
-            offsetMinXR= union.maxX-minX;
-            offsetMinXL= maxX-union.minX;
-            offsetMinZT= union.maxZ-minZ;
-            offsetMinZB= maxZ-union.minZ;
-        }else{//Box case
-            offsetMinXR= union.maxX-posX;
-            offsetMinXL= posX-union.minX;
-            offsetMinZT= union.maxZ-posZ;
-            offsetMinZB= posZ-union.minZ;
-        }
-        double totalOffset;
-        double Xoffset=Math.min(offsetMinXR,offsetMinXL);
-        double Zoffset=Math.min(offsetMinZB,offsetMinZT);
-
-        if(Xoffset<-1.0|Zoffset<-1.0){
-            return;
-        }
-        if(Xoffset*Zoffset>0){
-            totalOffset=Math.hypot(Xoffset,Zoffset);
-            if(Xoffset<0|Zoffset<0){
-                totalOffset*=-1;
-            }
-        }else{
-            totalOffset=Math.min(Xoffset,Zoffset);
-        }
+        Vector3d offset=wholeCollisionBox.calculateOffset(new Vector2d(posX,posZ));
         if (TerminalJsonConfig.getLandBlockJson().isSendChatOffset()){
-            SendMessageHelper.addChatMessage(player,"X Offset:"+NumberWrapper.toDecimalString(Xoffset));
-            SendMessageHelper.addChatMessage(player,"Z Offset:"+NumberWrapper.toDecimalString(Zoffset));
+            SendMessageHelper.addChatMessage(player,"X Offset:"+NumberWrapper.toDecimalString(offset.x));
+            SendMessageHelper.addChatMessage(player,"Z Offset:"+NumberWrapper.toDecimalString(offset.y));
         }
-        setOffsets( new Double[]{Xoffset,Zoffset,totalOffset});
+        setOffsets( new Double[]{offset.x,offset.y,offset.z});
     }
     private void UpdatePB(EntityPlayerSP player){
         if(getlBaxis()==LBaxis.X_AXIS){

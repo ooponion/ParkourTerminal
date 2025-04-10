@@ -13,8 +13,10 @@ import parkourterminal.data.GlobalData;
 import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
 import parkourterminal.data.landingblock.LandingBlockData;
+import parkourterminal.data.landingblock.intf.WholeCollisionBox;
 import parkourterminal.util.BlockUtils;
 import parkourterminal.util.SendMessageHelper;
+import parkourterminal.util.renderhelper.HitPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +89,7 @@ public class SetlbCommand extends TerminalCommandBase {
                 }else{
                     lb.addAll(BlockUtils.getAABBsUnderPlayerFeet(player));
                 }
-                GlobalData.getLandingBlock().setAABBs(lb);
+                GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),player.getEntityBoundingBox()));
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
@@ -98,13 +100,16 @@ public class SetlbCommand extends TerminalCommandBase {
                 }
             }else if(target!=null){
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
+                HitPosition hitPosition=BlockUtils.getLookingAtHitPosition(player,blockReachDistance,0);
                 if(divided!=null){
-                    lb.add(BlockUtils.getLookingAtAABB(player,blockReachDistance,0));
+                    if(hitPosition!=null){
+                        lb.add(hitPosition.getHitBox());
+                    }
                 }else{
                     lb.addAll(BlockUtils.getLookingAtAABBs(player,blockReachDistance,0));
                 }
-                GlobalData.getLandingBlock().setAABBs(lb);
-                if(!lb.isEmpty()){
+                if(!lb.isEmpty()&&hitPosition!=null){
+                    GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),hitPosition.getHitVec()));
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     SendMessageHelper.addChatMessage(sender,"Set land block successfully");
@@ -117,7 +122,7 @@ public class SetlbCommand extends TerminalCommandBase {
                 IBlockState iblockstate = worldIn.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
                 block.addCollisionBoxesToList(worldIn,blockpos,iblockstate,new AxisAlignedBB(blockpos,blockpos.add(1,1,1)),lb,null);
-                GlobalData.getLandingBlock().setAABBs(lb);
+                GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox()));
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});

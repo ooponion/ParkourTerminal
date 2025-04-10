@@ -2,15 +2,9 @@ package parkourterminal.data.EntitylandData;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import parkourterminal.data.GlobalData;
 import parkourterminal.util.BlockUtils;
-import parkourterminal.util.LandingBlockHelper;
-
-import javax.vecmath.Vector3d;
-import java.util.List;
 
 public class LandingData {
     private Double hitX= Double.NaN;
