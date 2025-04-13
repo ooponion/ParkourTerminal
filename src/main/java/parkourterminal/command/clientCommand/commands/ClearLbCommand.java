@@ -31,7 +31,7 @@ public class ClearLbCommand extends TerminalCommandBase {
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
             SendMessageHelper.addChatMessage(sender,"Successfully cleared landing block");
-            GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(new ArrayList<AxisAlignedBB>(), LBbox.NON_BOX));
+            GlobalData.getLandingBlock().clearAABBs();
         }
     }
 

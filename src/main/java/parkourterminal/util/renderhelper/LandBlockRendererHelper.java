@@ -14,22 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandBlockRendererHelper {
-//    public static void RenderIntegratedAABBs(double viewerX, double viewerY, double viewerZ,List<AxisAlignedBB> list){
-//        List<QuadLine> allLines=new ArrayList<QuadLine>();
-//        List<QuadFace> allFaces=new ArrayList<QuadFace>();
-//        for(AxisAlignedBB axisAlignedBB:list){
-//            allFaces.addAll(QuadFace.fromAABB(axisAlignedBB));
-//        }
-//        allFaces=QuadFace.subtractQuadFaceList(allFaces);
-//        for(QuadFace face:allFaces){
-//            allLines.addAll(face.getEdges());
-//            RenderQuad(viewerX,viewerY,viewerZ,face,TerminalJsonConfig.getProperties().getLandBlockColor()+0x44000000);
-//        }
-//        allLines=QuadLine.subtractQuadLineList(allLines);
-//        for(QuadLine line:allLines){
-//            RenderLine(viewerX,viewerY,viewerZ,line,TerminalJsonConfig.getProperties().getLandBlockColor()+0x44000000);
-//        }
-//    }
     public static void RenderWholeCollisionBox(double viewerX, double viewerY, double viewerZ, WholeCollisionBox wholeCollisionBox){
         List<Segment> segments=wholeCollisionBox.segments(false);
         int color=TerminalJsonConfig.getProperties().getLandBlockColor()+0x44000000;
@@ -87,58 +71,6 @@ public class LandBlockRendererHelper {
         renderer.pos(p5.x,p5.y,p5.z).color(r, g, b, a).endVertex();
         tessellator.draw();
     }
-    public static void RenderQuad(double viewerX, double viewerY, double viewerZ,QuadFace face, int color){
-        List<Vector3d> vertices=face.getVerticesClockwise();
-        Vector3d negView =new Vector3d(-viewerX,-viewerY,-viewerZ);
-        Vector3d p1=new Vector3d(vertices.get(0));
-        Vector3d p2=new Vector3d(vertices.get(1));
-        Vector3d p3=new Vector3d(vertices.get(2));
-        Vector3d p4=new Vector3d(vertices.get(3));
-        p1.add(negView);
-        p2.add(negView);
-        p3.add(negView);
-        p4.add(negView);
-        float a = (float)(color >> 24 & 255) / 255.0F;
-        float r = (float)(color >> 16 & 255) / 255.0F;
-        float g = (float)(color >> 8 & 255) / 255.0F;
-        float b = (float)(color & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer renderer = tessellator.getWorldRenderer();
-        renderer.begin(GL11.GL_QUADS, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR);
-        renderer.pos(p1.x,p1.y,p1.z).color(r, g, b, a).endVertex();
-        renderer.pos(p2.x,p2.y,p2.z).color(r, g, b, a).endVertex();
-        renderer.pos(p3.x,p3.y,p3.z).color(r, g, b, a).endVertex();
-        renderer.pos(p4.x,p4.y,p4.z).color(r, g, b, a).endVertex();
-
-        renderer.pos(p4.x,p4.y,p4.z).color(r, g, b, a).endVertex();
-        renderer.pos(p3.x,p3.y,p3.z).color(r, g, b, a).endVertex();
-        renderer.pos(p2.x,p2.y,p2.z).color(r, g, b, a).endVertex();
-        renderer.pos(p1.x,p1.y,p1.z).color(r, g, b, a).endVertex();
-        tessellator.draw();
-    }
-//    public static void RenderLine(double viewerX, double viewerY, double viewerZ,QuadLine line, int color){
-//        Vector3d negView =new Vector3d(-viewerX,-viewerY,-viewerZ);
-//        Vector3d p1=new Vector3d(line.getMin());
-//        Vector3d p2=new Vector3d(line.getMax());
-//        p1.add(negView);
-//        p2.add(negView);
-//        float a = (float)(color >> 24 & 255) / 255.0F;
-//        float r = (float)(color >> 16 & 255) / 255.0F;
-//        float g = (float)(color >> 8 & 255) / 255.0F;
-//        float b = (float)(color & 255) / 255.0F;
-//
-//        double distance = p1.length();
-//        float lineWidth = (float) Math.max(3,Math.min(6, 3.0 * (1.0 / (distance))));
-//
-//
-//        Tessellator tessellator = Tessellator.getInstance();
-//        WorldRenderer renderer = tessellator.getWorldRenderer();
-//        renderer.begin(GL11.GL_LINES, net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_COLOR);
-//        GL11.glLineWidth(lineWidth);
-//        renderer.pos(p1.x,p1.y,p1.z).color(r, g, b, a).endVertex();
-//        renderer.pos(p2.x,p2.y,p2.z).color(r, g, b, a).endVertex();
-//        tessellator.draw();
-//    }
     public static void RenderLine(double viewerX, double viewerY, double viewerZ,Segment line, int color){
         Vector3d negView =new Vector3d(-viewerX,-viewerY,-viewerZ);
         Vector2d pos1=line.getPos1().getPos();

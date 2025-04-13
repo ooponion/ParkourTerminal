@@ -39,9 +39,9 @@ public class LandBlockRendererHandler {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        GlobalData.getLandingBlock().getWholeCollisionBox().setClipAgainstWall(true);
-        GlobalData.getLandingBlock().getWholeCollisionBox().subtractWalls(mc.theWorld);
-        LandBlockRendererHelper.RenderWholeCollisionBox(x,y,z,GlobalData.getLandingBlock().getWholeCollisionBox());
+        if(GlobalData.getLandingBlock().isBbVisible()){
+            LandBlockRendererHelper.RenderWholeCollisionBox(x,y,z,GlobalData.getLandingBlock().getWholeCollisionBox());
+        }
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandingBlockData {
+    private boolean bbVisible =true;
+    private boolean hasBox=false;
     private WholeCollisionBox wholeCollisionBox=new WholeCollisionBox(new ArrayList<AxisAlignedBB>(),LBbox.NON_BOX);
     private LBaxis lBaxis =LBaxis.BOTH;
     private LBbox lBbox=LBbox.NON_BOX;
@@ -24,6 +26,10 @@ public class LandingBlockData {
 
     public LandingBlockData() {
 
+    }
+
+    public boolean hasBox() {
+        return hasBox;
     }
 
     public WholeCollisionBox getWholeCollisionBox() {
@@ -46,11 +52,23 @@ public class LandingBlockData {
     }
 
     public void setAABBs(WholeCollisionBox wholeCollisionBox) {
+        hasBox=true;
+        lBaxis =LBaxis.BOTH;
+        lBbox=LBbox.NON_BOX;
+        lBmod=LBmod.Land;
         this.wholeCollisionBox=wholeCollisionBox;
+    }
+    public void clearAABBs(){
+        hasBox=false;
+        this.wholeCollisionBox=new WholeCollisionBox(new ArrayList<AxisAlignedBB>(),LBbox.NON_BOX);
     }
 
     public void setlBaxis(LBaxis lBaxis) {
         this.lBaxis = lBaxis;
+    }
+    public void toggleLbAxis(){
+        int index=this.lBaxis.getIndex()+1;
+        this.lBaxis=LBaxis.getAxis(index);
     }
 
     public void setlBbox(LBbox lBbox) {
@@ -59,6 +77,10 @@ public class LandingBlockData {
 
     public void setlBmod(LBmod lBmod) {
         this.lBmod = lBmod;
+    }
+    public void toggleLbmod(){
+        int index=this.lBmod.getIndex()+1;
+        this.lBmod=LBmod.getMod(index);
     }
 
     public Double[] getOffsets() {
@@ -153,5 +175,16 @@ public class LandingBlockData {
             }
             setPb(getOffsets());
         }
+    }
+
+    public boolean isBbVisible() {
+        return bbVisible;
+    }
+
+    public void setBbVisible(boolean bbVisible) {
+        this.bbVisible = bbVisible;
+    }
+    public void toggleBbVisible() {
+        this.bbVisible = !this.bbVisible;
     }
 }

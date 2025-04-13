@@ -62,7 +62,7 @@ public class ShiftRightClickGui extends BlurGui implements InstantiationScreen {
                     scrollBar.ResetOffset();
                 }
                 //更新属性
-                for (int i = 0; i < savedLocations.tagCount(); i++) {
+                for (int i = 0; i < coordLineContainer.getComponents().size(); i++) {
                     CoordLine coordLine=(CoordLine) coordLineContainer.getComponents().get(i);
                     coordLine.setSize(width-50,0);
                     coordLine.UpdateSelect(i == selectedIndex);

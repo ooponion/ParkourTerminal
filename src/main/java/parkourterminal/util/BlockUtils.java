@@ -7,7 +7,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import parkourterminal.data.landingblock.intf.AABB;
 import parkourterminal.data.landingblock.intf.Segment;
 import parkourterminal.data.landingblock.intf.Vertex;
 import parkourterminal.util.renderhelper.HitPosition;
@@ -703,20 +702,6 @@ public static List<AxisAlignedBB> subtractAABB(AxisAlignedBB box, AxisAlignedBB 
         vertices.add(vertex4);
 
         return vertices;
-    }
-    public static List<AxisAlignedBB> UnwrappedAABBList(List<AABB> aabbs){
-        List<AxisAlignedBB> list=new ArrayList<AxisAlignedBB>();
-        for(AABB i:aabbs){
-            list.add(i.getAxisAlignedBB());
-        }
-        return list;
-    }
-    public static List<AABB> WrappedAABBList(List<AxisAlignedBB> axisAlignedBBs){
-        List<AABB> list=new ArrayList<AABB>();
-        for(AxisAlignedBB i:axisAlignedBBs){
-            list.add(new AABB(i));
-        }
-        return list;
     }
     public static AxisAlignedBB UnionAll(List<AxisAlignedBB> axisAlignedBBs){
         if(axisAlignedBBs.isEmpty()){

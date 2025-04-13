@@ -1,5 +1,6 @@
 package parkourterminal.data.landingblock.intf;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import parkourterminal.util.BlockUtils;
@@ -13,12 +14,13 @@ public class WholeCollisionBox {
     private final List<AxisAlignedBB> OriginalBoxes;
     private final List<AxisAlignedBB> separateFromWall=new ArrayList<AxisAlignedBB>();
     private List<Segment> segs=null;//只在segments()方法内使用
-    private boolean clipAgainstWall=false;
+    private boolean clipAgainstWall=true;
     private AxisAlignedBB touchBox=null;
     private Vector3d touchPoint=null;
     private int mode=0;
     private boolean touchBoxEnabled=false;
-    public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox){
+    public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,boolean touchBoxEnabled){
+        this.touchBoxEnabled=touchBoxEnabled;
         List<AxisAlignedBB> result=new ArrayList<AxisAlignedBB>();
         if(lBbox==LBbox.NON_BOX){
 
@@ -33,16 +35,18 @@ public class WholeCollisionBox {
         result=BlockUtils.unionAABBs(result);
         this.boxes.addAll(result);
         separateFromWall.addAll(result);
+        this.subtractWalls(Minecraft.getMinecraft().theWorld);
+    }
+    public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox){
+        this(boxes,lBbox,false);
     }
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,Vector3d touchPoint){
-        this(boxes,lBbox);
-        touchBoxEnabled=true;
+        this(boxes,lBbox,true);
         this.touchPoint=touchPoint;
         mode=1;
     }
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,AxisAlignedBB touchBox){
-        this(boxes, lBbox);
-        touchBoxEnabled=true;
+        this(boxes, lBbox,true);
         this.touchBox=touchBox;
         mode=2;
     }
@@ -57,6 +61,7 @@ public class WholeCollisionBox {
 
     public void setClipAgainstWall(boolean clipAgainstWall) {
         this.clipAgainstWall = clipAgainstWall;
+        segments(true);
     }
 
     public List<AxisAlignedBB> getBoxes() {
@@ -64,10 +69,6 @@ public class WholeCollisionBox {
     }
 
     public void subtractWalls(World world){//这个方法只在更新的时候调用
-//        List<AxisAlignedBB> walls=BlockUtils.getWallsOfAABBs(boxes,world);
-//        for(int i=0;i<walls.size();i++){
-//            walls.set(i,BlockUtils.getExtendedBox(walls.get(i)));
-//        }
         List<AxisAlignedBB> aabbs=new ArrayList<AxisAlignedBB>();
         for(AxisAlignedBB box: OriginalBoxes){
             List<AxisAlignedBB> walls=BlockUtils.getWallsOfAABB(box,world);

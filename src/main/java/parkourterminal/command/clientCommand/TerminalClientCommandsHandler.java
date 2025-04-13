@@ -27,7 +27,8 @@ public class TerminalClientCommandsHandler extends CommandBase {
                 new SetConfigCommand(),
                 new ToggleSprintCommand(),
                 new ClearMaxSpeedCommand(),
-                new SetLBmodCommand());
+                new SetLBmodCommand(),
+                new LBCommand());
     }
     @Override
     public List<String> getCommandAliases(){
