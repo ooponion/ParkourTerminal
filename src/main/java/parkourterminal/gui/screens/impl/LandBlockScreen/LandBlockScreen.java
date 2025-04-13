@@ -51,7 +51,8 @@ public class LandBlockScreen extends BlurGui implements InstantiationScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
         LandingModeButton.setText("Landing Mode: "+GlobalData.getLandingBlock().getlBmod().getDisplayName());
         AxisButton.setText("Axis: "+GlobalData.getLandingBlock().getlBaxis().getDisplayName());
-        BBVisibleButton.setText("BB visible: "+ GlobalData.getLandingBlock().isBbVisible());
+        BBVisibleButton.setText("BB visible: "+ TerminalJsonConfig.getProperties().isBbVisible());
+        CondVisibleButton.setText("Cond visible: "+ TerminalJsonConfig.getProperties().isCondVisible());
 
 
         LandingModeButton.draw(mouseX, mouseY, partialTicks);
@@ -83,9 +84,9 @@ public class LandBlockScreen extends BlurGui implements InstantiationScreen {
         }else if(AxisButton.mouseClicked(mouseX, mouseY, mouseButton)){
             GlobalData.getLandingBlock().toggleLbAxis();
         }else if(BBVisibleButton.mouseClicked(mouseX, mouseY, mouseButton)){
-            GlobalData.getLandingBlock().toggleBbVisible();
+            TerminalJsonConfig.getProperties().toggleBbVisible();
         }else if(CondVisibleButton.mouseClicked(mouseX, mouseY, mouseButton)){
-            //以后加
+            TerminalJsonConfig.getProperties().toggleCondVisible();
         }else if(CalculateWallButton.mouseClicked(mouseX, mouseY, mouseButton)){
             GlobalData.getLandingBlock().getWholeCollisionBox().setClipAgainstWall(true);
             GlobalData.getLandingBlock().getWholeCollisionBox().subtractWalls(Minecraft.getMinecraft().theWorld);

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LandingBlockData {
-    private boolean bbVisible =true;
+
     private boolean hasBox=false;
     private WholeCollisionBox wholeCollisionBox=new WholeCollisionBox(new ArrayList<AxisAlignedBB>(),LBbox.NON_BOX);
     private LBaxis lBaxis =LBaxis.BOTH;
@@ -108,37 +108,10 @@ public class LandingBlockData {
         last2posZ=player.lastTickPosZ;
     }
     private void UpdateOffsets(EntityPlayerSP player){
-        AxisAlignedBB union= BlockUtils.UnionAll(getAABBs());
-        if(union==null){
+        Vector3d offset=wholeCollisionBox.calculateOffset(player,getlBmod(),last2posZ);
+        if(offset==null){
             return;
         }
-        double posX=player.lastTickPosX;
-        double posY=player.lastTickPosY;
-        double posZ=player.lastTickPosZ;
-        if(getlBmod()==LBmod.Land){
-            posX=player.lastTickPosX;
-            posY=player.lastTickPosY;
-            posZ=player.lastTickPosZ;
-        } else if (getlBmod()==LBmod.Hit) {
-            posX=player.posX;
-            posY=player.posY;
-            posZ=player.posZ;
-        } else if (getlBmod()==LBmod.Z_neo) {
-            posX=player.lastTickPosX;
-            posY=player.lastTickPosY;
-            posZ=last2posZ;
-        }else if (getlBmod()==LBmod.Enter){
-            posX=player.posX;
-            posY=player.posY;
-            posZ=player.posZ;
-            if(!(player.posY<union.maxY&&player.posY>union.minY&&player.posY<player.lastTickPosY)){
-                return;
-            }
-        }
-        if(!(player.posY<=union.maxY&&union.maxY<player.lastTickPosY)&&getlBmod()!=LBmod.Enter){
-            return;
-        }
-        Vector3d offset=wholeCollisionBox.calculateOffset(new Vector2d(posX,posZ));
         if (TerminalJsonConfig.getLandBlockJson().isSendChatOffset()){
             SendMessageHelper.addChatMessage(player,"X Offset:"+NumberWrapper.toDecimalString(offset.x));
             SendMessageHelper.addChatMessage(player,"Z Offset:"+NumberWrapper.toDecimalString(offset.y));
@@ -177,14 +150,6 @@ public class LandingBlockData {
         }
     }
 
-    public boolean isBbVisible() {
-        return bbVisible;
-    }
 
-    public void setBbVisible(boolean bbVisible) {
-        this.bbVisible = bbVisible;
-    }
-    public void toggleBbVisible() {
-        this.bbVisible = !this.bbVisible;
-    }
+
 }

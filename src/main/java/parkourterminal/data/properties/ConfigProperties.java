@@ -1,12 +1,15 @@
 package parkourterminal.data.properties;
 
 public class ConfigProperties {
+    private boolean bbVisible =true;
+    private boolean condVisible =true;
     private boolean animationOn = false;
     private int precision = 5;
     private String prefix = "terminal";
     private boolean showLabels = true;
     private boolean trimZeros=true;
     private int landBlockColor = 0xf55a44;
+    private int condColor = 0xf1c008;
     private boolean toggleSprint=false;
 
     public boolean isAnimationOn() {
@@ -67,5 +70,34 @@ public class ConfigProperties {
     }
     public void toggleSprint() {
         this.toggleSprint = !this.toggleSprint;
+    }
+
+    public int getCondColor() {
+        return condColor;
+    }
+
+    public void setCondColor(int condColor) {
+        this.condColor = condColor;
+    }
+    public boolean isBbVisible() {
+        return bbVisible;
+    }
+
+    public void setBbVisible(boolean bbVisible) {
+        this.bbVisible = bbVisible;
+    }
+    public void toggleBbVisible() {
+        this.bbVisible = !this.bbVisible;
+    }
+
+    public boolean isCondVisible() {
+        return condVisible;
+    }
+
+    public void setCondVisible(boolean condVisible) {
+        this.condVisible = condVisible;
+    }
+    public void toggleCondVisible(){
+        this.condVisible=!this.condVisible;
     }
 }

@@ -1,6 +1,7 @@
 package parkourterminal.data.landingblock.intf;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import parkourterminal.util.BlockUtils;
@@ -10,6 +11,7 @@ import javax.vecmath.Vector3d;
 import java.util.*;
 
 public class WholeCollisionBox {
+    private CondZone condZone=new CondZone(0,0,0,0,-100);
     private final List<AxisAlignedBB> boxes=new ArrayList<AxisAlignedBB>();
     private final List<AxisAlignedBB> OriginalBoxes;
     private final List<AxisAlignedBB> separateFromWall=new ArrayList<AxisAlignedBB>();
@@ -36,6 +38,7 @@ public class WholeCollisionBox {
         this.boxes.addAll(result);
         separateFromWall.addAll(result);
         this.subtractWalls(Minecraft.getMinecraft().theWorld);
+        UpdateCondZone();
     }
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox){
         this(boxes,lBbox,false);
@@ -62,6 +65,7 @@ public class WholeCollisionBox {
     public void setClipAgainstWall(boolean clipAgainstWall) {
         this.clipAgainstWall = clipAgainstWall;
         segments(true);
+        UpdateCondZone();
     }
 
     public List<AxisAlignedBB> getBoxes() {
@@ -85,12 +89,46 @@ public class WholeCollisionBox {
                 aabbs.remove(this.touchBox);
             }
         }
+        aabbs=BlockUtils.unionAABBs(aabbs);
         separateFromWall.clear();
         separateFromWall.addAll(aabbs);
         segments(true);
+        UpdateCondZone();
     }
+    public CondZone getCondZone(){
+        return  condZone;
+    };
+    public void UpdateCondZone(){
+        AxisAlignedBB outline=BlockUtils.UnionAll(getBoxes());
+        if(outline==null){
+            return;
+        }
+        AxisAlignedBB cond =BlockUtils.getExtendedBox(outline,1);
+        this.condZone=new CondZone(cond.minX,cond.maxX,cond.minZ,cond.maxZ,cond.maxY);
+    }
+    public Vector3d calculateOffset(EntityPlayerSP player,LBmod lBmod,double last2posZ){
+        double posX=player.lastTickPosX;
+        double posZ=player.lastTickPosZ;
+        if(lBmod==LBmod.Land){
+            posX=player.lastTickPosX;
+            posZ=player.lastTickPosZ;
+        } else if (lBmod==LBmod.Hit) {
+            posX=player.posX;
+            posZ=player.posZ;
+        } else if (lBmod==LBmod.Z_neo) {
+            posX=player.lastTickPosX;
+            posZ=last2posZ;
+        }else if (lBmod==LBmod.Enter){
+            posX=player.posX;
+            posZ=player.posZ;
 
-    public Vector3d calculateOffset(Vector2d pos){
+        }
+        Vector2d pos=new Vector2d(posX,posZ);
+
+        if(!getCondZone().insides(pos)){
+            return null;
+        }
+
         Segment nearestSegment=null;
         double nearestDistance=Double.POSITIVE_INFINITY;
         for(Segment segment:segments(false)){
@@ -101,7 +139,15 @@ public class WholeCollisionBox {
             }
         }
         if(nearestSegment==null){
-            return new Vector3d(Double.NaN,Double.NaN,Double.NaN);
+            return null;
+        }
+        double maxY=nearestSegment.getMax().getMaxY();
+        double minY=nearestSegment.getMax().getMinY();
+        if(!(player.posY<=maxY&&maxY<player.lastTickPosY)&&lBmod!=LBmod.Enter){
+            return null;
+        }
+        if(!(player.posY<maxY&&player.posY>minY&&player.posY<player.lastTickPosY)&&lBmod==LBmod.Enter){
+            return null;
         }
 
         Vector2d offsetVec=nearestSegment.getPos1().getOffset(pos);

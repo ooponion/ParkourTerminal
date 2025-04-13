@@ -10,8 +10,10 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.data.GlobalData;
+import parkourterminal.data.landingblock.intf.CondZone;
 import parkourterminal.data.landingblock.intf.Segment;
 import parkourterminal.data.landingblock.intf.Vertex;
+import parkourterminal.data.landingblock.intf.WholeCollisionBox;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.BlockUtils;
 import parkourterminal.util.renderhelper.LandBlockRendererHelper;
@@ -26,6 +28,9 @@ public class LandBlockRendererHandler {
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
+        if(!GlobalData.getLandingBlock().hasBox()){
+            return;
+        }
         Minecraft mc = Minecraft.getMinecraft();
         float partialTicks = event.partialTicks;
 
@@ -38,10 +43,16 @@ public class LandBlockRendererHandler {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        if(TerminalJsonConfig.getProperties().isCondVisible()){
+            CondZone condZone=GlobalData.getLandingBlock().getWholeCollisionBox().getCondZone();
+            int color=TerminalJsonConfig.getProperties().getCondColor()+0x07000000;
+            renderCube(x,y,z,new Vec3(condZone.getxMin(),condZone.getY(),condZone.getzMin()),new Vec3(condZone.getxMax(),condZone.getY()-0.3,condZone.getzMax()),color);
 
-        if(GlobalData.getLandingBlock().isBbVisible()){
+        }
+        if(TerminalJsonConfig.getProperties().isBbVisible()){
             LandBlockRendererHelper.RenderWholeCollisionBox(x,y,z,GlobalData.getLandingBlock().getWholeCollisionBox());
         }
+
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();

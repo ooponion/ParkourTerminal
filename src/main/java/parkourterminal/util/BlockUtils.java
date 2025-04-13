@@ -481,6 +481,13 @@ public class BlockUtils {
         double maxZ = box.maxZ+0.3;
         return new AxisAlignedBB(minX, box.minY, minZ, maxX, box.maxY, maxZ);
     }
+    public static AxisAlignedBB getExtendedBox(AxisAlignedBB box,double radius) {
+        double minX = box.minX-radius;
+        double minZ = box.minZ-radius;
+        double maxX = box.maxX+radius;
+        double maxZ = box.maxZ+radius;
+        return new AxisAlignedBB(minX, box.minY, minZ, maxX, box.maxY, maxZ);
+    }
     public static List<AxisAlignedBB> unionAABBs(List<AxisAlignedBB> aabbs) {
 //        if(aabbs.size()==1){
 //            return aabbs.get(0);
