@@ -112,7 +112,7 @@ public class LandingBlockData {
         if(offset==null){
             return;
         }
-        if (TerminalJsonConfig.getLandBlockJson().isSendChatOffset()){
+        if (TerminalJsonConfig.getProperties().isSendChatOffset()){
             SendMessageHelper.addChatMessage(player,"X Offset:"+NumberWrapper.toDecimalString(offset.x));
             SendMessageHelper.addChatMessage(player,"Z Offset:"+NumberWrapper.toDecimalString(offset.y));
         }
@@ -123,7 +123,7 @@ public class LandingBlockData {
             double lastX=getPb()[0].isNaN()?Double.NEGATIVE_INFINITY:getPb()[0];
             double offsetX=getOffsets()[0].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[0];
             if(lastX<offsetX){
-                if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
+                if (TerminalJsonConfig.getProperties().isSendChatPb()){
                     SendMessageHelper.addChatMessage(player,"new pb x:"+NumberWrapper.toDecimalString(offsetX));
                 }
                 setPb(getOffsets());
@@ -133,7 +133,7 @@ public class LandingBlockData {
             double lastZ=getPb()[1].isNaN()?Double.NEGATIVE_INFINITY:getPb()[1];
             double offsetZ=getOffsets()[1].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[1];
             if(lastZ<offsetZ){
-                if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
+                if (TerminalJsonConfig.getProperties().isSendChatPb()){
                     SendMessageHelper.addChatMessage(player,"new pb z:"+NumberWrapper.toDecimalString(offsetZ));
                 }
                 setPb(getOffsets());
@@ -143,7 +143,7 @@ public class LandingBlockData {
         double lastPB=getPb()[2].isNaN()?Double.NEGATIVE_INFINITY:getPb()[2];
         double offset=getOffsets()[2].isNaN()?Double.NEGATIVE_INFINITY:getOffsets()[2];
         if(lastPB<offset){
-            if (TerminalJsonConfig.getLandBlockJson().isSendChatPb()){
+            if (TerminalJsonConfig.getProperties().isSendChatPb()){
                 SendMessageHelper.addChatMessage(player,"new pb:"+NumberWrapper.toDecimalString(offset));
             }
             setPb(getOffsets());

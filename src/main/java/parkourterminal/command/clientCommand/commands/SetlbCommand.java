@@ -176,57 +176,55 @@ public class SetlbCommand extends TerminalCommandBase {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input.toString());
         if (matcher.matches()) {
-            if (matcher.matches()) {
-                boolean hasXZ = matcher.group(1) != null;
-                boolean hasNum1 = matcher.group(2) != null;
-                boolean hasNum2 = matcher.group(3) != null;
-                boolean hasNum3 = matcher.group(4) != null;
-                boolean hasTarget = matcher.group(5) != null;
-                boolean hasBox = matcher.group(6) != null;
-                boolean divided = matcher.group(7) != null;
+            boolean hasXZ = matcher.group(1) != null;
+            boolean hasNum1 = matcher.group(2) != null;
+            boolean hasNum2 = matcher.group(3) != null;
+            boolean hasNum3 = matcher.group(4) != null;
+            boolean hasTarget = matcher.group(5) != null;
+            boolean hasBox = matcher.group(6) != null;
+            boolean divided = matcher.group(7) != null;
 
-                if (!hasTarget&&!hasBox&&!hasXZ&&!hasNum1&&!hasNum2&&!hasNum3) {
-                    suggestions.addAll(Arrays.asList("x", "z","~"));
-                    suggestions.add(String.valueOf(x));
-                    suggestions.add("target");
-                    suggestions.add("box");
-                }
+            if (!hasTarget&&!hasBox&&!hasXZ&&!hasNum1&&!hasNum2&&!hasNum3) {
+                suggestions.addAll(Arrays.asList("x", "z","~"));
+                suggestions.add(String.valueOf(x));
+                suggestions.add("target");
+                suggestions.add("box");
+            }
 
-                // setlb x | setlb z
-                if (hasXZ && !hasNum1&&!hasTarget) {
+            // setlb x | setlb z
+            if (hasXZ && !hasNum1&&!hasTarget) {
 
-                    suggestions.add(String.valueOf(x));
-                    suggestions.add("target");
-                    suggestions.add("box");
-                }
+                suggestions.add(String.valueOf(x));
+                suggestions.add("target");
+                suggestions.add("box");
+            }
 
-                // setlb x 123 |setlb 123
-                if (hasNum1 && !hasNum2) {
-                    suggestions.add(String.valueOf(y));
-                }
+            // setlb x 123 |setlb 123
+            if (hasNum1 && !hasNum2) {
+                suggestions.add(String.valueOf(y));
+            }
 
-                //  setlb x 123 456 |setlb 123 456
-                if ( hasNum1 && hasNum2 && !hasNum3) {
-                    suggestions.add(String.valueOf(z));
-                }
+            //  setlb x 123 456 |setlb 123 456
+            if ( hasNum1 && hasNum2 && !hasNum3) {
+                suggestions.add(String.valueOf(z));
+            }
 
-                // x 123 456 789| setlb 123 456 789
-                if (hasNum1 && hasNum2 && hasNum3) {
-                    suggestions.add("box");
-                }
+            // x 123 456 789| setlb 123 456 789
+            if (hasNum1 && hasNum2 && hasNum3) {
+                suggestions.add("box");
+            }
 
-                // setlb x| target
-                if (hasTarget && !hasBox) {
-                    suggestions.add("box");
-                }
+            // setlb x| target
+            if (hasTarget && !hasBox) {
+                suggestions.add("box");
+            }
 
-                // setlb x|null target box | setlb x|null 123 456 789 box
-                if (hasBox) {
-                    suggestions.clear();
-                }
-                if(!divided&&!hasNum1){
-                    suggestions.add("divided");
-                }
+            // setlb x|null target box | setlb x|null 123 456 789 box
+            if (hasBox) {
+                suggestions.clear();
+            }
+            if(!divided&&!hasNum1){
+                suggestions.add("divided");
             }
         }
 

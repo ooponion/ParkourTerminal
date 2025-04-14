@@ -52,9 +52,6 @@ public class TerminalJsonConfig {
     public static void setLabelList(HashMap<String, LabelJson> labels) {
         root.setUsedLabels(labels);
     }
-    public static LandBlockJson getLandBlockJson(){
-        return root.getLandBlock();
-    }
     public static ColorData getColors(){
         return root.getColorData();
     }

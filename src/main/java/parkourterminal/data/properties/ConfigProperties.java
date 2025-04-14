@@ -11,6 +11,23 @@ public class ConfigProperties {
     private int landBlockColor = 0xf55a44;
     private int condColor = 0xf1c008;
     private boolean toggleSprint=false;
+    private boolean sendChatPb=true;
+    private boolean sendChatOffset=false;
+
+
+    public boolean isSendChatPb() {
+        return sendChatPb;
+    }
+    public boolean isSendChatOffset() {
+        return sendChatOffset;
+    }
+
+    public void setSendChatPb(boolean sendChatPb) {
+        this.sendChatPb = sendChatPb;
+    }
+    public void setSendChatOffset(boolean sendChatOffset) {
+        this.sendChatOffset = sendChatOffset;
+    }
 
     public boolean isAnimationOn() {
         return animationOn;
@@ -77,6 +94,7 @@ public class ConfigProperties {
     }
 
     public void setCondColor(int condColor) {
+        condColor=Math.max(0x0,Math.min(0xFFFFFF,condColor));
         this.condColor = condColor;
     }
     public boolean isBbVisible() {

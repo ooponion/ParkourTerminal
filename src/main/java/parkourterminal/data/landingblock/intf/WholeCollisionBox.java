@@ -20,6 +20,8 @@ public class WholeCollisionBox {
     private AxisAlignedBB touchBox=null;
     private Vector3d touchPoint=null;
     private int mode=0;
+    private int condMode=0;//0: radius,others: coords
+    private double condRadius=1;
     private boolean touchBoxEnabled=false;
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,boolean touchBoxEnabled){
         this.touchBoxEnabled=touchBoxEnabled;
@@ -99,11 +101,14 @@ public class WholeCollisionBox {
         return  condZone;
     };
     public void UpdateCondZone(){
+        if(mode!=0){//直接设置退出更新
+            return;
+        }
         AxisAlignedBB outline=BlockUtils.UnionAll(getBoxes());
         if(outline==null){
             return;
         }
-        AxisAlignedBB cond =BlockUtils.getExtendedBox(outline,1);
+        AxisAlignedBB cond =BlockUtils.getExtendedBox(outline,condRadius);
         this.condZone=new CondZone(cond.minX,cond.maxX,cond.minZ,cond.maxZ,cond.maxY);
     }
     public Vector3d calculateOffset(EntityPlayerSP player,LBmod lBmod,double last2posZ){
@@ -220,6 +225,20 @@ public class WholeCollisionBox {
         }
         return result;
     }
+
+    public void setRadius(double radius) {
+        this.mode = 0;
+        this.condRadius=Double.min(Double.max(radius,0),10);
+        UpdateCondZone();
+    }
+    public void setCondZone(double minX,double maxX,double minZ,double maxZ){
+        this.mode = 1;
+        this.condZone.setxMax(maxX);
+        this.condZone.setzMax(maxZ);
+        this.condZone.setxMin(minX);
+        this.condZone.setzMin(minZ);
+    }
+
     private boolean inBox(Vector2d pos){
         boolean isIn=false;
         for(AxisAlignedBB axisAlignedBB:getBoxes()){

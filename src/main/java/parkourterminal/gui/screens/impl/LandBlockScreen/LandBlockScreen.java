@@ -17,7 +17,7 @@ import javax.xml.crypto.Data;
 import java.io.IOException;
 
 public class LandBlockScreen extends BlurGui implements InstantiationScreen {
-    private int buttonWidth =70;
+    private int buttonWidth =120;
     private int buttonHeight =20;
     private int spacing =5;
     private int normalColor = 0x40000000;

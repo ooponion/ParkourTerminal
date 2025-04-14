@@ -20,6 +20,7 @@ public class ConfigContainer extends Container {
         addComponent(new ConfigLine("color value",ConfigType.TextField,new ColorValueModifier()));
         addComponent(new ConfigLine("prefix",ConfigType.TextField,new PrefixModifier()));
         addComponent(new ConfigLine("landblock color",ConfigType.TextField,new LandBlockColorModifier()));
+        addComponent(new ConfigLine("lb cond color",ConfigType.TextField,new LandBlockCondColorModifier()));
     }
     @Override
     public void Update(){
