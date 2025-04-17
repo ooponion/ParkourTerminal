@@ -45,6 +45,7 @@ public class LabelManager {
         //Strat Part
         addLabel("Last Timing",new LabelValueString());
         addLabel("Last Input",new LabelValueString());
+        addLabel("SideStep",new LabelValueString());
 
         //Land Part
         addLabel("Hit X",new LabelValueDouble());
@@ -116,6 +117,7 @@ public class LabelManager {
         //Strat Part
         UpdateLabel("Last Timing",GlobalData.getInputData().getStrat());
         UpdateLabel("Last Input",GlobalData.getInputData().getOperation().getDirectionKeys());
+        UpdateLabel("SideStep",GlobalData.getInputData().getSidestep());
 
         //Land Part
         UpdateLabel("Hit X",GlobalData.getLandData().getHitX());
