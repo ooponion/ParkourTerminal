@@ -11,6 +11,7 @@ import parkourterminal.gui.screens.impl.GuiScreen.components.UsedLabelContainer.
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
 
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class UnusedLabelContainer extends Container {
@@ -106,6 +107,14 @@ public class UnusedLabelContainer extends Container {
     @Override
     public void addComponent(UIComponent component) {
         super.addComponent(component);
+        getComponents().sort(new Comparator<UIComponent>() {
+            @Override
+            public int compare(UIComponent o1, UIComponent o2) {
+                String label1=((ListLabel)o1).getLabel().getLabel();
+                String label2=((ListLabel)o2).getLabel().getLabel();
+                return label1.compareTo(label2);
+            }
+        });
         scrollBar.UpdateContentSize(this.getComponentsTotalHeight()+getPadding().top+getPadding().bottom);
     }
 }
