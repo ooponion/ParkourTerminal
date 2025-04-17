@@ -13,11 +13,20 @@ public class ConfigProperties {
     private boolean toggleSprint=false;
     private boolean sendChatPb=true;
     private boolean sendChatOffset=false;
+    private boolean sendHitInertia=false;
 
 
     public boolean isSendChatPb() {
         return sendChatPb;
     }
+    public boolean isSendHitInertia() {
+        return sendHitInertia;
+    }
+
+    public void setSendHitInertia(boolean sendHitInertia) {
+        this.sendHitInertia = sendHitInertia;
+    }
+
     public boolean isSendChatOffset() {
         return sendChatOffset;
     }

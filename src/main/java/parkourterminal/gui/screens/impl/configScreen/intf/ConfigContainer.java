@@ -15,12 +15,14 @@ public class ConfigContainer extends Container {
         addComponent(new ConfigLine("send chat offset",ConfigType.Switcher,new LandblockOffsetModifier()));
         addComponent(new ConfigLine("show labels",ConfigType.Switcher,new ShowLabelsModifier()));
         addComponent(new ConfigLine("trim zeros",ConfigType.Switcher,new TrimZerosModifier()));
+        addComponent(new ConfigLine("send inertia",ConfigType.Switcher,new HitInertiaModifier()));
         addComponent(new ConfigLine("coords precision",ConfigType.TextField,new DFModifier()));
         addComponent(new ConfigLine("color label",ConfigType.TextField,new ColorLabelModifier()));
         addComponent(new ConfigLine("color value",ConfigType.TextField,new ColorValueModifier()));
         addComponent(new ConfigLine("prefix",ConfigType.TextField,new PrefixModifier()));
         addComponent(new ConfigLine("landblock color",ConfigType.TextField,new LandBlockColorModifier()));
         addComponent(new ConfigLine("lb cond color",ConfigType.TextField,new LandBlockCondColorModifier()));
+
     }
     @Override
     public void Update(){

@@ -23,6 +23,6 @@ public class NumberWrapper {
             DecimalFormat df = new DecimalFormat(pattern.toString());
             return df.format(number);
         }
-        return String.format("%." + number + "f", number);
+        return String.format("%." + n + "f", number);
     }
 }
