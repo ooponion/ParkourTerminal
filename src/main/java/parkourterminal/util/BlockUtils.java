@@ -7,21 +7,24 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import parkourterminal.data.landingblock.intf.Segment;
+import parkourterminal.data.landingblock.intf.Vertex;
+import parkourterminal.util.renderhelper.HitPosition;
 
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BlockUtils {
 
     public static Vector3d getMinPos(AxisAlignedBB axisAlignedBB){
         return new Vector3d(axisAlignedBB.minX,axisAlignedBB.minY,axisAlignedBB.minZ);
     }
-    public static Vector3d getMaxPos(AxisAlignedBB axisAlignedBB){
-        return new Vector3d(axisAlignedBB.maxX,axisAlignedBB.maxY,axisAlignedBB.maxZ);
+    public static Vector3d getMaxPos(AxisAlignedBB axisAlignedBB) {
+        return new Vector3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ);
     }
-    public static List<AxisAlignedBB> getAABBsUnderPlayerFeet(World worldIn, EntityPlayerSP player){
-        BlockPos feetPos1=new BlockPos(player.posX, player.posY-0.001f, player.posZ);
+    public static List<AxisAlignedBB> getAABBsUnderPlayerFeet( EntityPlayerSP player){
+        BlockPos feetPos1=new BlockPos(player.posX, player.posY-0.00000000001f, player.posZ);
         BlockPos feetPos2=feetPos1.add(1,0,0);
         BlockPos feetPos3=feetPos1.add(0,0,1);
         BlockPos feetPos4=feetPos1.add(-1,0,0);
@@ -32,12 +35,12 @@ public class BlockUtils {
         BlockPos feetPos9=feetPos1.add(-1,0,1);
         BlockPos[] posList=new BlockPos[]{feetPos9,feetPos1,feetPos2,feetPos3,feetPos4,feetPos5,feetPos6,feetPos7,feetPos8};
         List<AxisAlignedBB> boxes = new ArrayList<AxisAlignedBB>();
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.001f,0);
+        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.00000000001f,0);
         for(BlockPos feetPos:posList){
-            IBlockState state=worldIn.getBlockState(feetPos);
+            IBlockState state=player.worldObj.getBlockState(feetPos);
             Block block=state.getBlock();
             BlockPos fencePos=feetPos.add(0,-0.5,0);
-            IBlockState state2=worldIn.getBlockState(fencePos);
+            IBlockState state2=player.worldObj.getBlockState(fencePos);
             Block block2=state2.getBlock();
             block2.addCollisionBoxesToList(player.worldObj, fencePos,state2,bounding,boxes,null);
             if(block instanceof BlockAnvil){
@@ -47,9 +50,9 @@ public class BlockUtils {
         }
         return boxes;
     }
-    public static AxisAlignedBB getBiggestAABBUnderPlayerFeet(World worldIn, EntityPlayerSP player){
-        List<AxisAlignedBB> boxes = getAABBsUnderPlayerFeet(worldIn, player);
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.001f,0);
+    public static AxisAlignedBB getBiggestAABBUnderPlayerFeet( EntityPlayerSP player){
+        List<AxisAlignedBB> boxes = getAABBsUnderPlayerFeet(player);
+        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,-0.00000000001f,0);
         AxisAlignedBB maxBox=null;
         double maxV=0;
         for(AxisAlignedBB axisAlignedBB:boxes){
@@ -62,7 +65,7 @@ public class BlockUtils {
         return maxBox;
     }
     public static Block getBlockOnPlayerFeet(World worldIn,EntityPlayerSP player){
-        BlockPos feetPos=new BlockPos(player.posX, player.posY-0.001, player.posZ);
+        BlockPos feetPos=new BlockPos(player.posX, player.posY-0.00000000001, player.posZ);
         IBlockState state=worldIn.getBlockState(feetPos);
         return state.getBlock();
     }
@@ -92,15 +95,23 @@ public class BlockUtils {
 
         return width * height * depth;
     }
-    public static AxisAlignedBB getLookingAtAABB(EntityPlayer player, float blockReachDistance, float partialTicks) {
-        List<AxisAlignedBB> list= getLookingAtAABBs(player, blockReachDistance, partialTicks);
+    public static HitPosition getLookingAtHitPosition(EntityPlayer player, float blockReachDistance, float partialTicks) {
+        List<HitPosition> list= getLookingAtHitPositions(player, blockReachDistance, partialTicks);
         if(list.isEmpty()){
             return null;
         }
         return list.get(0);
 
     }
-    public static List<AxisAlignedBB> getLookingAtAABBs(EntityPlayer player, float blockReachDistance, float partialTicks) {
+    public static AxisAlignedBB getLookingAtAABB(EntityPlayer player, float blockReachDistance, float partialTicks) {
+        HitPosition hitPosition= getLookingAtHitPosition(player, blockReachDistance, partialTicks);
+        if(hitPosition==null){
+            return null;
+        }
+        return hitPosition.getHitBox();
+
+    }
+    public static List<HitPosition> getLookingAtHitPositions(EntityPlayer player, float blockReachDistance, float partialTicks) {
 
         Vec3 vec3 = player.getPositionEyes(partialTicks);
         Vec3 vec31 = player.getLook(partialTicks);
@@ -108,7 +119,15 @@ public class BlockUtils {
         return rayTraceBlocks(player.worldObj, vec3, vec32, false);
 
     }
-    public static List<AxisAlignedBB> rayTraceBlocks(World worldIn,Vec3 vec31, Vec3 vec32, boolean stopOnLiquid)
+    public static List<AxisAlignedBB> getLookingAtAABBs(EntityPlayer player, float blockReachDistance, float partialTicks){
+        List<HitPosition> hitPositions=getLookingAtHitPositions(player, blockReachDistance, partialTicks);
+        List<AxisAlignedBB> aabbs=new ArrayList<AxisAlignedBB>();
+        for(HitPosition hitPosition:hitPositions){
+            aabbs.add(hitPosition.getHitBox());
+        }
+        return aabbs;
+    }
+    public static List<HitPosition> rayTraceBlocks(World worldIn, Vec3 vec31, Vec3 vec32, boolean stopOnLiquid)
     {
         if (!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord))
         {
@@ -126,7 +145,7 @@ public class BlockUtils {
 
                 if (( block.getCollisionBoundingBox(worldIn, blockpos, iblockstate) != null) && block.canCollideCheck(iblockstate, stopOnLiquid))
                 {
-                    return null;
+                    return new ArrayList<HitPosition>();
                 }
 
                 int k1 = 200;
@@ -135,12 +154,12 @@ public class BlockUtils {
                 {
                     if (Double.isNaN(vec31.xCoord) || Double.isNaN(vec31.yCoord) || Double.isNaN(vec31.zCoord))
                     {
-                        return null;
+                        return new ArrayList<HitPosition>();
                     }
 
                     if (l == i && i1 == j && j1 == k)
                     {
-                        return null;
+                        return new ArrayList<HitPosition>();
                     }
 
                     boolean flag2 = true;
@@ -259,38 +278,41 @@ public class BlockUtils {
                             AxisAlignedBB bounding=new AxisAlignedBB(blockpos,blockpos.add(1,1,1));
                             block1.addCollisionBoxesToList(Minecraft.getMinecraft().theWorld, blockpos, iblockstate1, bounding, boxes, null);
 
-                            AxisAlignedBB MinObject=null;
+                            List<HitPosition> hitPositions=new ArrayList<HitPosition>();
+                            HitPosition MinObject=null;
                             double minDistance=Double.MAX_VALUE;
                             for(AxisAlignedBB axisAlignedBB:boxes){
                                 MovingObjectPosition movingobjectposition = collisionRayTrace(blockpos, vec31, vec32,axisAlignedBB);
                                 if(movingobjectposition==null){continue;}
                                 double distance=vec31.squareDistanceTo(movingobjectposition.hitVec);
-                                if(distance<minDistance){
-                                    minDistance=distance;
-                                    MinObject=axisAlignedBB;
+                                HitPosition hitPosition=new HitPosition(movingobjectposition.hitVec, axisAlignedBB);
+                                hitPositions.add(hitPosition);
+                                if(distance<minDistance) {
+                                    minDistance = distance;
+                                    MinObject = hitPosition;
                                 }
                             }
                             if (MinObject != null)
                             {
-                                boxes.remove(MinObject);
-                                boxes.add(0,MinObject);
+                                hitPositions.remove(MinObject);
+                                hitPositions.add(0,MinObject);
+                                return hitPositions;
                             }
-                            return boxes;
                         }
 
                     }
                 }
 
-                return new ArrayList<AxisAlignedBB>();
+                return new ArrayList<HitPosition>();
             }
             else
             {
-                return null;
+                return new ArrayList<HitPosition>();
             }
         }
         else
         {
-            return null;
+            return new ArrayList<HitPosition>();
         }
     }
     public static boolean isVecInsideBB(AxisAlignedBB axisAlignedBB,Vec3 vec)
@@ -440,5 +462,352 @@ public class BlockUtils {
     {
         return point != null && point.xCoord >= axisAlignedBB.minX && point.xCoord <= axisAlignedBB.maxX && point.yCoord >= axisAlignedBB.minY && point.yCoord <= axisAlignedBB.maxY;
     }
+    public static AxisAlignedBB getIntersection(AxisAlignedBB a, AxisAlignedBB b) {
+        if (!a.intersectsWith(b)) return null;
+
+        double minX = Math.max(a.minX, b.minX);
+        double minY = Math.max(a.minY, b.minY);
+        double minZ = Math.max(a.minZ, b.minZ);
+        double maxX = Math.min(a.maxX, b.maxX);
+        double maxY = Math.min(a.maxY, b.maxY);
+        double maxZ = Math.min(a.maxZ, b.maxZ);
+
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+    public static AxisAlignedBB getExtendedBox(AxisAlignedBB box) {
+        double minX = box.minX-0.3;
+        double minZ = box.minZ-0.3;
+        double maxX = box.maxX+0.3;
+        double maxZ = box.maxZ+0.3;
+        return new AxisAlignedBB(minX, box.minY, minZ, maxX, box.maxY, maxZ);
+    }
+    public static AxisAlignedBB getExtendedBox(AxisAlignedBB box,double radius) {
+        double minX = box.minX-radius;
+        double minZ = box.minZ-radius;
+        double maxX = box.maxX+radius;
+        double maxZ = box.maxZ+radius;
+        return new AxisAlignedBB(minX, box.minY, minZ, maxX, box.maxY, maxZ);
+    }
+    public static List<AxisAlignedBB> unionAABBs(List<AxisAlignedBB> aabbs) {
+//        if(aabbs.size()==1){
+//            return aabbs.get(0);
+//        } else if (aabbs.isEmpty()) {
+//            return null;
+//        }
+//        AxisAlignedBB alignedBB=aabbs.get(0);
+//        for(int i=1;i<aabbs.size();i++){
+//            alignedBB=getIntersection(aabbs.get(i),alignedBB);
+//            if(alignedBB==null){return null;}
+//        }
+//        return alignedBB;
+        List<AxisAlignedBB> result =new ArrayList<AxisAlignedBB>();
+        for(AxisAlignedBB aabb:aabbs){
+            result=subtractAABBs(result,aabb);
+            result.add(aabb);
+        }
+        return result;
+    }
+    public static  List<AxisAlignedBB> subtractAABBsWithSubtractors(List<AxisAlignedBB> aabbs, List<AxisAlignedBB> subtractors) {
+        List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>(aabbs);
+        for(AxisAlignedBB subtract:subtractors){
+            List<AxisAlignedBB> subtracted=subtractAABBs(result,subtract);
+            result.clear();
+            result.addAll(subtracted);
+        }
+        return result;
+    }
+    public static  List<AxisAlignedBB> subtractAABBs(List<AxisAlignedBB> aabbs, AxisAlignedBB subtractor) {
+        List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>();
+        for(AxisAlignedBB aabb:aabbs){
+            result.addAll(subtractAABB(aabb,subtractor));
+        }
+        return result;
+    }
+    public static List<AxisAlignedBB> subtractAABBWithSubtractors(AxisAlignedBB box, List<AxisAlignedBB> subtractors) {
+        List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>();
+        result.add(box);
+        for(AxisAlignedBB subtract:subtractors){
+            result=subtractAABBs(result,subtract);
+        }
+        return result;
+    }
+//    public static List<AxisAlignedBB> subtractAABB(AxisAlignedBB box, AxisAlignedBB subtractor) {
+//        List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>();
+//
+//        AxisAlignedBB intersection = getIntersection(box, subtractor);
+//        if (intersection == null) {
+//            result.add(box);
+//            return result;
+//        }
+//
+//        // 6 个aabbs
+//        // left
+//        if (box.minX < intersection.minX) {
+//            result.add(new AxisAlignedBB(
+//                    box.minX, box.minY, box.minZ,
+//                    intersection.minX, box.maxY, box.maxZ));
+//        }
+//
+//        // right
+//        if (box.maxX > intersection.maxX) {
+//            result.add(new AxisAlignedBB(
+//                    intersection.maxX, box.minY, box.minZ,
+//                    box.maxX, box.maxY, box.maxZ));
+//        }
+//
+//        // bottom
+//        if (box.minY < intersection.minY) {
+//            result.add(new AxisAlignedBB(
+//                    intersection.minX, box.minY, box.minZ,
+//                    intersection.maxX, intersection.minY, box.maxZ));
+//        }
+//
+//        // top
+//        if (box.maxY > intersection.maxY) {
+//            result.add(new AxisAlignedBB(
+//                    intersection.minX, intersection.maxY, box.minZ,
+//                    intersection.maxX, box.maxY, box.maxZ));
+//        }
+//
+//        // behind
+//        if (box.minZ < intersection.minZ) {
+//            result.add(new AxisAlignedBB(
+//                    intersection.minX, intersection.minY, box.minZ,
+//                    intersection.maxX, intersection.maxY, intersection.minZ));
+//        }
+//
+//        // front
+//        if (box.maxZ > intersection.maxZ) {
+//            result.add(new AxisAlignedBB(
+//                    intersection.minX, intersection.minY, intersection.maxZ,
+//                    intersection.maxX, intersection.maxY, box.maxZ));
+//        }
+//
+//        return result;
+//    }
+public static List<AxisAlignedBB> subtractAABB(AxisAlignedBB box, AxisAlignedBB subtractor) {
+    List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>();
+
+    AxisAlignedBB intersection = getIntersection(box, subtractor);
+    if (intersection == null) {
+        result.add(box);
+        return result;
+    }
+
+    // cut along X axis
+    if (box.minX < intersection.minX) {
+        result.add(new AxisAlignedBB(box.minX, box.minY, box.minZ, intersection.minX, box.maxY, box.maxZ));
+    }
+    if (box.maxX > intersection.maxX) {
+        result.add(new AxisAlignedBB(intersection.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ));
+    }
+
+    double minX = Math.max(box.minX, intersection.minX);
+    double maxX = Math.min(box.maxX, intersection.maxX);
+
+    // cut along Y axis (in X-overlapping region)
+    if (box.minY < intersection.minY) {
+        result.add(new AxisAlignedBB(minX, box.minY, box.minZ, maxX, intersection.minY, box.maxZ));
+    }
+    if (box.maxY > intersection.maxY) {
+        result.add(new AxisAlignedBB(minX, intersection.maxY, box.minZ, maxX, box.maxY, box.maxZ));
+    }
+
+    double minY = Math.max(box.minY, intersection.minY);
+    double maxY = Math.min(box.maxY, intersection.maxY);
+
+    // cut along Z axis (in X-Y overlapping region)
+    if (box.minZ < intersection.minZ) {
+        result.add(new AxisAlignedBB(minX, minY, box.minZ, maxX, maxY, intersection.minZ));
+    }
+    if (box.maxZ > intersection.maxZ) {
+        result.add(new AxisAlignedBB(minX, minY, intersection.maxZ, maxX, maxY, box.maxZ));
+    }
+
+    return result;
+}
+    public static List<AxisAlignedBB> getWallsOfAABB(AxisAlignedBB aabb,World world){
+        AxisAlignedBB extendedBox=getExtendedBox(aabb);
+        AxisAlignedBB standableBox=new AxisAlignedBB(extendedBox.minX,extendedBox.maxY, extendedBox.minZ, extendedBox.maxX,extendedBox.maxY+1.8, extendedBox.maxZ);//玩家可站立空间的整体Box
+        List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>( );
+        for(AxisAlignedBB box:getCollidingBlockBoundingBoxes(world, standableBox)){
+            list.add(new AxisAlignedBB(box.minX,aabb.minY, box.minZ,box.maxX,aabb.maxY,box.maxZ));
+        }
+        return list;
+    }
+    public static List<AxisAlignedBB> getWallsOfAABBs(List<AxisAlignedBB> aabbs,World world){
+        List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>( );
+        for(AxisAlignedBB alignedBB:aabbs){
+            list.addAll(getWallsOfAABB(alignedBB,world));
+        }
+        return list;
+    }
+    public static List<AxisAlignedBB> getCollidingBlockBoundingBoxes(World world, AxisAlignedBB aabb) {
+        List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
+
+        int minX = MathHelper.floor_double(aabb.minX);
+        int maxX = MathHelper.floor_double(aabb.maxX + 1);
+        int minY = MathHelper.floor_double(aabb.minY);
+        int maxY = MathHelper.floor_double(aabb.maxY + 1);
+        int minZ = MathHelper.floor_double(aabb.minZ);
+        int maxZ = MathHelper.floor_double(aabb.maxZ + 1);
+
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY-1; y < maxY; y++) {
+                for (int z = minZ; z < maxZ; z++) {
+                    pos.set(x, y, z);
+                    IBlockState blockState=world.getBlockState(pos);
+                    Block block = blockState.getBlock();
+
+                    if (!block.isAir(world, pos)) {
+                        block.addCollisionBoxesToList(
+                                world, pos,blockState, aabb, list, null
+                        );
+                    }
+                }
+            }
+        }
+
+        return list;
+    }
+    public static List<Vertex> QuadVertices(AxisAlignedBB box){
+        List<Vertex> vertices = new ArrayList<Vertex>();
+
+        Vertex vertex1=new Vertex(new Vector2d(box.minX,box.minZ),0,box.maxY,box.minY);
+        Vertex vertex2=new Vertex(new Vector2d(box.minX,box.maxZ),1,box.maxY,box.minY);
+        Vertex vertex3 =new Vertex(new Vector2d(box.maxX,box.maxZ),2,box.maxY,box.minY);
+        Vertex vertex4 =new Vertex(new Vector2d(box.maxX,box.minZ),3,box.maxY,box.minY);
+
+        Segment segment12 =new Segment(1);
+        Segment segment23 =new Segment(0);
+        Segment segment34 =new Segment(1);
+        Segment segment41 =new Segment(0);
+
+        segment12.setPos1(vertex1);
+        segment12.setPos2(vertex2);
+        segment23.setPos1(vertex2);
+        segment23.setPos2(vertex3);
+        segment34.setPos1(vertex3);
+        segment34.setPos2(vertex4);
+        segment41.setPos1(vertex4);
+        segment41.setPos2(vertex1);
+
+        vertex1.setzSegment(segment12);
+        vertex1.setxSegment(segment41);
+        vertex2.setzSegment(segment12);
+        vertex2.setxSegment(segment23);
+        vertex3.setzSegment(segment34);
+        vertex3.setxSegment(segment23);
+        vertex4.setzSegment(segment34);
+        vertex4.setxSegment(segment41);
+
+        vertices.add(vertex1);
+        vertices.add(vertex2);
+        vertices.add(vertex3);
+        vertices.add(vertex4);
+
+        return vertices;
+    }
+    public static AxisAlignedBB UnionAll(List<AxisAlignedBB> axisAlignedBBs){
+        if(axisAlignedBBs.isEmpty()){
+            return null;
+        }
+        if(axisAlignedBBs.size()==1){
+            return axisAlignedBBs.get(0);
+        }
+        AxisAlignedBB lastUnion=axisAlignedBBs.get(0);
+        for (int i=1;i<axisAlignedBBs.size();i++){
+            lastUnion=axisAlignedBBs.get(i).union(lastUnion);
+        }
+        return lastUnion;
+    }
+    private static boolean isAxisTouching(double minA, double maxA, double minB, double maxB) {
+        return maxA >= minB && maxB >= minA;
+    }
+    public static boolean isTouching(AxisAlignedBB a, AxisAlignedBB b) {
+        return isAxisTouching(a.minX, a.maxX, b.minX, b.maxX) &&
+                isAxisTouching(a.minY, a.maxY, b.minY, b.maxY) &&
+                isAxisTouching(a.minZ, a.maxZ, b.minZ, b.maxZ);
+    }
+    public static double distanceToAABBGroup(Vector3d point, List<AxisAlignedBB> boxes) {
+        double minDistance = Double.POSITIVE_INFINITY;
+
+        for (AxisAlignedBB box : boxes) {
+            if (isInside(box, point)) {
+                return 0.0;
+            } else {
+                double dist = distanceToBox(point, box);
+                minDistance = Math.min(minDistance, dist);
+            }
+        }
+
+        return minDistance;
+    }
+
+    private static boolean isInside(AxisAlignedBB box, Vector3d point) {
+        return point.x >= box.minX && point.x <= box.maxX &&
+                point.y >= box.minY && point.y <= box.maxY &&
+                point.z >= box.minZ && point.z <= box.maxZ;
+    }
+
+    private static double distanceToBox(Vector3d p, AxisAlignedBB box) {
+        double dx = Math.max(Math.max(box.minX - p.x, 0), p.x - box.maxX);
+        double dy = Math.max(Math.max(box.minY - p.y, 0), p.y - box.maxY);
+        double dz = Math.max(Math.max(box.minZ - p.z, 0), p.z - box.maxZ);
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+    public static List<AxisAlignedBB> collectConnectedAABBs(
+            AxisAlignedBB target,
+            List<AxisAlignedBB> allBoxes
+    ) {
+        List<AxisAlignedBB> result = new ArrayList<AxisAlignedBB>();
+        Queue<AxisAlignedBB> queue = new LinkedList<AxisAlignedBB>();
+        Set<AxisAlignedBB> visited = new HashSet<AxisAlignedBB>();
+
+        queue.add(target);
+        visited.add(target);
+        while (!queue.isEmpty()) {
+            AxisAlignedBB current = queue.poll();
+            result.add(current);
+
+            for (AxisAlignedBB box : allBoxes) {
+                if (!visited.contains(box) && BlockUtils.isTouching(current,box)) {
+                    visited.add(box);
+                    queue.add(box);
+                }
+            }
+        }
+        return result;
+    }
+    public static List<List<AxisAlignedBB>> splitIntoConnectedGroups(List<AxisAlignedBB> boxes) {
+        List<List<AxisAlignedBB>> groups = new ArrayList<List<AxisAlignedBB>>();
+        Set<AxisAlignedBB> visited = new HashSet<AxisAlignedBB>();
+
+        for (AxisAlignedBB box : boxes) {
+            if (!visited.contains(box)) {
+                List<AxisAlignedBB> group = collectConnectedAABBs(box, boxes);
+                groups.add(group);
+                visited.addAll(group);
+            }
+        }
+
+        return groups;
+    }
+    public static List<AxisAlignedBB> nearestGroupedAABBs(Vector3d pos, List<AxisAlignedBB> boxes){
+        List<List<AxisAlignedBB>> groups= BlockUtils.splitIntoConnectedGroups(boxes);
+        List<AxisAlignedBB> nearestGroup=new ArrayList<AxisAlignedBB>();
+        double minDis = Double.POSITIVE_INFINITY;
+        for( List<AxisAlignedBB> group:groups){
+            double dis=BlockUtils.distanceToAABBGroup(pos,group);
+            if(dis< minDis){
+                nearestGroup=group;
+                minDis =dis;
+            }
+        }
+        return nearestGroup;
+    }
 
 }
+

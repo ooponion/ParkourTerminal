@@ -101,12 +101,13 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-
+        int guiMouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+        int guiMouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
         // 处理鼠标滚轮事件
         int scrollAmount = Mouse.getEventDWheel();
         if (scrollAmount != 0) {
             scrollAmount = scrollAmount > 0 ? -20 : 20; // 反转滚动方向
-            unusedLabelContainer.getScrollBar().scrollWheel(scrollAmount );// 每次滚动20像素
+            unusedLabelContainer.scrollWheel(guiMouseX,guiMouseY,scrollAmount );// 每次滚动20像素
         }
     }
     public List<Label> getUsedLabels(){

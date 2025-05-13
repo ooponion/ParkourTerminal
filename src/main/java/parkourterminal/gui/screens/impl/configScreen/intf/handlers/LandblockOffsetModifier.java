@@ -11,13 +11,13 @@ public class LandblockOffsetModifier implements SettingModifier<Boolean>{
 
     @Override
     public Boolean getConfigValue() {
-        return TerminalJsonConfig.getLandBlockJson().isSendChatOffset();
+        return TerminalJsonConfig.getProperties().isSendChatOffset();
     }
 
     @Override
     public void setConfigValue(String value) {
         if(ifSatisfied(value)){
-            TerminalJsonConfig.getLandBlockJson().setSendChatOffset(Boolean.parseBoolean(value));
+            TerminalJsonConfig.getProperties().setSendChatOffset(Boolean.parseBoolean(value));
         }
     }
 

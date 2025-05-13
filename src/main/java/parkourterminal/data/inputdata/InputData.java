@@ -10,8 +10,11 @@ import java.util.Arrays;
 
 public class InputData {
     private TickInput operation =new TickInput(false,false,false,false,false,false,false,false,0,0);
+    private TickInput operation1 =new TickInput(false,false,false,false,false,false,false,false,0,0);
+    private int wad3=0;
     private IndexedStack<ActionPulse> pulseStack=new IndexedStack<ActionPulse>(20);
     private String strat="none";
+    private String sidestep="none";
     private boolean lastOnGround=false;
     private double lastMotionY=0d;
     private String currentStart="unknown";
@@ -28,6 +31,7 @@ public class InputData {
         boolean jump = settings.keyBindJump.isKeyDown();
         boolean sneak = settings.keyBindSneak.isKeyDown();
         operation=new TickInput(left,forward,back,right,sneak,sprint,jump,lastOnGround , player.motionY,lastMotionY);
+
         lastOnGround=player.onGround;
         lastMotionY=player.motionY;
         if(!operation.equals(currentStart)){
@@ -42,7 +46,28 @@ public class InputData {
         if(matchedStrat!=null){
             strat=matchedStrat;
         }
+        if(operation1.isActualJump()){
+            int wad1=operation.actualDirectionKey()[1];
+            int wad2=operation1.actualDirectionKey()[1];
+            if(wad2==0&&wad1!=0&&wad1==-wad3){
+                sidestep="WAD";
+            }
+        }
+        if(operation.isActualJump()){
+            int wad1=operation.actualDirectionKey()[1];
+            int wad2=operation1.actualDirectionKey()[1];
+            if(wad1!=0&&wad1==-wad2){
+                sidestep="WAWD";
+            }
+        }
+        wad3=operation1.actualDirectionKey()[1];
+        operation1=operation;
     }
+
+    public String getSidestep() {
+        return sidestep;
+    }
+
     public String getStrat(){
         return strat;
     }

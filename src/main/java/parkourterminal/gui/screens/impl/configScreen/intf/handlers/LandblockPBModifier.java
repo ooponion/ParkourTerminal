@@ -11,13 +11,13 @@ public class LandblockPBModifier implements SettingModifier<Boolean>{
 
     @Override
     public Boolean getConfigValue() {
-        return TerminalJsonConfig.getLandBlockJson().isSendChatPb();
+        return TerminalJsonConfig.getProperties().isSendChatPb();
     }
 
     @Override
     public void setConfigValue(String value) {
         if(ifSatisfied(value)){
-            TerminalJsonConfig.getLandBlockJson().setSendChatPb(Boolean.parseBoolean(value));
+            TerminalJsonConfig.getProperties().setSendChatPb(Boolean.parseBoolean(value));
         }
     }
 

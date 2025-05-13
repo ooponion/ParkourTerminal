@@ -9,6 +9,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
@@ -17,7 +19,7 @@ import parkourterminal.util.BlockUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@SideOnly(Side.CLIENT)
 public class ArgsOverlay {
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event) {

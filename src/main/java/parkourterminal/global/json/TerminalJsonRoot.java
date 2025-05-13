@@ -2,16 +2,16 @@ package parkourterminal.global.json;
 
 
 import parkourterminal.data.ColorData.ColorData;
+import parkourterminal.data.macroData.MacroData;
 import parkourterminal.data.properties.ConfigProperties;
 
 import java.util.HashMap;
 
 public class TerminalJsonRoot {
     private HashMap<String, LabelJson> usedLabels =new HashMap<String, LabelJson>();
-    private LandBlockJson landBlock=new LandBlockJson();
     private ColorData colorData =new ColorData();
     private ConfigProperties properties=new ConfigProperties();
-
+    private MacroData macroData =new MacroData();
 
 
     public HashMap<String, LabelJson> getUsedLabels() {
@@ -22,12 +22,12 @@ public class TerminalJsonRoot {
         this.usedLabels=new HashMap<String, LabelJson>(usedLabels);
     }
 
-    public LandBlockJson getLandBlock() {
-        return landBlock;
-    }
 
     public ColorData getColorData() {
         return colorData;
+    }
+    public MacroData getMacroData(){
+        return macroData;
     }
 
     public ConfigProperties getProperties(){return properties;}

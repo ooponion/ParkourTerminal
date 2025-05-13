@@ -2,14 +2,9 @@ package parkourterminal.data.EntitylandData;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import parkourterminal.data.GlobalData;
-import parkourterminal.util.LandingBlockHelper;
-
-import javax.vecmath.Vector3d;
-import java.util.List;
+import parkourterminal.util.BlockUtils;
 
 public class LandingData {
     private Double hitX= Double.NaN;
@@ -29,6 +24,7 @@ public class LandingData {
             tier=12;
             if(!continuousBlip){
                 blipTimes=0;
+                blipY=Double.NaN;
                 continuousBlip=true;
             }
         }
@@ -41,7 +37,7 @@ public class LandingData {
                 tier=12;
             }
             wasInAir = true; // 玩家在空中
-        } else if (wasInAir) {
+        } else if (wasInAir) {//着陆tick
             tier--;
             wasInAir = false;
             hitX= player.posX;
@@ -50,44 +46,16 @@ public class LandingData {
             landingX=player.lastTickPosX;
             landingY=player.lastTickPosY;
             landingZ=player.lastTickPosZ;
+            //blip
+            if(BlockUtils.getAABBsUnderPlayerFeet(player).isEmpty()&&player.lastTickPosY==player.posY){
+                //触发成功
+                blipTimes++;
+                blipY=player.posY;
+            }else{
+                continuousBlip=false;
+            }
         }
         lastOnGround= player.onGround;
-        if(!player.onGround){//空中的每一tick
-            Double groundY=fallingTouchGroundBlocks(player);
-            if(groundY==null){//在空中
-                return;
-            }
-            //接触地面的tick
-            if(!touchBlock(player,new Vector3d(player.motionX,groundY-player.posY,player.motionZ))){
-                //未接触墙;
-                if(!GlobalData.getInputData().getOperation().isActualJump()){//如果没跳不清空blipTimes
-                    continuousBlip=false;
-                    return;
-                }
-                blipY=Double.NaN;
-                blipTimes=0;
-                return;
-            }
-            //接触墙,触发步行辅助判断区
-            double maxOffset=0.6;
-            Double ceilingY=touchCeilingBlocks(player);
-            if(ceilingY!=null){
-                maxOffset=ceilingY;
-            }
-            if(touchBlock(player,new Vector3d(player.motionX,maxOffset,player.motionZ))){
-                blipY=Double.NaN;
-                blipTimes=0;
-                return;
-            }
-            if(touchBlock(player,new Vector3d(player.motionX, maxOffset-0.6, player.motionZ))){
-                blipY=Double.NaN;
-                blipTimes=0;
-                return;
-            }
-            //触发成功
-            blipTimes++;
-            blipY=maxOffset-0.6+player.posY;
-        }
     }
     public int getTier(){
         return tier;
@@ -130,37 +98,5 @@ public class LandingData {
         boolean isFlying = player.capabilities.isFlying;
 
         return isCreativeMode && isFlying;
-    }
-    private Double fallingTouchGroundBlocks(EntityPlayerSP player){
-        if(player.onGround){
-            return null;
-        }
-        World worldIn=player.worldObj;
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,player.motionY,0);
-        List<AxisAlignedBB> boxes=worldIn.getCollidingBoundingBoxes(player, bounding);
-        AxisAlignedBB wholeGround=LandingBlockHelper.UnionAll(LandingBlockHelper.WrappedAABBList(boxes));
-        if(wholeGround==null){
-            return null;
-        }
-        return wholeGround.maxY;
-    }
-    private Double touchCeilingBlocks(EntityPlayerSP player){
-        if(player.onGround){
-            return null;
-        }
-        World worldIn=player.worldObj;
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(0,0.6,0);
-        List<AxisAlignedBB> boxes=worldIn.getCollidingBoundingBoxes(player, bounding);
-        AxisAlignedBB wholeGround=LandingBlockHelper.UnionAll(LandingBlockHelper.WrappedAABBList(boxes));
-        if(wholeGround==null){
-            return null;
-        }
-        return wholeGround.minY;
-    }
-    private boolean touchBlock(EntityPlayerSP player, Vector3d offset){
-        World worldIn=player.worldObj;
-        AxisAlignedBB bounding=player.getEntityBoundingBox().offset(offset.x,offset.y,offset.z);
-        List<AxisAlignedBB> boxes=worldIn.getCollidingBoundingBoxes(player, bounding);
-        return !boxes.isEmpty();
     }
 }

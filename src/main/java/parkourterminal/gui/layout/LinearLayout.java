@@ -1,5 +1,7 @@
 package parkourterminal.gui.layout;
 
+import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +15,17 @@ public class LinearLayout implements LayoutManager {
     }
 
     @Override
+    public void setSpacing(int spacing) {
+        this.spacing = spacing;
+    }
+
+    @Override
     public void layoutComponents(Container container) {
         if (direction == LayoutDirection.HORIZONTAL) {
             int containerLeft = container.getEntryLeft();
             int containerRight = container.getEntryRight();
             int currentX = containerLeft;
-            int currentY = container.getEntryTop();
+            int currentY = (int) (container.getEntryTop());
             int rowHeight = 0;
             List<UIComponent> row = new ArrayList<UIComponent>();
 
@@ -28,7 +35,7 @@ public class LinearLayout implements LayoutManager {
 
                 // 如果加上当前组件后超出容器右边界，则先布局当前行，再换行
                 if (currentX + additionalSpacing + compTotalWidth > containerRight) {
-                    layoutRow(row, containerLeft, currentY, rowHeight,spacing);
+                    layoutRow(container,row, containerLeft, currentY, rowHeight,spacing);
                     currentY += rowHeight + spacing;
                     currentX = containerLeft;
                     row.clear();
@@ -46,7 +53,7 @@ public class LinearLayout implements LayoutManager {
             }
             // 布局最后一行
             if (!row.isEmpty()) {
-                layoutRow(row, containerLeft, currentY, rowHeight,spacing);
+                layoutRow(container,row, containerLeft, currentY, rowHeight,spacing);
             }
         } else { // VERTICAL 布局
             int containerTop = container.getEntryTop();
@@ -61,7 +68,7 @@ public class LinearLayout implements LayoutManager {
                 int additionalSpacing = column.isEmpty() ? 0 : spacing;
 
                 if (currentY + additionalSpacing + compTotalHeight > containerBottom) {
-                    layoutColumn(column, currentX, containerTop, columnWidth,spacing);
+                    layoutColumn(container,column, currentX, containerTop, columnWidth,spacing);
                     currentX += columnWidth + spacing;
                     currentY = containerTop;
                     column.clear();
@@ -78,7 +85,7 @@ public class LinearLayout implements LayoutManager {
                 currentY += compTotalHeight;
             }
             if (!column.isEmpty()) {
-                layoutColumn(column, currentX, containerTop, columnWidth,spacing);
+                layoutColumn(container,column, currentX, containerTop, columnWidth,spacing);
             }
         }
     }
@@ -206,8 +213,13 @@ public class LinearLayout implements LayoutManager {
         }
         return 0;
     }
-    private void layoutRow(List<UIComponent> row, int startX, int y, int rowHeight,int spacing) {
+    private void layoutRow(Container container ,List<UIComponent> row, int startX, int y, int rowHeight,int spacing) {
         int currentX = startX;
+        if(container.getScrollDirection()== ScrollDirection.HORIZONTAL){
+            currentX-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }else{
+            y-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }
         for (UIComponent comp : row) {
             int compTotalHeight = comp.getOuterHeight();
             int extraSpace = rowHeight - compTotalHeight;
@@ -222,8 +234,13 @@ public class LinearLayout implements LayoutManager {
      * 从 startY 开始，按顺序排列组件，
      * 并使每个组件在列内水平居中（考虑其左右外边距）。
      */
-    private void layoutColumn(List<UIComponent> column, int x, int startY, int columnWidth,int spacing) {
+    private void layoutColumn(Container container ,List<UIComponent> column, int x, int startY, int columnWidth,int spacing) {
         int currentY = startY;
+        if(container.getScrollDirection()== ScrollDirection.HORIZONTAL){
+            x-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }else{
+            currentY-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }
         for (UIComponent comp : column) {
 
             int compTotalWidth = comp.getOuterWidth();

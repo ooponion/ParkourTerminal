@@ -12,26 +12,18 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.MathHelper;
+import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
+import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
+import parkourterminal.gui.layout.Padding;
 import parkourterminal.gui.layout.UIComponent;
-import scala.swing.Applet;
+import parkourterminal.util.ScissorHelper;
+import parkourterminal.util.ShapeDrawer;
 
 public class TextField extends UIComponent {
-    public TextField(int id, FontRenderer fontRendererInstance) {
-        this.id = id;
-        this.fontRendererInstance = fontRendererInstance;
-    }
 
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks) {
-        drawTextBox();
-    }
     private final int id;
-    private final FontRenderer fontRendererInstance;
-    public int xPosition;
-    public int yPosition;
-    /** The width of this text field. */
-    public int width;
-    public int height;
+    protected final FontRenderer fontRendererInstance;
     /** Has the current text being edited on the textbox. */
     private String text = "";
     private int maxStringLength = 32;
@@ -44,8 +36,8 @@ public class TextField extends UIComponent {
     /** If this value is true along with isFocused, keyTyped will process the keys. */
     private boolean isEnabled = true;
     /** The current character index that should be used as start of the rendered text. */
-    private int lineScrollOffset;
-    private int cursorPosition;
+    //protected int lineScrollOffset;
+    protected int cursorPosition;
     /** other selection position, maybe the same as the cursor */
     private int selectionEnd;
     private int enabledColor = 14737632;
@@ -55,16 +47,53 @@ public class TextField extends UIComponent {
     private GuiPageButtonList.GuiResponder field_175210_x;
     private Predicate<String> validator = Predicates.<String>alwaysTrue();
 
+
     public TextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height)
     {
         this.id = componentId;
         this.fontRendererInstance = fontrendererObj;
-        this.xPosition = x;
-        this.yPosition = y;
-        this.width = par5Width;
-        this.height = par6Height;
+        scrollBar=new ScrollBarImpl(0,4, ScrollDirection.HORIZONTAL);
+        setPosition(x,y);
+        setSize(par5Width,par6Height);
     }
-
+    protected final ScrollBarImpl scrollBar;
+    public boolean scrollWheel(int mouseX, int mouseY,int scrollAmount){
+        if(isMouseOver(mouseX, mouseY)){
+            return scrollBar.scrollWheel(scrollAmount);
+        }
+        return false;
+    }
+    @Override
+    public void Update(){
+        scrollBar.UpdateContentSize(this.fontRendererInstance.getStringWidth(this.getText())+12);
+    }
+    @Override
+    public void draw(int mouseX, int mouseY, float partialTicks) {
+        if(this.getVisible()) {
+            if (this.isFocused())
+            {
+                Gui.drawRect(this.getX() - 1, this.getY() - 1, this.getX() + this.getWidth() + 1, this.getY() + this.getHeight() + 1, -6250336);
+                Gui.drawRect(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), -16777216);
+            }
+            scrollBar.Update();
+            ScissorHelper.EnableScissor(getEntryLeft(),getEntryTop(),getEntryWidth(),getEntryHeight());
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(-scrollBar.getInterpolatingContentOffset(),0,0);
+            drawTextBox();
+            GlStateManager.popMatrix();
+            ScissorHelper.DisableScissor();
+        }
+    }
+    @Override
+    public void setWidth(int width) {
+        super.setWidth(width);
+        scrollBar.setWidth(getEntryWidth());
+    }
+    @Override
+    public void setSize(int width, int height){
+        super.setSize(width,height);
+        scrollBar.setWidth(getEntryWidth());
+    }
     public void func_175207_a(GuiPageButtonList.GuiResponder p_175207_1_)
     {
         this.field_175210_x = p_175207_1_;
@@ -81,20 +110,21 @@ public class TextField extends UIComponent {
     /**
      * Sets the text of the textbox
      */
-    public void setText(String p_146180_1_)
+    public void setText(String string)
     {
-        if (this.validator.apply(p_146180_1_))
+        if (this.validator.apply(string))
         {
-            if (p_146180_1_.length() > this.maxStringLength)
+            if (string.length() > this.maxStringLength)
             {
-                this.text = p_146180_1_.substring(0, this.maxStringLength);
+
+                this.text = string.substring(0, this.maxStringLength);
             }
             else
             {
-                this.text = p_146180_1_;
+                this.text = string;
             }
-
             this.setCursorPositionEnd();
+            Update();
         }
     }
 
@@ -157,6 +187,7 @@ public class TextField extends UIComponent {
         if (this.validator.apply(s))
         {
             this.text = s;
+            Update();
             this.moveCursorBy(i - this.selectionEnd + l);
 
             if (this.field_175210_x != null)
@@ -216,6 +247,7 @@ public class TextField extends UIComponent {
                 if (this.validator.apply(s))
                 {
                     this.text = s;
+                    Update();
 
                     if (flag)
                     {
@@ -392,10 +424,12 @@ public class TextField extends UIComponent {
 
                     if (GuiScreen.isShiftKeyDown())
                     {
+
                         this.setSelectionPos(0);
                     }
                     else
                     {
+
                         this.setCursorPositionZero();
                     }
 
@@ -495,28 +529,37 @@ public class TextField extends UIComponent {
     /**
      * Args: x, y, buttonClicked
      */
-    public boolean mouseClicked(int p_146192_1_, int p_146192_2_, int p_146192_3_)
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        boolean flag = p_146192_1_ >= this.xPosition && p_146192_1_ < this.xPosition + this.width && p_146192_2_ >= this.yPosition && p_146192_2_ < this.yPosition + this.height;
+        boolean flag = mouseX >= this.getX() && mouseX < this.getX()+getWidth() && mouseY >= this.getY() && mouseY < this.getY() + this.getHeight();
 
         if (this.canLoseFocus)
         {
             this.setFocused(flag);
         }
 
-        if (this.isFocused && flag && p_146192_3_ == 0)
+        if (this.isFocused && flag && mouseButton == 0)
         {
-            int i = p_146192_1_ - this.xPosition;
+            int i = (int) (mouseX - this.getEntryLeft()+scrollBar.getInterpolatingContentOffset());
+
 
             if (this.enableBackgroundDrawing)
             {
                 i -= 4;
             }
 
-            String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getWidth());
-            this.setCursorPosition(this.fontRendererInstance.trimStringToWidth(s, i).length() + this.lineScrollOffset);
+//            String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getWidth());
+//            int clickedCharIndex=this.fontRendererInstance.trimStringToWidth(s, i).length() + this.lineScrollOffset;
+            int clickedCharIndex=this.fontRendererInstance.trimStringToWidth(text, i).length();
+            if (GuiScreen.isShiftKeyDown()) {
+                // Shift按下，设置选择结束点为点击位置，保持原始光标位置
+                this.setSelectionPos(clickedCharIndex);
+            } else {
+                // 普通点击：移动光标，清除选区
+                this.setCursorPosition(clickedCharIndex);
+            }
         }
-        return this.isMouseOver(p_146192_1_, p_146192_2_);
+        return this.isMouseOver(mouseX, mouseY);
     }
 
     /**
@@ -524,22 +567,17 @@ public class TextField extends UIComponent {
      */
     public void drawTextBox()
     {
+
         if (this.getVisible())
         {
-            if (this.getEnableBackgroundDrawing())
-            {
-                Gui.drawRect(this.xPosition - 1, this.yPosition - 1, this.xPosition + this.width + 1, this.yPosition + this.height + 1, -6250336);
-                Gui.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, -16777216);
-            }
-
             int i = this.isEnabled ? this.enabledColor : this.disabledColor;
-            int j = this.cursorPosition - this.lineScrollOffset;
-            int k = this.selectionEnd - this.lineScrollOffset;
-            String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getWidth());
+            int j = this.cursorPosition;
+            int k = this.selectionEnd;
+            String s = this.getText();
             boolean flag = j >= 0 && j <= s.length();
             boolean flag1 = this.isFocused && this.cursorCounter / 6 % 2 == 0 && flag;
-            int l = this.enableBackgroundDrawing ? this.xPosition + 4 : this.xPosition;
-            int i1 = this.enableBackgroundDrawing ? this.yPosition + (this.height - 8) / 2 : this.yPosition;
+            int l = this.enableBackgroundDrawing ? this.getEntryLeft() + 4 : this.getEntryLeft();
+            int i1 = this.getEntryTop() + (this.getEntryHeight() - fontRendererInstance.FONT_HEIGHT) / 2;
             int j1 = l;
 
             if (k > s.length())
@@ -558,7 +596,7 @@ public class TextField extends UIComponent {
 
             if (!flag)
             {
-                k1 = j > 0 ? l + this.width : l;
+                k1 = j > 0 ? l + this.getWidth() : l;
             }
             else if (flag2)
             {
@@ -568,7 +606,7 @@ public class TextField extends UIComponent {
 
             if (s.length() > 0 && flag && j < s.length())
             {
-                j1 = this.fontRendererInstance.drawStringWithShadow(s.substring(j), (float)j1, (float)i1, i);
+                this.fontRendererInstance.drawStringWithShadow(s.substring(j), (float)j1, (float)i1, i);
             }
 
             if (flag1)
@@ -589,51 +627,20 @@ public class TextField extends UIComponent {
                 this.drawCursorVertical(k1, i1 - 1, l1 - 1, i1 + 1 + this.fontRendererInstance.FONT_HEIGHT);
             }
         }
+
     }
 
     /**
      * draws the vertical line cursor in the textbox
      */
-    private void drawCursorVertical(int p_146188_1_, int p_146188_2_, int p_146188_3_, int p_146188_4_)
+    private void drawCursorVertical(int x1, int y1, int x2, int y2)
     {
-        if (p_146188_1_ < p_146188_3_)
-        {
-            int i = p_146188_1_;
-            p_146188_1_ = p_146188_3_;
-            p_146188_3_ = i;
+        if(x1>x2){
+            int temp=x1;
+            x1=x2;
+            x2=temp;
         }
-
-        if (p_146188_2_ < p_146188_4_)
-        {
-            int j = p_146188_2_;
-            p_146188_2_ = p_146188_4_;
-            p_146188_4_ = j;
-        }
-
-        if (p_146188_3_ > this.xPosition + this.width)
-        {
-            p_146188_3_ = this.xPosition + this.width;
-        }
-
-        if (p_146188_1_ > this.xPosition + this.width)
-        {
-            p_146188_1_ = this.xPosition + this.width;
-        }
-
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableColorLogic();
-        GlStateManager.colorLogicOp(5387);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos((double)p_146188_1_, (double)p_146188_4_, 0.0D).endVertex();
-        worldrenderer.pos((double)p_146188_3_, (double)p_146188_4_, 0.0D).endVertex();
-        worldrenderer.pos((double)p_146188_3_, (double)p_146188_2_, 0.0D).endVertex();
-        worldrenderer.pos((double)p_146188_1_, (double)p_146188_2_, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.disableColorLogic();
-        GlStateManager.enableTexture2D();
+        ShapeDrawer.drawColorLogicRect(x1,y1,x2,y2,0x9999FF,GL11.GL_OR_REVERSE);
     }
 
     public void setMaxStringLength(int p_146203_1_)
@@ -643,6 +650,7 @@ public class TextField extends UIComponent {
         if (this.text.length() > p_146203_1_)
         {
             this.text = this.text.substring(0, p_146203_1_);
+            Update();
         }
     }
 
@@ -725,13 +733,6 @@ public class TextField extends UIComponent {
         return this.selectionEnd;
     }
 
-    /**
-     * returns the width of the textbox depending on if background drawing is enabled
-     */
-    public int getWidth()
-    {
-        return this.getEnableBackgroundDrawing() ? this.width - 8 : this.width;
-    }
 
     /**
      * Sets the position of the selection anchor (i.e. position the selection was started at)
@@ -754,30 +755,31 @@ public class TextField extends UIComponent {
 
         if (this.fontRendererInstance != null)
         {
-            if (this.lineScrollOffset > i)
-            {
-                this.lineScrollOffset = i;
-            }
+//            if (this.lineScrollOffset > i)
+//            {
+//                this.lineScrollOffset = i;
+//            }
 
             int j = this.getWidth();
-            String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), j);
-            int k = s.length() + this.lineScrollOffset;
-
-            if (p_146199_1_ == this.lineScrollOffset)
-            {
-                this.lineScrollOffset -= this.fontRendererInstance.trimStringToWidth(this.text, j, true).length();
-            }
-
-            if (p_146199_1_ > k)
-            {
-                this.lineScrollOffset += p_146199_1_ - k;
-            }
-            else if (p_146199_1_ <= this.lineScrollOffset)
-            {
-                this.lineScrollOffset -= this.lineScrollOffset - p_146199_1_;
-            }
-
-            this.lineScrollOffset = MathHelper.clamp_int(this.lineScrollOffset, 0, i);
+//            String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), j);
+//            int k = s.length() + this.lineScrollOffset;
+            String s = this.fontRendererInstance.trimStringToWidth(this.text, j);
+            int k = s.length();
+//            if (p_146199_1_ == this.lineScrollOffset)
+//            {
+//                this.lineScrollOffset -= this.fontRendererInstance.trimStringToWidth(this.text, j, true).length();
+//            }
+//
+//            if (p_146199_1_ > k)
+//            {
+//                this.lineScrollOffset += p_146199_1_ - k;
+//            }
+//            else if (p_146199_1_ <= this.lineScrollOffset)
+//            {
+//                this.lineScrollOffset -= this.lineScrollOffset - p_146199_1_;
+//            }
+//
+//            this.lineScrollOffset = MathHelper.clamp_int(this.lineScrollOffset, 0, i);
         }
     }
 
@@ -808,34 +810,4 @@ public class TextField extends UIComponent {
     public boolean isEnabled() {
         return this.isEnabled;
     }
-
-    public int getX() {
-        return xPosition;
-    }
-
-    public int getY() {
-        return yPosition;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-
-    public void setX(int x) {
-        this.xPosition = x;
-    }
-
-    public void setY(int y) {
-        this.yPosition = y;
-    }
-    public void setSize(int width, int height){
-        this.width=width;
-        this.height=height;
-    }
-    public void setPosition(int x, int y){
-        this.xPosition=x;
-        this.yPosition=y;
-    }
-
 }

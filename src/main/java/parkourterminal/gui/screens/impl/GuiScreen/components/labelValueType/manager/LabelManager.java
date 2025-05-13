@@ -15,13 +15,11 @@ import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
+import scala.actors.threadpool.Arrays;
 
 import javax.vecmath.Vector3d;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LabelManager {
     private static final HashMap<String,Label> defaultLabelList=new HashMap<String,Label>();
@@ -45,6 +43,7 @@ public class LabelManager {
         //Strat Part
         addLabel("Last Timing",new LabelValueString());
         addLabel("Last Input",new LabelValueString());
+        addLabel("SideStep",new LabelValueString());
 
         //Land Part
         addLabel("Hit X",new LabelValueDouble());
@@ -116,6 +115,7 @@ public class LabelManager {
         //Strat Part
         UpdateLabel("Last Timing",GlobalData.getInputData().getStrat());
         UpdateLabel("Last Input",GlobalData.getInputData().getOperation().getDirectionKeys());
+        UpdateLabel("SideStep",GlobalData.getInputData().getSidestep());
 
         //Land Part
         UpdateLabel("Hit X",GlobalData.getLandData().getHitX());
@@ -182,7 +182,6 @@ public class LabelManager {
         TerminalJsonConfig.setLabelList(usedLabel);
     }
     public static void TerminalGuiInitContainers(){
-        System.out.printf("???????TerminalGuiInitContainers\n");
         TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
         if(guiScreen!=null){
             guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());
@@ -194,10 +193,18 @@ public class LabelManager {
         int padding=1;
         if(guiScreen!=null){
             List<Label> list=new ArrayList<Label>();
-            for(String  name:defaultLabelList.keySet()) {
+            List<String> names= Arrays.asList(defaultLabelList.keySet().toArray());
+            names.sort(new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.compareTo(o2);
+                }
+            });
+            for(String  name:names) {
                 Label label=defaultLabelList.get(name);
                 label.setPosition(0,y);
                 label.setEnabled(true);
+                label.setFocused(false);
                 list.add(label);
                 y+=label.getHeight()+padding;
             }

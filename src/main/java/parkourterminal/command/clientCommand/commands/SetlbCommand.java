@@ -13,8 +13,10 @@ import parkourterminal.data.GlobalData;
 import parkourterminal.data.landingblock.intf.LBaxis;
 import parkourterminal.data.landingblock.intf.LBbox;
 import parkourterminal.data.landingblock.LandingBlockData;
+import parkourterminal.data.landingblock.intf.WholeCollisionBox;
 import parkourterminal.util.BlockUtils;
 import parkourterminal.util.SendMessageHelper;
+import parkourterminal.util.renderhelper.HitPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,11 +85,11 @@ public class SetlbCommand extends TerminalCommandBase {
             if(target==null&&num3==null){
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
                 if(divided!=null){
-                    lb.add(BlockUtils.getBiggestAABBUnderPlayerFeet(worldIn,player));
+                    lb.add(BlockUtils.getBiggestAABBUnderPlayerFeet(player));
                 }else{
-                    lb.addAll(BlockUtils.getAABBsUnderPlayerFeet(worldIn,player));
+                    lb.addAll(BlockUtils.getAABBsUnderPlayerFeet(player));
                 }
-                GlobalData.getLandingBlock().setAABBs(lb);
+                GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),player.getEntityBoundingBox()));
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
@@ -98,13 +100,16 @@ public class SetlbCommand extends TerminalCommandBase {
                 }
             }else if(target!=null){
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
+                HitPosition hitPosition=BlockUtils.getLookingAtHitPosition(player,blockReachDistance,0);
                 if(divided!=null){
-                    lb.add(BlockUtils.getLookingAtAABB(player,blockReachDistance,0));
+                    if(hitPosition!=null){
+                        lb.add(hitPosition.getHitBox());
+                    }
                 }else{
                     lb.addAll(BlockUtils.getLookingAtAABBs(player,blockReachDistance,0));
                 }
-                GlobalData.getLandingBlock().setAABBs(lb);
-                if(!lb.isEmpty()){
+                if(!lb.isEmpty()&&hitPosition!=null){
+                    GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),hitPosition.getHitVec()));
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     SendMessageHelper.addChatMessage(sender,"Set land block successfully");
@@ -117,7 +122,7 @@ public class SetlbCommand extends TerminalCommandBase {
                 IBlockState iblockstate = worldIn.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
                 block.addCollisionBoxesToList(worldIn,blockpos,iblockstate,new AxisAlignedBB(blockpos,blockpos.add(1,1,1)),lb,null);
-                GlobalData.getLandingBlock().setAABBs(lb);
+                GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox()));
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});
@@ -171,57 +176,55 @@ public class SetlbCommand extends TerminalCommandBase {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input.toString());
         if (matcher.matches()) {
-            if (matcher.matches()) {
-                boolean hasXZ = matcher.group(1) != null;
-                boolean hasNum1 = matcher.group(2) != null;
-                boolean hasNum2 = matcher.group(3) != null;
-                boolean hasNum3 = matcher.group(4) != null;
-                boolean hasTarget = matcher.group(5) != null;
-                boolean hasBox = matcher.group(6) != null;
-                boolean divided = matcher.group(7) != null;
+            boolean hasXZ = matcher.group(1) != null;
+            boolean hasNum1 = matcher.group(2) != null;
+            boolean hasNum2 = matcher.group(3) != null;
+            boolean hasNum3 = matcher.group(4) != null;
+            boolean hasTarget = matcher.group(5) != null;
+            boolean hasBox = matcher.group(6) != null;
+            boolean divided = matcher.group(7) != null;
 
-                if (!hasTarget&&!hasBox&&!hasXZ&&!hasNum1&&!hasNum2&&!hasNum3) {
-                    suggestions.addAll(Arrays.asList("x", "z","~"));
-                    suggestions.add(String.valueOf(x));
-                    suggestions.add("target");
-                    suggestions.add("box");
-                }
+            if (!hasTarget&&!hasBox&&!hasXZ&&!hasNum1&&!hasNum2&&!hasNum3) {
+                suggestions.addAll(Arrays.asList("x", "z","~"));
+                suggestions.add(String.valueOf(x));
+                suggestions.add("target");
+                suggestions.add("box");
+            }
 
-                // setlb x | setlb z
-                if (hasXZ && !hasNum1&&!hasTarget) {
+            // setlb x | setlb z
+            if (hasXZ && !hasNum1&&!hasTarget) {
 
-                    suggestions.add(String.valueOf(x));
-                    suggestions.add("target");
-                    suggestions.add("box");
-                }
+                suggestions.add(String.valueOf(x));
+                suggestions.add("target");
+                suggestions.add("box");
+            }
 
-                // setlb x 123 |setlb 123
-                if (hasNum1 && !hasNum2) {
-                    suggestions.add(String.valueOf(y));
-                }
+            // setlb x 123 |setlb 123
+            if (hasNum1 && !hasNum2) {
+                suggestions.add(String.valueOf(y));
+            }
 
-                //  setlb x 123 456 |setlb 123 456
-                if ( hasNum1 && hasNum2 && !hasNum3) {
-                    suggestions.add(String.valueOf(z));
-                }
+            //  setlb x 123 456 |setlb 123 456
+            if ( hasNum1 && hasNum2 && !hasNum3) {
+                suggestions.add(String.valueOf(z));
+            }
 
-                // x 123 456 789| setlb 123 456 789
-                if (hasNum1 && hasNum2 && hasNum3) {
-                    suggestions.add("box");
-                }
+            // x 123 456 789| setlb 123 456 789
+            if (hasNum1 && hasNum2 && hasNum3) {
+                suggestions.add("box");
+            }
 
-                // setlb x| target
-                if (hasTarget && !hasBox) {
-                    suggestions.add("box");
-                }
+            // setlb x| target
+            if (hasTarget && !hasBox) {
+                suggestions.add("box");
+            }
 
-                // setlb x|null target box | setlb x|null 123 456 789 box
-                if (hasBox) {
-                    suggestions.clear();
-                }
-                if(!divided&&!hasNum1){
-                    suggestions.add("divided");
-                }
+            // setlb x|null target box | setlb x|null 123 456 789 box
+            if (hasBox) {
+                suggestions.clear();
+            }
+            if(!divided&&!hasNum1){
+                suggestions.add("divided");
             }
         }
 

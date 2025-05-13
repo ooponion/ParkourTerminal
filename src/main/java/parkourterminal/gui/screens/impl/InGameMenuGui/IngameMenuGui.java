@@ -116,7 +116,7 @@ public class IngameMenuGui extends BlurGui {
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
         if (currentState == State.MAIN_MENU) {
-            scrollBar.onDrag(mouseY);
+            scrollBar.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         }
     }
 
@@ -140,7 +140,7 @@ public class IngameMenuGui extends BlurGui {
         if (currentState == State.MAIN_MENU) {
 
             // 检查是否点击了滑动条
-            scrollBar.onClick(mouseX,mouseY);
+            scrollBar.mouseClicked(mouseX, mouseY, mouseButton);
             // 确保鼠标点击位置在卡片显示区域内
             for (UIComponent card : testCardContainer.getComponents()) {
                 if (card.isMouseOver(mouseX, mouseY)) { // 考虑滚动偏移量
@@ -160,7 +160,7 @@ public class IngameMenuGui extends BlurGui {
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         if (currentState == State.MAIN_MENU) {
             // 停止拖动
-            scrollBar.onRelease();
+            scrollBar.mouseReleased(mouseX,mouseY,state);
         } else if (currentState == State.MOD_DETAIL && currentModDetailGui != null) {
             currentModDetailGui.mouseReleased(mouseX, mouseY, state);
         }

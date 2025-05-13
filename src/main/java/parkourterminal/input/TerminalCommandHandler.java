@@ -1,5 +1,7 @@
 package parkourterminal.input;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import parkourterminal.input.commands.*;
 
 import java.util.*;

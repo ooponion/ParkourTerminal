@@ -6,8 +6,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import parkourterminal.command.clientCommand.TerminalCommandBase;
 import parkourterminal.data.GlobalData;
+import parkourterminal.data.landingblock.intf.LBbox;
+import parkourterminal.data.landingblock.intf.WholeCollisionBox;
 import parkourterminal.util.SendMessageHelper;
 
+import javax.vecmath.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +31,7 @@ public class ClearLbCommand extends TerminalCommandBase {
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
             SendMessageHelper.addChatMessage(sender,"Successfully cleared landing block");
-            GlobalData.getLandingBlock().setAABBs(new ArrayList<AxisAlignedBB>());
+            GlobalData.getLandingBlock().clearAABBs();
         }
     }
 

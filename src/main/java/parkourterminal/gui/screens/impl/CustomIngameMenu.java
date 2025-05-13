@@ -27,7 +27,7 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
     public void initGui() {
         BlurRenderer.initSharedBlurShader(10.0f);
         fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
-
+        System.out.printf("sizePos:%s,%s\n",this.width,this.height);
         super.initGui();
     }
 

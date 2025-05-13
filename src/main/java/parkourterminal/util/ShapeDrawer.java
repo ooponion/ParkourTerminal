@@ -7,6 +7,29 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 public class ShapeDrawer {
+    public static void drawColorLogicRect(float left, float top, float right, float bottom, int color,int mode){
+        float r = (float)(color >> 16 & 255) / 255.0F;
+        float g = (float)(color >> 8 & 255) / 255.0F;
+        float b = (float)(color & 255) / 255.0F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.color(r, g, b, 1.0F);
+
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableColorLogic();
+        GlStateManager.disableBlend();
+        GlStateManager.colorLogicOp(mode);
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+
+        worldrenderer.pos(left, bottom, 0).endVertex();
+        worldrenderer.pos(right, bottom, 0).endVertex();
+        worldrenderer.pos(right, top, 0).endVertex();
+        worldrenderer.pos(left, top, 0).endVertex();
+        tessellator.draw();
+        GlStateManager.disableColorLogic();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+    }
     public static void drawRect(float left, float top, float right, float bottom, int color) {
         float a = (float)(color >> 24 & 255) / 255.0F;
         float r = (float)(color >> 16 & 255) / 255.0F;

@@ -15,7 +15,7 @@ public class CustomButton extends UIComponent {
     private int normalColor, hoverColor;
     private int cornerRadius;
     private String text;
-
+    private boolean clicked;
     private final AbstractAnimation<InterpolatingColor> animationColor;
 
     public CustomButton(int x, int y, int width, int height, int normalColor, int hoverColor, int cornerRadius, String text) {
@@ -60,6 +60,16 @@ public class CustomButton extends UIComponent {
     }
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
-        return isMouseOver(mouseX, mouseY)&&isEnabled();
+        if(isMouseOver(mouseX, mouseY)&&isEnabled()){
+            clicked=true;
+            return true;
+        }
+        clicked=false;
+        return false;
     }
+    @Override
+    public void mouseReleased(int mouseX, int mouseY,int state){
+        clicked=false;
+    }
+    public boolean isClicked(){return clicked;}
 }

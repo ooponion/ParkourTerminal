@@ -25,7 +25,12 @@ public class TerminalClientCommandsHandler extends CommandBase {
                 new dfCommand(),
                 new ClearPbCommand(),
                 new SetConfigCommand(),
-                new ToggleSprintCommand());
+                new ToggleSprintCommand(),
+                new ClearMaxSpeedCommand(),
+                new LBCommand(),
+                new LBCondCommand(),
+                new MacroCommand(),
+                new testOnlyCommand());
     }
     @Override
     public List<String> getCommandAliases(){
