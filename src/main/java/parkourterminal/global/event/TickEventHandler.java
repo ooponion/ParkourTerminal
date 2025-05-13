@@ -6,6 +6,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import parkourterminal.data.GlobalData;
+import parkourterminal.data.macroData.controller.MacroRunner;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.util.SendMessageHelper;
 
@@ -34,6 +35,7 @@ public class TickEventHandler {
             GlobalData.getLandData().Update(player);
             GlobalData.getJumpData().Update(player);
             GlobalData.getSpeedData().Update(player);
+            MacroRunner.onTick(player);
         }
     }
 

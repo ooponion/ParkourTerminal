@@ -166,8 +166,7 @@ public class CoordinateInfoGui extends BlurGui {
 
         // 输入框边框动画（悬停/聚焦效果）
         for (CustomGuiTextField field : fieldHoverProgress) {
-            boolean isHovered = mouseX >= field.xPosition && mouseX <= field.xPosition + fieldWidth &&
-                    mouseY >= field.yPosition && mouseY <= field.yPosition + fieldHeight;
+            boolean isHovered = field.isMouseOver(mouseX, mouseY);
             boolean isFocused = (focusedField == field);
             if(isHovered || isFocused){
                 animation.RestartAnimation(new InterpolatingColor(endColor));

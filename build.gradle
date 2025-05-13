@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             name="forge"
             url = "https://bmclapi2.bangbang93.com/maven/" }

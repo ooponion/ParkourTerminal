@@ -111,7 +111,7 @@ public class CoordLine extends UIComponent {
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         if (isMouseOver(mouseX, mouseY)) {
-            getScrollBar().onClick(mouseX, mouseY);
+            getScrollBar().mouseClicked(mouseX, mouseY, mouseButton);
             if(!getScrollBar().isMouseOver(mouseX, mouseY)){
                 ScreenManager.SwitchToScreen(new CoordinateInfoGui(getNbt(), getHeldItem()));
                 return true;
@@ -122,12 +122,12 @@ public class CoordLine extends UIComponent {
 
     @Override
     public void mouseReleased(int mouseX, int mouseY,int state){
-        getScrollBar().onRelease();
+        getScrollBar().mouseReleased(mouseX,mouseY,state);
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
         if(isMouseOver(mouseX,mouseY)){
-            getScrollBar().onDrag(mouseX);
+            getScrollBar().mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
             return true;
         }
         return false;

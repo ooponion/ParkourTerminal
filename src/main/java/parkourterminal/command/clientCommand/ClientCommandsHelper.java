@@ -6,15 +6,20 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@SideOnly(Side.CLIENT)
 public class ClientCommandsHelper {
     public static void RegisterClientSideCommands(){
-        ClientCommandHandler.instance.registerCommand(new TerminalClientCommandsHandler());
+        if (FMLCommonHandler.instance().getSide().isClient()) {
+            ClientCommandHandler.instance.registerCommand(new TerminalClientCommandsHandler());
+        }
     }
     public static List<TerminalCommandBase> parseToList(@Nonnull TerminalCommandBase... commands){
         return Arrays.asList(commands);

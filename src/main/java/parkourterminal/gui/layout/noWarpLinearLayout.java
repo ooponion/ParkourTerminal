@@ -1,5 +1,7 @@
 package parkourterminal.gui.layout;
 
+import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,10 @@ public class noWarpLinearLayout  implements LayoutManager{
         this.direction = direction;
         this.spacing = spacing;
     }
-
+    @Override
+    public void setSpacing(int spacing) {
+        this.spacing = spacing;
+    }
     @Override
     public void layoutComponents(Container container) {
         if (direction == LayoutDirection.HORIZONTAL) {
@@ -33,7 +38,7 @@ public class noWarpLinearLayout  implements LayoutManager{
             }
             // 布局
             if (!row.isEmpty()) {
-                layoutRow(row, container.getEntryLeft(), container.getEntryTop()+(container.getEntryHeight()-rowHeight)/2, rowHeight,spacing);
+                layoutRow(container,row, container.getEntryLeft(), container.getEntryTop()+(container.getEntryHeight()-rowHeight)/2, rowHeight,spacing);
             }
         } else { // VERTICAL 布局
             int currentY = container.getY();
@@ -54,7 +59,7 @@ public class noWarpLinearLayout  implements LayoutManager{
             }
             // 布局
             if (!column.isEmpty()) {
-                layoutColumn(column, container.getEntryLeft()+(container.getEntryWidth()-columnWidth)/2, container.getEntryTop(), columnWidth,spacing);
+                layoutColumn(container,column, container.getEntryLeft()+(container.getEntryWidth()-columnWidth)/2, container.getEntryTop(), columnWidth,spacing);
             }
         }
     }
@@ -146,8 +151,13 @@ public class noWarpLinearLayout  implements LayoutManager{
      * 从 startX 开始，按顺序排列组件，
      * 并使每个组件在行内垂直居中（考虑其上下外边距）。
      */
-    private void layoutRow(List<UIComponent> row, int startX, int y, int rowHeight,int spacing) {
+    private void layoutRow(Container container,List<UIComponent> row, int startX, int y, int rowHeight,int spacing) {
         int currentX = startX;
+        if(container.getScrollDirection()== ScrollDirection.HORIZONTAL){
+            currentX-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }else{
+            y-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }
         for (UIComponent comp : row) {
             comp.setX( currentX + comp.getMargin().left);
             int compTotalHeight = comp.getOuterHeight();
@@ -163,8 +173,13 @@ public class noWarpLinearLayout  implements LayoutManager{
      * 从 startY 开始，按顺序排列组件，
      * 并使每个组件在列内水平居中（考虑其左右外边距）。
      */
-    private void layoutColumn(List<UIComponent> column, int x, int startY, int columnWidth,int spacing) {
+    private void layoutColumn(Container container,List<UIComponent> column, int x, int startY, int columnWidth,int spacing) {
         int currentY = startY;
+        if(container.getScrollDirection()== ScrollDirection.HORIZONTAL){
+            x-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }else{
+            currentY-= (int) container.getScrollBar().getInterpolatingContentOffset();
+        }
         for (UIComponent comp : column) {
             comp.setY( currentY + comp.getMargin().top);
             int compTotalWidth = comp.getOuterWidth();

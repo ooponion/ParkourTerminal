@@ -26,6 +26,7 @@ public class ConfigContainer extends Container {
     }
     @Override
     public void Update(){
+        super.Update();
         for(UIComponent component:getComponents()){
             component.Update();
         }

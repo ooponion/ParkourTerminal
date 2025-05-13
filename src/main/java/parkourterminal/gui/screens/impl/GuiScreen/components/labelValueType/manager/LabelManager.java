@@ -204,6 +204,7 @@ public class LabelManager {
                 Label label=defaultLabelList.get(name);
                 label.setPosition(0,y);
                 label.setEnabled(true);
+                label.setFocused(false);
                 list.add(label);
                 y+=label.getHeight()+padding;
             }

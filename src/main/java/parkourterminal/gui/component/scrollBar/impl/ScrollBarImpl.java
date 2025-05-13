@@ -83,27 +83,40 @@ public class ScrollBarImpl extends UIComponent {
             UpdateScrollVariables(contentSize,scrollOffset,width);
         }
     }
+//    public void UpdateContentSize(int contentSize) {
+//        if(contentSize==0){
+//            contentSize=1;
+//        }
+//        if(direction==ScrollDirection.VERTICAL){
+//            UpdateScrollVariables(contentSize, scrollOffset, getHeight());
+//        }
+//        else{
+//            UpdateScrollVariables(contentSize, scrollOffset, getWidth());
+//        }
+//
+//        this.contentSize = contentSize;
+//    }
     public void UpdateContentSize(int contentSize) {
-        if(contentSize==0){
-            contentSize=1;
+        if(contentSize == 0){
+            contentSize = 1;
         }
+        int size=getSizeForDirection();
+        float scrollSize2=CalculateScrollSize(contentSize,size);
+        float scrollOffset2=contentOffset*(size-scrollSize2)/Math.max(contentSize-size,1);
+        UpdateScrollVariables(contentSize, scrollOffset2, size);
         this.contentSize = contentSize;
-        if(direction==ScrollDirection.VERTICAL){
-            UpdateScrollVariables(contentSize, scrollOffset, getHeight());
-        }
-        else{
-            UpdateScrollVariables(contentSize, scrollOffset, getWidth());
-        }
-
+    }
+    private int getSizeForDirection() {
+        return direction == ScrollDirection.VERTICAL ? getHeight() : getWidth();
     }
     public void setColor(int trackColor, int thumbColor) {
         this.thumbColor=thumbColor;
         this.trackColor=trackColor;
     }
 
-    private void CalculateScrollSize(float contentHeight, int size){
+    private float CalculateScrollSize(float contentHeight, int size){
 
-        scrollSize =  Math.max(Math.min(size /contentHeight,1.0f)*size,min_height);
+        return Math.max(Math.min(size /contentHeight,1.0f)*size,min_height);
     }
     private void CalculateContentOffset(float scrollOffset,float scrollSize,float contentSize,int size){//0,height-scrollHeight->0,contentHeight-height
         if(size<=scrollSize){
@@ -117,8 +130,11 @@ public class ScrollBarImpl extends UIComponent {
     private void ValidateScrollOffset(float FakeOffset,float scrollSize,int size){//FakeOffset可能是错误的,所以重新计算位置//0,height-scrollHeight
         scrollOffset= Math.max(0,Math.min(size-scrollSize,FakeOffset));
     }
+    public void ResetScrollOffset(){
+        UpdateScrollVariables(contentSize,0,getHeight());
+    }
     private void UpdateScrollVariables(float contentSize,float FakeOffset,int size){
-        CalculateScrollSize(contentSize,size);
+        scrollSize=CalculateScrollSize(contentSize,size);
         ValidateScrollOffset(FakeOffset, scrollSize,size);
         if(direction==ScrollDirection.VERTICAL){
             animation.RestartAnimation(new Interpolatingfloat(scrollOffset));
@@ -128,7 +144,7 @@ public class ScrollBarImpl extends UIComponent {
         }
         CalculateContentOffset(scrollOffset, scrollSize,contentSize,size);
     }
-    public void onClick(double mouseX, double mouseY) {
+    private void onClick(double mouseX, double mouseY) {
         if(isMouseOver((int) mouseX, (int) mouseY)&&displayable) {
             mouseOver = true;
 
@@ -140,20 +156,22 @@ public class ScrollBarImpl extends UIComponent {
             }
         }
     }
-    public void onRelease() {
+    private void onRelease() {
         mouseOver=false;
         oldPos =0;
     }
-    public void scrollWheel(float amount){
+    public boolean scrollWheel(float amount){
         float fakeOffset=scrollOffset+ amount;
+        float contentOffsetOld=contentOffset;
         if(direction==ScrollDirection.VERTICAL){
             UpdateScrollVariables(contentSize,fakeOffset,getHeight());
         }
         else{
             UpdateScrollVariables(contentSize,fakeOffset,getWidth());
         }
+        return contentOffset!=contentOffsetOld;
     }
-    public void onDrag(float newPos) {
+    private void onDrag(float newPos) {
         if(mouseOver){
             float fakeOffset= (float) (scrollOffset+ newPos- oldPos);
             if(direction==ScrollDirection.VERTICAL){
@@ -168,6 +186,7 @@ public class ScrollBarImpl extends UIComponent {
 
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
+
         // 仅当内容总高度大于可见区域时才绘制滑动条
         if (direction==ScrollDirection.VERTICAL&&contentSize > getHeight()&&displayable) {
             int cornerRadius = 2;
@@ -186,6 +205,7 @@ public class ScrollBarImpl extends UIComponent {
             // 绘制拇指
             ShapeDrawer.drawRoundedRect( animation.Update().getValue()+getX(),getY(), scrollSize, getHeight(), thumbColor, cornerRadius);
         }
+        Update();
     }
 
     @Override
@@ -213,6 +233,22 @@ public class ScrollBarImpl extends UIComponent {
     @Override
     public String toString(){
 
-        return "x:"+this.getX()+"y:"+this.getY()+"width:"+this.getWidth()+"height:"+this.getHeight()+",contentHeight:"+this.contentSize +",scrollHeight:"+this.scrollSize +",scrollOffset:"+this.scrollOffset+",contentOffset:"+this.contentOffset;
+        return "x:"+this.getX()+"y:"+this.getY()+"width:"+this.getWidth()+"height:"+this.getHeight()+",contentSize:"+this.contentSize +",scrollSize:"+this.scrollSize +",scrollOffset:"+this.scrollOffset+",contentOffset:"+this.contentOffset;
+    }
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
+        onClick(mouseX,mouseY);
+        return isMouseOver(mouseX,mouseY);
+    }
+    public void mouseReleased(int mouseX, int mouseY,int state){
+        onRelease();
+    }
+    public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        if(direction==ScrollDirection.VERTICAL){
+            onDrag(mouseY);
+            return true;
+        }else{
+            onDrag(mouseX);
+            return true;
+        }
     }
 }

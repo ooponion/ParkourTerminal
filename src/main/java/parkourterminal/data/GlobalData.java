@@ -7,6 +7,8 @@ import parkourterminal.data.inputdata.InputData;
 import parkourterminal.data.EntitylandData.LandingData;
 import parkourterminal.data.landingblock.LandingBlockData;
 import parkourterminal.data.ColorData.ColorData;
+import parkourterminal.data.macroData.MacroData;
+import parkourterminal.data.macroData.intf.Macro;
 import parkourterminal.global.json.TerminalJsonConfig;
 
 public class GlobalData {

@@ -3,6 +3,7 @@ package parkourterminal.global.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import parkourterminal.data.macroData.MacroData;
 import parkourterminal.data.properties.ConfigProperties;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.data.ColorData.ColorData;
@@ -35,12 +36,12 @@ public class TerminalJsonConfig {
     }
     public static void WriteConfig(){
         LabelManager.saveConfigUsedLabels();
-        Gson gson = new GsonBuilder().serializeNulls().create();
+        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         try {
             FileWriter writer = new FileWriter(GlobalConfig.getConfigDir()+ "/config.json");
             gson.toJson(root, writer);
             writer.flush();
-            System.out.printf("JSON file has been saved successfully.%s\n",root==null);
+            System.out.printf("JSON file has been saved successfully.\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,4 +60,5 @@ public class TerminalJsonConfig {
     public static String getPrefixWithAngleBrackets(){
         return "<"+root.getProperties().getPrefix()+"> ";
     }
+    public static MacroData getMacroData(){return root.getMacroData();}
 }

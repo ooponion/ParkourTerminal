@@ -7,6 +7,7 @@ import parkourterminal.gui.screens.impl.CustomIngameMenu;
 
 import parkourterminal.gui.screens.impl.GuiScreen.TerminalGuiScreen;
 import parkourterminal.gui.screens.impl.LandBlockScreen.LandBlockScreen;
+import parkourterminal.gui.screens.impl.macro_Screen.MacroScreen;
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.ShiftRightClickGui;
 import parkourterminal.gui.screens.impl.configScreen.ConfigSettingScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
@@ -23,6 +24,7 @@ public class ScreenManager {
         ScreenManager.addScreen(new TerminalGuiScreen());
         ScreenManager.addScreen(new ConfigSettingScreen());
         ScreenManager.addScreen(new LandBlockScreen());
+        ScreenManager.addScreen(new MacroScreen());
     }
 
     public static void SwitchToScreen(ScreenID id){
