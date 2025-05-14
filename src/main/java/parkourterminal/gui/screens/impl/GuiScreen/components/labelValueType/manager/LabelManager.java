@@ -15,7 +15,6 @@ import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
-import scala.actors.threadpool.Arrays;
 
 import javax.vecmath.Vector3d;
 import java.time.LocalDateTime;
@@ -193,7 +192,7 @@ public class LabelManager {
         int padding=1;
         if(guiScreen!=null){
             List<Label> list=new ArrayList<Label>();
-            List<String> names= Arrays.asList(defaultLabelList.keySet().toArray());
+            List<String> names= new ArrayList<String>(defaultLabelList.keySet());
             names.sort(new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {

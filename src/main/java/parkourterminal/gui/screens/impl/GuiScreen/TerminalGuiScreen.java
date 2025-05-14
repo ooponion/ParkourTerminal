@@ -91,9 +91,10 @@ public class TerminalGuiScreen extends GuiScreen implements InstantiationScreen 
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
         if (keyCode == 1){
-            for(UIComponent component:usedLabelContainer.getComponents()){
-                Label label=(Label) component;
-                label.setFocused(false);
+            for(UIComponent label:usedLabelContainer.getComponents()){
+                if(label.isFocused()){
+                    label.setFocused(false);
+                }
             }
         }
         super.keyTyped(typedChar,keyCode);

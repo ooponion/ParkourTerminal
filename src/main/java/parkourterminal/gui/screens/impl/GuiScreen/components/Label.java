@@ -2,7 +2,9 @@ package parkourterminal.gui.screens.impl.GuiScreen.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import parkourterminal.data.GlobalData;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
@@ -47,10 +49,10 @@ public class Label extends UIComponent {
             ShapeDrawer.drawRect(getX(),getY(),getWidth()+getX(),getHeight()+getY(),0x66ffd849);
         }
         if(this.isEnabled()){
-            renderer.drawString(getFormattedString(),getX(),getY(),0xFFFFFFFF);
+            renderer.drawStringWithShadow(getFormattedString(),getX(),getY(),0xFFFFFFFF);
         }
         else if(!isOverlay){
-            renderer.drawString(EnumChatFormatting.getTextWithoutFormattingCodes(getFormattedString()),getX(),getY(),0xFF999999);
+            renderer.drawStringWithShadow(EnumChatFormatting.getTextWithoutFormattingCodes(getFormattedString()),getX(),getY(),0xFF999999);
             ShapeDrawer.drawLine(getX(),getY()+getHeight()/2.0f,getX()+getWidth(),getY()+getHeight()/2.0f,0xFF999999);
         }
     }
@@ -74,13 +76,17 @@ public class Label extends UIComponent {
     @Override
     public void mouseReleased(int mouseX, int mouseY,int state){
         isPressing=false;
-
-        //判断是否落入unusedContainer
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
+        GuiScreen guiScreen= Minecraft.getMinecraft().currentScreen;
+        if(guiScreen==null){
+            return false;
+        }
         if(isPressing&&clickedMouseButton==0){
-            this.setPosition(mouseX+OffsetX,mouseY+OffsetY);
+            int validX= MathHelper.clamp_int(mouseX+OffsetX,0,guiScreen.width-getWidth());
+            int validY= MathHelper.clamp_int(mouseY+OffsetY,0,guiScreen.height-getHeight());
+            this.setPosition(validX,validY);
             return true;
         }
         return false;
@@ -90,5 +96,24 @@ public class Label extends UIComponent {
     }
     public boolean isPressing(){
         return isPressing;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+//        for (int i = 0; i < stackTrace.length; i++) {
+//            System.out.println(i + ": " + stackTrace[i]);
+//        }
+
+        // 第0位通常是 getStackTrace
+        // 第1位通常是 printCallerInfo
+        // 第2位是调用 printCallerInfo 的方法（即调用者）
+
+        if (stackTrace.length > 2) {
+            StackTraceElement caller = stackTrace[2];
+            String simpleClassName = caller.getClassName().substring(caller.getClassName().lastIndexOf('.') + 1);
+            System.out.println("调用方法：" + simpleClassName+":"+caller.getMethodName()+">>"+focused);
+        }
     }
 }

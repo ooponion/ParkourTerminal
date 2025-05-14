@@ -23,7 +23,7 @@ public class UsedLabelContainer extends Container {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
 
 
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        //super.mouseClicked(mouseX, mouseY, mouseButton);//delete??
         for (UIComponent component:getComponents()){
             if(component.mouseClicked(mouseX, mouseY, mouseButton)){
                 ((Label)component).SetIsPressing(true);
@@ -42,6 +42,7 @@ public class UsedLabelContainer extends Container {
     public void mouseReleased(int mouseX, int mouseY,int state){
         if(this.getFocusedUI()!=null&&((Label)this.getFocusedUI()).isPressing()&&unusedLabelContainer.isMouseOver(mouseX,mouseY)&&state==0){
             this.getFocusedUI().setEnabled(true);
+            this.getFocusedUI().mouseReleased(mouseX,mouseY,state);
             unusedLabelContainer.addComponent(new ListLabel((Label)this.getFocusedUI(),disableTip,this,unusedLabelContainer));
             this.deleteComponent(this.getFocusedUI());
         }
