@@ -44,6 +44,16 @@ public class LabelManager {
         addLabel("Last Input",new LabelValueString());
         addLabel("SideStep",new LabelValueString());
 
+        //AngleRelated
+        addLabel("Last turning",new LabelValueDegree());
+        addLabel("Preturn",new LabelValueDegree());
+        addLabel("Jump Angle",new LabelValueDegree());
+        addLabel("Last 45",new LabelValueDegree());
+        addLabel("First turning",new LabelValueDegree());
+        addLabel("Second turning",new LabelValueDegree());
+        addLabel("Third turning",new LabelValueDegree());
+        addLabel("Airtime",new LabelValueInt());
+
         //Land Part
         addLabel("Hit X",new LabelValueDouble());
         addLabel("Hit Y",new LabelValueDouble());
@@ -70,16 +80,6 @@ public class LabelManager {
         addLabel("Jump X",new LabelValueDouble());
         addLabel("Jump Y",new LabelValueDouble());
         addLabel("Jump Z",new LabelValueDouble());
-
-        //AngleRelated
-        addLabel("Last turning",new LabelValueDegree());
-        addLabel("Preturn",new LabelValueDegree());
-        addLabel("Jump Angle",new LabelValueDegree());
-        addLabel("Last 45",new LabelValueDegree());
-        addLabel("First turning",new LabelValueDegree());
-        addLabel("Second turning",new LabelValueDegree());
-        addLabel("Third turning",new LabelValueDegree());
-        addLabel("Airtime",new LabelValueInt());
 
         //Blip
         addLabel("Blip",new LabelValueBlip());

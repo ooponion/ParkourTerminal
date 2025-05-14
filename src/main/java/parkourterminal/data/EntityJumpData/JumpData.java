@@ -67,7 +67,7 @@ public class JumpData {
             jumpY= player.posY;
             jumpZ= player.posZ;
         }
-        else if (!player.onGround) {// 玩家在空中
+        else if (!player.onGround && !(player.capabilities.isCreativeMode && player.capabilities.isFlying)) {// 玩家在空中并且不在飞
             airTick++;
         }
         lastTurning=player.rotationYaw-lastFacing;
