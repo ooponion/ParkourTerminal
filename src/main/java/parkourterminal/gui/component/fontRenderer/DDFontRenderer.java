@@ -88,7 +88,7 @@ public class DDFontRenderer extends FontRenderer {
         }
     }
     public float getCharWidthFloat(int charCode) {
-        return charWidth[charCode]* fontScale;
+        return (charWidth[charCode]==0?6:charWidth[charCode])* fontScale;
     }
     @Override
     public int getStringWidth(String text) {

@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import parkourterminal.util.BlockUtils;
+import parkourterminal.util.SystemOutHelper;
 
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
@@ -23,8 +24,11 @@ public class WholeCollisionBox {
     private int condMode=0;//0: radius,others: coords
     private double condRadius=1;
     private boolean touchBoxEnabled=false;
-    public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,boolean touchBoxEnabled){
+    public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,boolean touchBoxEnabled,AxisAlignedBB touchBox,Vector3d touchPoint,int touchMod){
         this.touchBoxEnabled=touchBoxEnabled;
+        this.touchBox=touchBox;
+        this.touchPoint=touchPoint;
+        this.mode=touchMod;
         List<AxisAlignedBB> result=new ArrayList<AxisAlignedBB>();
         if(lBbox==LBbox.NON_BOX){
 
@@ -40,20 +44,17 @@ public class WholeCollisionBox {
         this.boxes.addAll(result);
         separateFromWall.addAll(result);
         this.subtractWalls(Minecraft.getMinecraft().theWorld);
-        UpdateCondZone();
     }
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox){
-        this(boxes,lBbox,false);
+        this(boxes,lBbox,false,null,null,0);
     }
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,Vector3d touchPoint){
-        this(boxes,lBbox,true);
-        this.touchPoint=touchPoint;
-        mode=1;
+        this(boxes,lBbox,true,null,touchPoint,1);
+
+
     }
     public WholeCollisionBox(List<AxisAlignedBB> boxes,LBbox lBbox,AxisAlignedBB touchBox){
-        this(boxes, lBbox,true);
-        this.touchBox=touchBox;
-        mode=2;
+        this(boxes, lBbox,true,touchBox,null,2);
     }
 
     public boolean isClipAgainstWall() {
@@ -75,6 +76,7 @@ public class WholeCollisionBox {
     }
 
     public void subtractWalls(World world){//这个方法只在更新的时候调用
+        SystemOutHelper.printf("WholeCollisionBox.subtractWalls.enter");
         List<AxisAlignedBB> aabbs=new ArrayList<AxisAlignedBB>();
         for(AxisAlignedBB box: OriginalBoxes){
             List<AxisAlignedBB> walls=BlockUtils.getWallsOfAABB(box,world);
@@ -101,7 +103,7 @@ public class WholeCollisionBox {
         return  condZone;
     };
     public void UpdateCondZone(){
-        if(mode!=0){//直接设置退出更新
+        if(condMode!=0){//直接设置退出更新
             return;
         }
         AxisAlignedBB outline=BlockUtils.UnionAll(getBoxes());
@@ -227,12 +229,12 @@ public class WholeCollisionBox {
     }
 
     public void setRadius(double radius) {
-        this.mode = 0;
+        this.condMode = 0;
         this.condRadius=Double.min(Double.max(radius,0),10);
         UpdateCondZone();
     }
     public void setCondZone(double minX,double maxX,double minZ,double maxZ){
-        this.mode = 1;
+        this.condMode = 1;
         this.condZone.setxMax(maxX);
         this.condZone.setzMax(maxZ);
         this.condZone.setxMin(minX);
