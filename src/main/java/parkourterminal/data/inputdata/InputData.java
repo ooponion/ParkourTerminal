@@ -105,13 +105,13 @@ public class InputData {
                 return "Mark "+(1+actionPulse.getDuration())+"t";
             }
             return "Mark";
-        }else if(stratsMatched("jumpOnly","none","Air")){
+        }else if(stratsMatched("jumpOnly","none","Air")||stratsMatched("jumpOnly","none","markMid")){
             ActionPulse actionPulse=pulseStack.get(1);
             if(actionPulse!=null){
                 return "Pessi "+(actionPulse.getDuration()+1)+"t";
             }
             return "Pessi";
-        }else if(stratsMatched("jumpOnly","Air")){
+        }else if(stratsMatched("jumpOnly","Air")||stratsMatched("jumpOnly","markMid")){
             return "Max Pessi";
         }
         else if(stratsMatched("hhStart","Jam")){
