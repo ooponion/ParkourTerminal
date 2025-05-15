@@ -5,15 +5,13 @@ import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
 import parkourterminal.data.GlobalData;
 import parkourterminal.global.json.TerminalJsonConfig;
-import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
 import parkourterminal.gui.component.CustomButton;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
-import parkourterminal.util.renderhelper.LandBlockRendererHelper;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 
 public class LandBlockScreen extends BlurGui implements InstantiationScreen {

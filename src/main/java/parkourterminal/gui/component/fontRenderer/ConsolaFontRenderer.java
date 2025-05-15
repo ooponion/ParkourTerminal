@@ -1,4 +1,4 @@
-package parkourterminal.gui.component;
+package parkourterminal.gui.component.fontRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -35,11 +35,6 @@ public class ConsolaFontRenderer extends FontRenderer {
     public void bindTexture(ResourceLocation location) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         textureManager.bindTexture(CONSOLA_TEXTURE);
-    }
-
-    @Override
-    public int drawStringWithShadow(String text, float x, float y, int color) {
-        return drawString(text, x, y, color, true);
     }
 
     @Override

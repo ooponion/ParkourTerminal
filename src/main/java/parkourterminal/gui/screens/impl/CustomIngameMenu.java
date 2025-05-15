@@ -4,11 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.component.fontRenderer.DDFontRenderer;
 import parkourterminal.gui.screens.impl.InGameMenuGui.IngameMenuGui;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
@@ -22,22 +23,26 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
     // 旋转动画
     private float rotationAngle = 0.0f;
     private long lastUpdateTime = System.currentTimeMillis();
+    private final DDFontRenderer DDfontRendererObj = new DDFontRenderer(Minecraft.getMinecraft());
 
     @Override
     public void initGui() {
         BlurRenderer.initSharedBlurShader(10.0f);
-        fontRendererObj = new ConsolaFontRenderer(Minecraft.getMinecraft());
-        System.out.printf("sizePos:%s,%s\n",this.width,this.height);
+        fontRendererObj = new DDFontRenderer(Minecraft.getMinecraft());
+
         super.initGui();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
         // 绘制原版菜单界面
         super.drawScreen(mouseX, mouseY, partialTicks);
+        String string="Parkour Terminal";
+        fontRendererObj.drawStringWithShadow(string, (this.width / 2.0f - fontRendererObj.getStringWidth(string) / 2f), 40, 0xFFFFFFFF);
 
         // 定义图标和外圈矩形的位置与尺寸
-        int iconSize = 16;           // 图标大小为 16x16 像素
+        int iconSize = 32;           // 图标大小为 32x32 像素
         int iconX = 10;              // 图标绘制在屏幕左上角（x 坐标 10 像素）
         int iconY = 10;              // 图标绘制在屏幕顶部（y 坐标 10 像素）
 
@@ -105,7 +110,8 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
         // 逐渐显示 "Settings"
         ScissorHelper.EnableScissor(texticonX,textRectY,textRectWidth,textRectHeight);
 
-        fontRendererObj.drawString(fullText, texticonX + 5, textRectY + 4, 0xFFFFFFFF);
+        fontRendererObj.drawString(fullText, texticonX + 5, textRectY + 6, 0xFFFFFFFF);
+
         ScissorHelper.DisableScissor();
 
 
@@ -126,7 +132,7 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
         // 计算图标的区域
-        int iconSize = 16;
+        int iconSize = 32;
         int iconX = 10;
         int iconY = 10;
 

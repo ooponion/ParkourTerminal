@@ -3,13 +3,10 @@ package parkourterminal.gui.component;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
 import parkourterminal.gui.layout.UIComponent;
-import parkourterminal.util.AnimationUtils.impls.BeizerAnimation;
-import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.FloatPoint;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;
-import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
-import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.ShapeDrawer;
 
 public class ToggleSwitch extends UIComponent {

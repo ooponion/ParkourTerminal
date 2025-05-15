@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.util.AnimationUtils.impls.ColorInterpolateAnimation;
 import parkourterminal.util.AnimationUtils.impls.interpolatingData.InterpolatingColor;

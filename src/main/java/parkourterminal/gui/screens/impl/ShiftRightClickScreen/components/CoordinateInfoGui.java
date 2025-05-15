@@ -1,16 +1,14 @@
 package parkourterminal.gui.screens.impl.ShiftRightClickScreen.components;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
-import parkourterminal.gui.screens.impl.ShiftRightClickScreen.ShiftRightClickGui;
 import parkourterminal.gui.screens.intf.BlurGui;
-import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
 import parkourterminal.gui.component.CustomButton;
 import parkourterminal.gui.component.CustomGuiTextField;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
@@ -28,9 +26,7 @@ import parkourterminal.util.TeleporterHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CoordinateInfoGui extends BlurGui {
     private final NBTTagCompound location;
