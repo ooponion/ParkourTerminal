@@ -3,6 +3,7 @@ package parkourterminal.gui.screens.impl.GuiScreen.components;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import parkourterminal.data.GlobalData;
@@ -48,6 +49,8 @@ public class Label extends UIComponent {
         else if(this.isFocused()){
             ShapeDrawer.drawRect(getX(),getY(),getWidth()+getX(),getHeight()+getY(),0x66ffd849);
         }
+        GlStateManager.disableBlend();
+        GlStateManager.disableDepth();
         if(this.isEnabled()){
             renderer.drawStringWithShadow(getFormattedString(),getX(),getY(),0xFFFFFFFF);
         }
@@ -55,6 +58,8 @@ public class Label extends UIComponent {
             renderer.drawStringWithShadow(EnumChatFormatting.getTextWithoutFormattingCodes(getFormattedString()),getX(),getY(),0xFF999999);
             ShapeDrawer.drawLine(getX(),getY()+getHeight()/2.0f,getX()+getWidth(),getY()+getHeight()/2.0f,0xFF999999);
         }
+        GlStateManager.enableBlend();
+        GlStateManager.enableDepth();
     }
     public void SetIsPressing(boolean isPressing){
         this.isPressing=isPressing;
