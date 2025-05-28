@@ -127,8 +127,11 @@ public class MacroLineUI extends UIComponent {
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         boolean state=false;
-        if(mouseY>=getEntryTop()&&mouseY<getEntryBottom()&&mouseX>=getEntryLeft()+partial*1.5&&mouseX<getEntryRight()){
-            if(mouseX-getEntryLeft()<partial*2.5&&mouseX-getEntryLeft()>=partial*1.5){
+        if(mouseY>=getEntryTop()&&mouseY<getEntryBottom()&&mouseX>=getEntryLeft()&&mouseX<getEntryRight()){
+            if(mouseX-getEntryLeft()>=0&&mouseX-getEntryLeft()<partial*1.5){
+                state= true;
+            }
+            else if(mouseX-getEntryLeft()<partial*2.5&&mouseX-getEntryLeft()>=partial*1.5){
                 operation.toggleBool(0);
                 state= true;
             }else if(mouseX-getEntryLeft()<partial*3.5){
@@ -156,7 +159,6 @@ public class MacroLineUI extends UIComponent {
                 pitchText.setFocused(false);
                 state= true;
             }else if(pitchText.mouseClicked(mouseX, mouseY, mouseButton)){
-                yawText.setFocused(false);
                 state= true;
             }
         }

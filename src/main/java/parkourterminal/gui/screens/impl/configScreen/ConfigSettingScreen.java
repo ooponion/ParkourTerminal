@@ -3,7 +3,7 @@ package parkourterminal.gui.screens.impl.configScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
-import parkourterminal.gui.component.CustomButton;
+import parkourterminal.gui.Button.CustomButton;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.gui.screens.impl.configScreen.intf.ConfigContainer;

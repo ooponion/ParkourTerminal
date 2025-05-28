@@ -9,6 +9,7 @@ import parkourterminal.command.clientCommand.ClientCommandsHelper;
 import parkourterminal.global.event.*;
 import parkourterminal.gui.Overlay.OverlayHandler;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
+import parkourterminal.gui.screens.impl.keyUIGuiScreen.KeyBoard.KeyUIManager;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.input.TerminalCommandHandler;
 @SideOnly(Side.CLIENT)
@@ -34,8 +35,8 @@ public class ClientProxy extends CommonProxy {
         TerminalCommandHandler.terminalCommandInit();
         GlobalConfig.configInit();//here configRead
         ScreenManager.registerScreens();
-        LabelManager.InitLabels();
-        LabelManager.TerminalGuiInitContainers();//depends screens
+        LabelManager.InitContainer();//depends screens
+        KeyUIManager.initContainer();
         KeyHandler.register();
     }
 }

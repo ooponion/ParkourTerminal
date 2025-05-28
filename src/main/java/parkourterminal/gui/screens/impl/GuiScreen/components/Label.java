@@ -2,14 +2,23 @@ package parkourterminal.gui.screens.impl.GuiScreen.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
+import org.lwjgl.input.Keyboard;
 import parkourterminal.data.GlobalData;
+import parkourterminal.gui.layout.KeyTyped;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
+import parkourterminal.gui.screens.impl.GuiScreen.manager.TerminalGuiManager;
+import parkourterminal.gui.screens.impl.keyUIGuiScreen.KeyBoard.intf.SideMode;
 import parkourterminal.util.ShapeDrawer;
 
-public class Label extends UIComponent {
-    private boolean isPressing=false;
+import java.io.IOException;
+
+public class Label extends UIComponent implements KeyTyped {
+//    private boolean isPressing=false;
     private final String label;
     private final LabelValue value;
     private int OffsetX;
@@ -40,22 +49,20 @@ public class Label extends UIComponent {
     public void draw(int mouseX, int mouseY, float partialTicks) {
         Update();
         FontRenderer renderer=Minecraft.getMinecraft().fontRendererObj;
-        if(isPressing){
+        if(this.isFocused()&&!isOverlay){
             ShapeDrawer.drawRect(getX(),getY(),getWidth()+getX(),getHeight()+getY(),0x88ffc83f);
         }
-        else if(this.isFocused()){
-            ShapeDrawer.drawRect(getX(),getY(),getWidth()+getX(),getHeight()+getY(),0x66ffd849);
-        }
+        GlStateManager.disableBlend();
+        GlStateManager.disableDepth();
         if(this.isEnabled()){
-            renderer.drawString(getFormattedString(),getX(),getY(),0xFFFFFFFF);
+            renderer.drawStringWithShadow(getFormattedString(),getX(),getY(),0xFFFFFFFF);
         }
         else if(!isOverlay){
-            renderer.drawString(EnumChatFormatting.getTextWithoutFormattingCodes(getFormattedString()),getX(),getY(),0xFF999999);
-            ShapeDrawer.drawLine(getX(),getY()+getHeight()/2.0f,getX()+getWidth(),getY()+getHeight()/2.0f,0xFF999999);
+            renderer.drawStringWithShadow(EnumChatFormatting.getTextWithoutFormattingCodes(getFormattedString()),getX(),getY(),0xFF999999);
+            ShapeDrawer.drawLine(getX(),getY()+getHeight()/2.0f,getX()+getWidth(),getY()+getHeight()/2.0f,0xFF999999,1f);
         }
-    }
-    public void SetIsPressing(boolean isPressing){
-        this.isPressing=isPressing;
+        GlStateManager.enableBlend();
+        GlStateManager.enableDepth();
     }
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
@@ -68,19 +75,29 @@ public class Label extends UIComponent {
         }
         OffsetX=getX()-mouseX;
         OffsetY=getY()-mouseY;
-
+        this.setFocused(true);
+        if(mouseButton==1){
+            DisableTip disableTip= TerminalGuiManager.getInstance().getDisableTip();
+            disableTip.setEnabled(true);
+            disableTip.setPosition(mouseX,mouseY);
+            disableTip.setChosenLabel(this);
+        }
         return true;
     }
     @Override
     public void mouseReleased(int mouseX, int mouseY,int state){
-        isPressing=false;
 
-        //判断是否落入unusedContainer
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
-        if(isPressing&&clickedMouseButton==0){
-            this.setPosition(mouseX+OffsetX,mouseY+OffsetY);
+        GuiScreen guiScreen= Minecraft.getMinecraft().currentScreen;
+        if(guiScreen==null){
+            return false;
+        }
+        if(isFocused()&&clickedMouseButton==0){
+            int validX= MathHelper.clamp_int(mouseX+OffsetX,0,guiScreen.width-getWidth());
+            int validY= MathHelper.clamp_int(mouseY+OffsetY,0,guiScreen.height-getHeight());
+            this.setPosition(validX,validY);
             return true;
         }
         return false;
@@ -88,7 +105,28 @@ public class Label extends UIComponent {
     public void setIsOverlay(boolean isOverlay){
         this.isOverlay=isOverlay;
     }
-    public boolean isPressing(){
-        return isPressing;
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        GuiScreen guiScreen= Minecraft.getMinecraft().currentScreen;
+        if(guiScreen==null){
+            return ;
+        }
+        if(isFocused()){
+            int dx=0;
+            int dy=0;
+            if (keyCode == Keyboard.KEY_UP) {
+                dy=-1;
+            } else if (keyCode == Keyboard.KEY_DOWN) {
+                dy=1;
+            } else if (keyCode == Keyboard.KEY_LEFT) {
+                dx=-1;
+            } else if (keyCode == Keyboard.KEY_RIGHT) {
+                dx=1;
+            }
+            int validX= MathHelper.clamp_int(getX()+dx,0,guiScreen.width-getWidth());
+            int validY= MathHelper.clamp_int(getY()+dy,0,guiScreen.height-getHeight());
+            this.setPosition(validX,validY);
+        }
     }
 }

@@ -14,7 +14,7 @@ import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordContainer;
 import parkourterminal.gui.screens.impl.ShiftRightClickScreen.components.CoordLine;
 import parkourterminal.gui.screens.intf.BlurGui;
-import parkourterminal.gui.component.ConsolaFontRenderer;
+import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 

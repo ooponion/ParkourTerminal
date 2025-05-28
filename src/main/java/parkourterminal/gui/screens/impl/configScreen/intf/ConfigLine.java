@@ -1,10 +1,9 @@
 package parkourterminal.gui.screens.impl.configScreen.intf;
 
-import com.ibm.icu.impl.BOCU;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import parkourterminal.gui.component.CustomButton;
+import parkourterminal.gui.Button.CustomButton;
 import parkourterminal.gui.component.CustomGuiTextField;
 import parkourterminal.gui.component.ToggleSwitch;
 import parkourterminal.gui.layout.UIComponent;

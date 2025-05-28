@@ -65,7 +65,7 @@ public class SetlbCommand extends TerminalCommandBase {
             String num3 = matcher.group(4); // 数字3
             String target = matcher.group(5); // target
             String box = matcher.group(6); // box
-            String divided = matcher.group(7); // box
+            String divided = matcher.group(7); // divided
             //set axis
             landingBlockData.setlBaxis(LBaxis.BOTH);
             if(axis != null ){
@@ -86,10 +86,11 @@ public class SetlbCommand extends TerminalCommandBase {
                 List<AxisAlignedBB> lb=new ArrayList<AxisAlignedBB>();
                 if(divided!=null){
                     lb.add(BlockUtils.getBiggestAABBUnderPlayerFeet(player));
+                    GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),player.getEntityBoundingBox()));
                 }else{
                     lb.addAll(BlockUtils.getAABBsUnderPlayerFeet(player));
+                    GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),player.getEntityBoundingBox()));
                 }
-                GlobalData.getLandingBlock().setAABBs(new WholeCollisionBox(lb,GlobalData.getLandingBlock().getlBbox(),player.getEntityBoundingBox()));
                 if(!lb.isEmpty()){
                     GlobalData.getLandingBlock().setOffsets(new Double[]{Double.NaN,Double.NaN,Double.NaN});
                     GlobalData.getLandingBlock().setPb(new Double[]{Double.NaN,Double.NaN,Double.NaN});

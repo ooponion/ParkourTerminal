@@ -8,6 +8,7 @@ import parkourterminal.data.properties.ConfigProperties;
 import parkourterminal.global.GlobalConfig;
 import parkourterminal.data.ColorData.ColorData;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.manager.LabelManager;
+import parkourterminal.gui.screens.impl.keyUIGuiScreen.KeyBoard.KeyUIManager;
 
 import java.io.File;
 import java.io.FileReader;
@@ -36,6 +37,7 @@ public class TerminalJsonConfig {
     }
     public static void WriteConfig(){
         LabelManager.saveConfigUsedLabels();
+        KeyUIManager.saveConfigUsedKeyUIs();
         Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         try {
             FileWriter writer = new FileWriter(GlobalConfig.getConfigDir()+ "/config.json");
@@ -61,4 +63,22 @@ public class TerminalJsonConfig {
         return "<"+root.getProperties().getPrefix()+"> ";
     }
     public static MacroData getMacroData(){return root.getMacroData();}
+    public static HashMap<String,KeyUIJson> getKeyUIJsons() {
+        return root.getKeyUIData().getUsedKeyUIs();
+    }
+    public static void setKeyUIList(HashMap<String, KeyUIJson> keyUIs) {
+        root.getKeyUIData().setUsedKeyUIs(keyUIs);
+    }
+    public static float getKeyFontSize() {
+        return root.getKeyUIData().getKeyFontSize();
+    }
+    public static void setKeyFontSize(float keyFontSize) {
+        root.getKeyUIData().setKeyFontSize(keyFontSize);
+    }
+    public static float getNameFontSize() {
+        return root.getKeyUIData().getNameFontSize();
+    }
+    public static void setNameFontSize(float nameFontSize) {
+        root.getKeyUIData().setNameFontSize(nameFontSize);
+    }
 }

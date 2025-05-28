@@ -70,6 +70,7 @@ public class ScissorHelper {
 
     private static void applyScissor(ScissorRect rect) {
         if (rect.width <= 0 || rect.height <= 0) {
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GL11.glScissor(0, 0, 0, 0); // 无绘制区域
         } else {
             GL11.glEnable(GL11.GL_SCISSOR_TEST);

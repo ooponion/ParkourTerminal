@@ -25,4 +25,7 @@ public class NumberWrapper {
         }
         return String.format("%." + n + "f", number);
     }
+    public static String toFormattedFloat(float value,String syntax){
+        return String.format(syntax, value);
+    }
 }

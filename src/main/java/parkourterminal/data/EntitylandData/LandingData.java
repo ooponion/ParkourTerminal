@@ -33,7 +33,7 @@ public class LandingData {
         }
         if (!player.onGround) {
             tier--;
-            if(isCreativeFlying(player)){
+            if(player.capabilities.isCreativeMode && player.capabilities.isFlying){//flying
                 tier=12;
             }
             wasInAir = true; // 玩家在空中
@@ -90,13 +90,5 @@ public class LandingData {
     }
     public int getBlipTimes(){
         return blipTimes;
-    }
-    private boolean isCreativeFlying(EntityPlayerSP player) {
-        // 判断是否创造模式
-        boolean isCreativeMode = Minecraft.getMinecraft().playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE;
-        // 判断是否飞行
-        boolean isFlying = player.capabilities.isFlying;
-
-        return isCreativeMode && isFlying;
     }
 }

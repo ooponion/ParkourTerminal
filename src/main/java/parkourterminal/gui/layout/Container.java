@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Container extends UIComponent {
     private boolean layoutManagerEnabled=true;
-    private List<UIComponent> components = new ArrayList<UIComponent>();
+    protected List<UIComponent> components = new ArrayList<UIComponent>();
     private LayoutManager layoutManager=new LinearLayout(LayoutDirection.HORIZONTAL,0);
     private boolean displayScrollBar=true;
 
@@ -17,6 +17,10 @@ public class Container extends UIComponent {
     private final ScrollDirection scrollDirection;
     public Container(Margin margin,Padding padding,LayoutManager layoutManager){
         this(margin,padding,layoutManager,ScrollDirection.VERTICAL);
+
+    }
+    public Container(LayoutManager layoutManager){
+        this(new Margin(0),new Padding(0),layoutManager);
 
     }
     public Container(Margin margin,Padding padding,LayoutManager layoutManager,ScrollDirection scrollDirection){
@@ -47,12 +51,24 @@ public class Container extends UIComponent {
     }
 
     public void addComponent(UIComponent component) {
+        if(component==null) return;
         components.add(component);
+    }
+    public void addComponents(List<UIComponent> comps) {
+        for(UIComponent component : comps){
+            addComponent(component);
+        }
     }
 
 
     public List<UIComponent> getComponents() {
         return components;
+    }
+    public int getSize(){
+        return components.size();
+    }
+    public boolean isEmpty(){
+        return components.isEmpty();
     }
 
     public void setMargin(Margin margin) {
@@ -70,7 +86,6 @@ public class Container extends UIComponent {
         }else{
             scrollBar.UpdateContentSize(this.getComponentsTotalWidth()+ getPadding().left+ getPadding().right);
         }
-        System.out.printf("Container.scrollBar<%s\n",scrollBar);
     }
     @Override
     public void setX(int x) {
@@ -118,8 +133,15 @@ public class Container extends UIComponent {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
         if(isEnabled()){
             boolean state=false;
-            for (UIComponent component:getComponents()){
+            boolean setFocusedFalse=false;
+            for (UIComponent component:new ArrayList<UIComponent>(getComponents())){
                 state|=component.mouseClicked(mouseX, mouseY, mouseButton);
+                if(setFocusedFalse){
+                    component.setFocused(false);
+                }
+                if(component.isFocused()){
+                    setFocusedFalse=true;
+                }
             }
             if(displayScrollBar){
                 return state||scrollBar.mouseClicked(mouseX, mouseY, mouseButton);
@@ -133,7 +155,9 @@ public class Container extends UIComponent {
         if(isEnabled()) {
             boolean state = false;
             for (UIComponent component : getComponents()) {
-                state |= component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+                if(component.isFocused()){
+                    state |= component.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+                }
             }
             if (displayScrollBar) {
                 scrollBar.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -208,6 +232,11 @@ public class Container extends UIComponent {
             return;
         }
         components.remove(component);
+    }
+    public void deleteComponents(List<UIComponent> comps){
+        for(UIComponent component:comps){
+            deleteComponent(component);
+        }
     }
     public void deleteComponents(){
 

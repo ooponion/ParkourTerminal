@@ -1,6 +1,6 @@
 package parkourterminal.util.AnimationUtils.intf;
 
-public abstract class AbstractAnimation<T extends interpolating<T>> {
+public abstract class AbstractAnimation<T extends interpolating<?,T>> {
     private final AnimationMode animationMode;
     private T start;
     private T end;

@@ -7,20 +7,21 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
-import parkourterminal.gui.layout.Padding;
+import parkourterminal.gui.layout.Scrollable;
 import parkourterminal.gui.layout.UIComponent;
+import parkourterminal.gui.layout.KeyTyped;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
+import parkourterminal.util.SystemOutHelper;
 
-public class TextField extends UIComponent {
+import java.io.IOException;
+
+public class TextField extends UIComponent implements KeyTyped, Scrollable {
 
     private final int id;
     protected final FontRenderer fontRendererInstance;
@@ -46,8 +47,14 @@ public class TextField extends UIComponent {
     private boolean visible = true;
     private GuiPageButtonList.GuiResponder field_175210_x;
     private Predicate<String> validator = Predicates.<String>alwaysTrue();
-
-
+    private TextChangeListener textChangeListener;
+    private String oldString="";
+    public interface TextChangeListener {
+        void onTextChange(String text);
+    }
+    public void setTextChangeListener(TextChangeListener textChangeListener) {
+        this.textChangeListener = textChangeListener;
+    }
     public TextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height)
     {
         this.id = componentId;
@@ -66,6 +73,12 @@ public class TextField extends UIComponent {
     @Override
     public void Update(){
         scrollBar.UpdateContentSize(this.fontRendererInstance.getStringWidth(this.getText())+12);
+        SystemOutHelper.printf("TextFieldUpdate,%s,%s,%s",textChangeListener,getText(),oldString);
+        if(!this.getText().equals(oldString)&&textChangeListener!=null){
+            SystemOutHelper.printf("TextFieldUpdateSucc");
+            oldString=getText();
+            textChangeListener.onTextChange(getText());
+        }
     }
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
@@ -183,9 +196,10 @@ public class TextField extends UIComponent {
         {
             s = s + this.text.substring(j);
         }
-
+        SystemOutHelper.printf("WriteText2,%s",validator);
         if (this.validator.apply(s))
         {
+            SystemOutHelper.printf("TextFieldUpdateSucc2");
             this.text = s;
             Update();
             this.moveCursorBy(i - this.selectionEnd + l);
@@ -243,9 +257,10 @@ public class TextField extends UIComponent {
                 {
                     s = s + this.text.substring(j);
                 }
-
+                SystemOutHelper.printf("WriteText,%s",validator);
                 if (this.validator.apply(s))
                 {
+                    SystemOutHelper.printf("WriteTextSucc");
                     this.text = s;
                     Update();
 
@@ -809,5 +824,10 @@ public class TextField extends UIComponent {
     @Override
     public boolean isEnabled() {
         return this.isEnabled;
+    }
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        textboxKeyTyped(typedChar, keyCode);
     }
 }

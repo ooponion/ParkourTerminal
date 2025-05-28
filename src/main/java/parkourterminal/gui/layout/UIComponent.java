@@ -13,7 +13,6 @@ public abstract class UIComponent {
     private int x=0, y=0, width=0, height=0;
     private Margin margin = new Margin(0);
     private Padding padding =new Padding(0);
-    protected Alignment alignment = Alignment.START;
     private AbstractAnimation<FloatPoint> animation=new BeizerAnimation<FloatPoint>(0.5f,new FloatPoint(x,y), AnimationMode.BLENDED);
     private AbstractAnimation<InterpolatingColor> animationColor=new ColorInterpolateAnimation(0.5f ,new InterpolatingColor(0),AnimationMode.BLENDED);
 

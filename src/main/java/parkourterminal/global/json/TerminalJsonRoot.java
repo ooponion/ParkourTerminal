@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 public class TerminalJsonRoot {
     private HashMap<String, LabelJson> usedLabels =new HashMap<String, LabelJson>();
+    private KeyUIContainerJson keyUIData = new KeyUIContainerJson();
     private ColorData colorData =new ColorData();
     private ConfigProperties properties=new ConfigProperties();
     private MacroData macroData =new MacroData();
@@ -21,8 +22,12 @@ public class TerminalJsonRoot {
     public void setUsedLabels(HashMap<String, LabelJson> usedLabels) {
         this.usedLabels=new HashMap<String, LabelJson>(usedLabels);
     }
-
-
+    public KeyUIContainerJson getKeyUIData() {
+        return keyUIData;
+    }
+    public void setKeyUIData(KeyUIContainerJson keyUIData) {
+        keyUIData=new KeyUIContainerJson();
+    }
     public ColorData getColorData() {
         return colorData;
     }

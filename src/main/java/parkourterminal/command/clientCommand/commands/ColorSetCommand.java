@@ -28,12 +28,18 @@ public class ColorSetCommand extends TerminalCommandBase {
         if(args.length!=2||!(args[0].equalsIgnoreCase("label")||args[0].equalsIgnoreCase("value"))){
             SendMessageHelper.addChatMessage(sender,"Invalid Command, try /tl help");
         }else{
-            SendMessageHelper.addChatMessage(sender,"Successfully set the color");
+
             EnumChatFormatting color= ParseHelper.parseEnumChatFormatting(args[1]);
+            if(color==null){
+                SendMessageHelper.addChatMessage(sender,"No such color");
+                return;
+            }
             if(args[0].equalsIgnoreCase("label")){//label
                 GlobalData.getColorData().setLabelColor(color);
+                SendMessageHelper.addChatMessage(sender,"Successfully set the color");
             }else{//value
                 GlobalData.getColorData().setValueColor(color);
+                SendMessageHelper.addChatMessage(sender,"Successfully set the color");
             }
         }
     }

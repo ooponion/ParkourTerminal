@@ -55,7 +55,7 @@ public class ListLabel extends UIComponent {
             disableTip.setChosenLabel(label);
             return true;
         }
-        label.SetIsPressing(true);
+        label.setFocused(true);
         this.setFocused(true);
         label.setPosition(mouseX-label.getEntryHeight()/2,mouseY-label.getEntryHeight()/2);
         label.mouseClicked(mouseX,mouseY,mouseButton);

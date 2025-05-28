@@ -15,7 +15,6 @@ import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
-import scala.actors.threadpool.Arrays;
 
 import javax.vecmath.Vector3d;
 import java.time.LocalDateTime;
@@ -45,6 +44,16 @@ public class LabelManager {
         addLabel("Last Input",new LabelValueString());
         addLabel("SideStep",new LabelValueString());
 
+        //AngleRelated
+        addLabel("Last turning",new LabelValueDegree());
+        addLabel("Preturn",new LabelValueDegree());
+        addLabel("Jump Angle",new LabelValueDegree());
+        addLabel("Last 45",new LabelValueDegree());
+        addLabel("First turning",new LabelValueDegree());
+        addLabel("Second turning",new LabelValueDegree());
+        addLabel("Third turning",new LabelValueDegree());
+        addLabel("Airtime",new LabelValueInt());
+
         //Land Part
         addLabel("Hit X",new LabelValueDouble());
         addLabel("Hit Y",new LabelValueDouble());
@@ -71,16 +80,6 @@ public class LabelManager {
         addLabel("Jump X",new LabelValueDouble());
         addLabel("Jump Y",new LabelValueDouble());
         addLabel("Jump Z",new LabelValueDouble());
-
-        //AngleRelated
-        addLabel("Last turning",new LabelValueDegree());
-        addLabel("Preturn",new LabelValueDegree());
-        addLabel("Jump Angle",new LabelValueDegree());
-        addLabel("Last 45",new LabelValueDegree());
-        addLabel("First turning",new LabelValueDegree());
-        addLabel("Second turning",new LabelValueDegree());
-        addLabel("Third turning",new LabelValueDegree());
-        addLabel("Airtime",new LabelValueInt());
 
         //Blip
         addLabel("Blip",new LabelValueBlip());
@@ -181,7 +180,8 @@ public class LabelManager {
         }
         TerminalJsonConfig.setLabelList(usedLabel);
     }
-    public static void TerminalGuiInitContainers(){
+    public static void InitContainer(){
+        InitLabels();
         TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
         if(guiScreen!=null){
             guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());
@@ -193,7 +193,7 @@ public class LabelManager {
         int padding=1;
         if(guiScreen!=null){
             List<Label> list=new ArrayList<Label>();
-            List<String> names= Arrays.asList(defaultLabelList.keySet().toArray());
+            List<String> names= new ArrayList<String>(defaultLabelList.keySet());
             names.sort(new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {

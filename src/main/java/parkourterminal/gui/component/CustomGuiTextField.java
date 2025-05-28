@@ -4,6 +4,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.layout.KeyTyped;
 import parkourterminal.gui.layout.Padding;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.util.RenderTextHelper;
@@ -12,7 +13,7 @@ import parkourterminal.util.ShapeDrawer;
 
 import java.lang.reflect.Field;
 
-public class CustomGuiTextField extends TextField {
+public class CustomGuiTextField extends TextField implements KeyTyped {
     // 颜色优化
     private int backgroundColor = 0x60000000;   // 背景颜色（半透明深灰色）
     private int textColor = 0x80EEEEEE;         // 文本颜色（柔和白）
@@ -32,8 +33,10 @@ public class CustomGuiTextField extends TextField {
         setSize(width,height);
     }
     public void Update(){
+        super.Update();
         scrollBar.UpdateContentSize(this.fontRendererInstance.getStringWidth(this.getText())+6);
     }
+
 
 
     public void setCurrentBorderColor(int color) {
@@ -141,6 +144,6 @@ public class CustomGuiTextField extends TextField {
 ////            System.out.printf("lineScrollOffsetcu:%s,%s,%d,%d\n",scrollBar.getInterpolatingContentOffset(),lineScrollOffset,this.getText().length(),scrollBar.getWidth());
 ////            lineScrollOffset=1;
 //        }
-
     }
+
 }
