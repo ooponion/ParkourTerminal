@@ -2,7 +2,7 @@ package parkourterminal.util.AnimationUtils.impls.interpolatingData;
 
 import parkourterminal.util.AnimationUtils.intf.interpolating;
 
-public class InterpolatingColor implements interpolating<InterpolatingColor>
+public class InterpolatingColor implements interpolating<Integer,InterpolatingColor>
 {
     private int Color=0;
     public int getColor(){
@@ -35,5 +35,40 @@ public class InterpolatingColor implements interpolating<InterpolatingColor>
     @Override
     public boolean equals(InterpolatingColor p2) {
         return p2.getColor()==this.Color;
+    }
+
+    @Override
+    public int compare(InterpolatingColor p2) {
+        return Integer.compare(this.getColor(), p2.getColor());
+    }
+
+    @Override
+    public float distance(InterpolatingColor p2) {
+        return Math.abs(this.Color-p2.Color);
+    }
+
+    @Override
+    public InterpolatingColor add(InterpolatingColor other) {
+        return new InterpolatingColor(this.getColor()+other.getColor());
+    }
+
+    @Override
+    public InterpolatingColor subtract(InterpolatingColor other) {
+        return new InterpolatingColor(this.getColor()-other.getColor());
+    }
+
+    @Override
+    public InterpolatingColor multiply(float multiplier) {
+        return new InterpolatingColor((int) (this.getColor()*multiplier));
+    }
+
+    @Override
+    public Integer getValue() {
+        return getColor();
+    }
+
+    @Override
+    public float getSize() {
+        return getColor();
     }
 }

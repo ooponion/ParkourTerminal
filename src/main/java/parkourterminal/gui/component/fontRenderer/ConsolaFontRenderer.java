@@ -30,7 +30,9 @@ public class ConsolaFontRenderer extends FontRenderer {
     public void setFontScale(float fontScale) {
         this.fontScale = fontScale;
     }
-
+    public static ConsolaFontRenderer newInstance() {
+        return new ConsolaFontRenderer(Minecraft.getMinecraft(),1);
+    }
     @Override
     public void bindTexture(ResourceLocation location) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();

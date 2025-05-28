@@ -1,45 +1,62 @@
 package parkourterminal.gui.screens.impl;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import parkourterminal.gui.component.Slider.SliderImpl;
+import parkourterminal.gui.component.Slider.SliderValueChangedListener;
 import parkourterminal.gui.component.fontRenderer.DDFontRenderer;
+import parkourterminal.gui.screens.impl.keyUIGuiScreen.KeyBoard.KeyUIManager;
+import parkourterminal.gui.screens.impl.keyUIGuiScreen.tooltips.ToolTipManager;
 import parkourterminal.gui.screens.impl.InGameMenuGui.IngameMenuGui;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
+import parkourterminal.util.AnimationUtils.impls.interpolatingData.Interpolatingfloat;
 import parkourterminal.util.BlurRenderer;
 import parkourterminal.util.ScissorHelper;
 import parkourterminal.util.ShapeDrawer;
+import parkourterminal.util.SystemOutHelper;
 
 import java.io.IOException;
+
 @SideOnly(Side.CLIENT)
 public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScreen {
     // 旋转动画
     private float rotationAngle = 0.0f;
     private long lastUpdateTime = System.currentTimeMillis();
-    private final DDFontRenderer DDfontRendererObj = new DDFontRenderer(Minecraft.getMinecraft());
-
+    private final DDFontRenderer DDfontRendererObj = new DDFontRenderer(Minecraft.getMinecraft(),3f);
+    private final SliderImpl<Interpolatingfloat> slider=new SliderImpl<Interpolatingfloat>(
+            new Interpolatingfloat(0),
+            new Interpolatingfloat(100),
+            new Interpolatingfloat(40),
+            16, 100, 30,
+            30, 300, new SliderValueChangedListener<Interpolatingfloat>() {
+                @Override
+                public void onValueChanged(Interpolatingfloat newValue) {
+                    SystemOutHelper.printf("newValue %s", newValue.getValue());
+                }
+    }
+    );
     @Override
     public void initGui() {
         BlurRenderer.initSharedBlurShader(10.0f);
-        fontRendererObj = new DDFontRenderer(Minecraft.getMinecraft());
-
         super.initGui();
+        slider.setEnabled(false);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-
         // 绘制原版菜单界面
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        drawSuperScreen(mouseX, mouseY, partialTicks);
         String string="Parkour Terminal";
-        fontRendererObj.drawStringWithShadow(string, (this.width / 2.0f - fontRendererObj.getStringWidth(string) / 2f), 40, 0xFFFFFFFF);
+        DDfontRendererObj.drawStringWithShadow(string, (this.width / 2.0f - DDfontRendererObj.getStringWidth(string) / 2f), 40, 0xFFFFFFFF);
 
         // 定义图标和外圈矩形的位置与尺寸
         int iconSize = 32;           // 图标大小为 32x32 像素
@@ -74,7 +91,7 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
         // 计算矩形动画
         float expandProgress = rotationAngle / 360.0f; // 归一化到 0-1
         String fullText = "Settings";
-        int maxTextWidth = fontRendererObj.getStringWidth(fullText) + 10; // 最大矩形宽度
+        int maxTextWidth = DDfontRendererObj.getStringWidth(fullText) + 10; // 最大矩形宽度
         int textRectWidth = (int) (expandProgress * maxTextWidth);
         int textRectHeight = iconSize;
         int texticonX = iconX + iconSize + 3; // 齿轮右侧
@@ -110,21 +127,27 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
         // 逐渐显示 "Settings"
         ScissorHelper.EnableScissor(texticonX,textRectY,textRectWidth,textRectHeight);
 
-        fontRendererObj.drawString(fullText, texticonX + 5, textRectY + 6, 0xFFFFFFFF);
+        DDfontRendererObj.drawString(fullText, texticonX + 5, textRectY + 6, 0xFFFFFFFF);
 
         ScissorHelper.DisableScissor();
 
 
         // 恢复 OpenGL 状态
         GlStateManager.enableDepth();
+        slider.draw(mouseX, mouseY, partialTicks);
+
     }
 
 
     @Override
     public void onGuiClosed() {
         BlurRenderer.cleanupBlurResources();
-
         super.onGuiClosed();
+        try {
+            super.mouseClicked(0,0,0);
+        } catch (IOException ignored) {
+        }
+        SystemOutHelper.printf("guiClosed");
     }
 
     @Override
@@ -144,6 +167,31 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
             mc.displayGuiScreen(null); // 关闭当前 GUI，回到游戏界面
             mc.displayGuiScreen(new IngameMenuGui()); // 打开自定义 IngameMenuGui
         }
+
+        slider.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+    protected void mouseReleased(int mouseX, int mouseY, int state)
+    {
+        super.mouseReleased(mouseX, mouseY, state);
+        slider.mouseReleased(mouseX, mouseY, state);
+
+    }
+
+    /**
+     * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
+     * lastButtonClicked & timeSinceMouseClick.
+     */
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
+    {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        slider.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+
+    }
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+
+        super.keyTyped(typedChar, keyCode); // 调用父类处理（如文本框输入）
+        slider.keyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -154,5 +202,17 @@ public class CustomIngameMenu extends GuiIngameMenu implements InstantiationScre
     @Override
     public ScreenID getScreenID() {
         return new ScreenID("CustomInGameMenu");
+    }
+    private void drawSuperScreen(int mouseX, int mouseY, float partialTicks){
+        this.drawDefaultBackground();
+        for (int i = 0; i < this.buttonList.size(); ++i)
+        {
+            ((GuiButton)this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY);
+        }
+
+        for (int j = 0; j < this.labelList.size(); ++j)
+        {
+            ((GuiLabel)this.labelList.get(j)).drawLabel(this.mc, mouseX, mouseY);
+        }
     }
 }

@@ -15,6 +15,7 @@ public class ShapeDrawer {
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         GlStateManager.color(r, g, b, 1.0F);
 
+        GlStateManager.disableDepth();
         GlStateManager.disableTexture2D();
         GlStateManager.enableColorLogic();
         GlStateManager.disableBlend();
@@ -29,6 +30,8 @@ public class ShapeDrawer {
         GlStateManager.disableColorLogic();
         GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
+        GlStateManager.enableDepth();
+
     }
     public static void drawRect(float left, float top, float right, float bottom, int color) {
         float a = (float)(color >> 24 & 255) / 255.0F;
@@ -36,6 +39,7 @@ public class ShapeDrawer {
         float g = (float)(color >> 8 & 255) / 255.0F;
         float b = (float)(color & 255) / 255.0F;
 
+        GlStateManager.disableDepth();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -53,6 +57,7 @@ public class ShapeDrawer {
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
     }
 
     public static void drawRoundedRect(float x, float y, float width, float height, int color, float radius) {
@@ -61,6 +66,7 @@ public class ShapeDrawer {
         float g = (float)(color >> 8 & 255) / 255.0F;
         float b = (float)(color & 255) / 255.0F;
 
+        GlStateManager.disableDepth();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -100,6 +106,7 @@ public class ShapeDrawer {
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
     }
 
     public static void drawRoundedRectBorder(float x, float y, float width, float height, int color, float radius) {
@@ -108,8 +115,8 @@ public class ShapeDrawer {
         float r = (float)(color >> 16 & 255) / 255.0F;
         float g = (float)(color >> 8 & 255) / 255.0F;
         float b = (float)(color & 255) / 255.0F;
-
         // 设置 OpenGL 状态
+        GlStateManager.disableDepth();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -155,6 +162,7 @@ public class ShapeDrawer {
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
     }
 
     private static void addCornerVertices(WorldRenderer wr, float centerX, float centerY, float radius, int startAngle, int endAngle) {
@@ -199,7 +207,7 @@ public class ShapeDrawer {
         }
     }
 
-    public static void drawLine(float x1, float y1, float x2, float y2, int color) {
+    public static void drawLine(float x1, float y1, float x2, float y2, int color,float lineWidth) {
         // 提取颜色分量
         float a = (float)((color >> 24) & 255) / 255.0F;
         float r = (float)((color >> 16) & 255) / 255.0F;
@@ -207,13 +215,14 @@ public class ShapeDrawer {
         float b = (float)(color & 255) / 255.0F;
 
         // 设置 OpenGL 状态
+        GlStateManager.disableDepth();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.color(r, g, b, a);
 
         // 设置线宽为 1.0f
-        GL11.glLineWidth(1.0f);
+        GL11.glLineWidth(lineWidth);
 
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer wr = tessellator.getWorldRenderer();
@@ -226,11 +235,19 @@ public class ShapeDrawer {
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
+        GL11.glLineWidth(1f);
     }
     public static void drawScaledCustomSizeModalRect(float x, float y, float u, float v, float uWidth, float vHeight, float width, float height, float tileWidth, float tileHeight)
     {
         float f = 1.0F / tileWidth;
         float f1 = 1.0F / tileHeight;
+
+        GlStateManager.enableBlend(); // 开启混合
+        GlStateManager.disableAlpha(); // 关闭 alpha 混合（可选，取决于图像）
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableTexture2D(); // 确保启用纹理
+
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -239,5 +256,9 @@ public class ShapeDrawer {
         worldrenderer.pos(x + width, y, 0.0D).tex((u + uWidth) * f, v * f1).endVertex();
         worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
         tessellator.draw();
+
+        GlStateManager.enableAlpha(); // 恢复状态
+        GlStateManager.disableBlend(); // 关闭混合
     }
+
 }

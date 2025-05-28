@@ -6,7 +6,7 @@ import org.lwjgl.input.Mouse;
 import parkourterminal.data.GlobalData;
 import parkourterminal.global.json.TerminalJsonConfig;
 import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
-import parkourterminal.gui.component.CustomButton;
+import parkourterminal.gui.Button.CustomButton;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.InstantiationScreen;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;

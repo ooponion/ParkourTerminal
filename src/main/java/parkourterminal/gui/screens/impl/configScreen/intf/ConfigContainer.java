@@ -1,8 +1,5 @@
 package parkourterminal.gui.screens.impl.configScreen.intf;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import parkourterminal.gui.component.CustomButton;
 import parkourterminal.gui.layout.*;
 import parkourterminal.gui.screens.impl.configScreen.intf.handlers.*;
 

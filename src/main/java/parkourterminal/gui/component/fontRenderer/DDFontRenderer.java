@@ -9,20 +9,18 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import parkourterminal.util.ShapeDrawer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 public class DDFontRenderer extends FontRenderer {
     private final Minecraft mc;
     private final TextureManager textureManager;
     private final Map<Integer, ResourceLocation> charPageMap = new HashMap<Integer, ResourceLocation>();
     private final float fontHeight = 6.0f;
-    private float fontScale = 3.0f;
+    private float fontScale = 1.0f;
 
     public DDFontRenderer(Minecraft mc) {
         super(mc.gameSettings, new ResourceLocation("parkourterminal", "fonts/alternate.png"), mc.getTextureManager(), false);
@@ -30,11 +28,22 @@ public class DDFontRenderer extends FontRenderer {
         this.textureManager = mc.getTextureManager();
         loadAllGlyphPages();
     }
+    public DDFontRenderer(Minecraft mc,float fontScale) {
+        this(mc);
+        this.fontScale=fontScale;
+    }
+
+
+    public static DDFontRenderer newInstance() {
+        return new DDFontRenderer(Minecraft.getMinecraft());
+    }
 
     public void setFontScale(float scale) {
         this.fontScale = scale;
     }
-
+    public float getFontScale() {
+        return fontScale;
+    }
 
     private void loadAllGlyphPages() {
         loadGlyphPage("fonts/ascii.png","fonts/ascii.properties", 0);
@@ -64,7 +73,7 @@ public class DDFontRenderer extends FontRenderer {
         try {
             // 尝试加载 .properties 文件
             try {
-                input = mc.getResourceManager().getResource(prop).getInputStream();
+                input = getClass().getResourceAsStream("/assets/parkourterminal/" + propPath);
                 Properties props = new Properties();
                 props.load(input);
                 for (String key : props.stringPropertyNames()) {

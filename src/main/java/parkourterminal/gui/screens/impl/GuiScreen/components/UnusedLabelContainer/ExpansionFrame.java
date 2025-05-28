@@ -1,7 +1,7 @@
 package parkourterminal.gui.screens.impl.GuiScreen.components.UnusedLabelContainer;
 
 import net.minecraft.client.Minecraft;
-import parkourterminal.gui.component.CustomButton;
+import parkourterminal.gui.Button.CustomButton;
 
 public class ExpansionFrame extends CustomButton {
     private final UnusedLabelContainer container;

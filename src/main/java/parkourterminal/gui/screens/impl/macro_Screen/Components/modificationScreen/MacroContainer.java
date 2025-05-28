@@ -1,22 +1,13 @@
 package parkourterminal.gui.screens.impl.macro_Screen.Components.modificationScreen;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.Sys;
-import parkourterminal.data.GlobalData;
 import parkourterminal.data.macroData.intf.Macro;
 import parkourterminal.data.macroData.intf.Operation;
 import parkourterminal.global.json.TerminalJsonConfig;
-import parkourterminal.gui.component.CustomButton;
-import parkourterminal.gui.component.scrollBar.impl.ScrollBarImpl;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.gui.layout.*;
 import parkourterminal.util.RenderTextHelper;
 import parkourterminal.util.ScissorHelper;
-import parkourterminal.util.ShapeDrawer;
-
-import javax.swing.plaf.ComponentUI;
-import java.util.Objects;
 
 public class MacroContainer extends Container {
     private static int tickIndex=0;

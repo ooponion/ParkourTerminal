@@ -43,8 +43,8 @@ public class DisableTip extends UIComponent {
             ShapeDrawer.drawRoundedRectBorder(getX()+rectX,getY()+rectY,rectSize,rectSize,0xFF4a6a71,1);
             Minecraft.getMinecraft().fontRendererObj.drawString("Disabled",getX()+rectX+rectSize+3,getY()+rectY-1,0xFF4a6a71);
             if(!ifEnabled){
-                ShapeDrawer.drawLine(getX()+rectX+1,getY()+rectY+1,getX()+rectX+rectSize-2,getY()+rectY+rectSize-2,0xFF4a6a71);
-                ShapeDrawer.drawLine(getX()+rectX+rectSize-2,getY()+rectY+1,getX()+rectX+1,getY()+rectY+rectSize-2,0xFF4a6a71);
+                ShapeDrawer.drawLine(getX()+rectX+1,getY()+rectY+1,getX()+rectX+rectSize-2,getY()+rectY+rectSize-2,0xFF4a6a71,1f);
+                ShapeDrawer.drawLine(getX()+rectX+rectSize-2,getY()+rectY+1,getX()+rectX+1,getY()+rectY+rectSize-2,0xFF4a6a71,1f);
             }
         }
     }

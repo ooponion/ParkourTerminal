@@ -6,13 +6,19 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
+import org.lwjgl.input.Keyboard;
 import parkourterminal.data.GlobalData;
+import parkourterminal.gui.layout.KeyTyped;
 import parkourterminal.gui.layout.UIComponent;
 import parkourterminal.gui.screens.impl.GuiScreen.components.labelValueType.intf.LabelValue;
+import parkourterminal.gui.screens.impl.GuiScreen.manager.TerminalGuiManager;
+import parkourterminal.gui.screens.impl.keyUIGuiScreen.KeyBoard.intf.SideMode;
 import parkourterminal.util.ShapeDrawer;
 
-public class Label extends UIComponent {
-    private boolean isPressing=false;
+import java.io.IOException;
+
+public class Label extends UIComponent implements KeyTyped {
+//    private boolean isPressing=false;
     private final String label;
     private final LabelValue value;
     private int OffsetX;
@@ -43,11 +49,8 @@ public class Label extends UIComponent {
     public void draw(int mouseX, int mouseY, float partialTicks) {
         Update();
         FontRenderer renderer=Minecraft.getMinecraft().fontRendererObj;
-        if(isPressing){
+        if(this.isFocused()&&!isOverlay){
             ShapeDrawer.drawRect(getX(),getY(),getWidth()+getX(),getHeight()+getY(),0x88ffc83f);
-        }
-        else if(this.isFocused()){
-            ShapeDrawer.drawRect(getX(),getY(),getWidth()+getX(),getHeight()+getY(),0x66ffd849);
         }
         GlStateManager.disableBlend();
         GlStateManager.disableDepth();
@@ -56,13 +59,10 @@ public class Label extends UIComponent {
         }
         else if(!isOverlay){
             renderer.drawStringWithShadow(EnumChatFormatting.getTextWithoutFormattingCodes(getFormattedString()),getX(),getY(),0xFF999999);
-            ShapeDrawer.drawLine(getX(),getY()+getHeight()/2.0f,getX()+getWidth(),getY()+getHeight()/2.0f,0xFF999999);
+            ShapeDrawer.drawLine(getX(),getY()+getHeight()/2.0f,getX()+getWidth(),getY()+getHeight()/2.0f,0xFF999999,1f);
         }
         GlStateManager.enableBlend();
         GlStateManager.enableDepth();
-    }
-    public void SetIsPressing(boolean isPressing){
-        this.isPressing=isPressing;
     }
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton){
@@ -75,12 +75,18 @@ public class Label extends UIComponent {
         }
         OffsetX=getX()-mouseX;
         OffsetY=getY()-mouseY;
-
+        this.setFocused(true);
+        if(mouseButton==1){
+            DisableTip disableTip= TerminalGuiManager.getInstance().getDisableTip();
+            disableTip.setEnabled(true);
+            disableTip.setPosition(mouseX,mouseY);
+            disableTip.setChosenLabel(this);
+        }
         return true;
     }
     @Override
     public void mouseReleased(int mouseX, int mouseY,int state){
-        isPressing=false;
+
     }
     @Override
     public boolean mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick){
@@ -88,7 +94,7 @@ public class Label extends UIComponent {
         if(guiScreen==null){
             return false;
         }
-        if(isPressing&&clickedMouseButton==0){
+        if(isFocused()&&clickedMouseButton==0){
             int validX= MathHelper.clamp_int(mouseX+OffsetX,0,guiScreen.width-getWidth());
             int validY= MathHelper.clamp_int(mouseY+OffsetY,0,guiScreen.height-getHeight());
             this.setPosition(validX,validY);
@@ -99,26 +105,28 @@ public class Label extends UIComponent {
     public void setIsOverlay(boolean isOverlay){
         this.isOverlay=isOverlay;
     }
-    public boolean isPressing(){
-        return isPressing;
-    }
 
     @Override
-    public void setFocused(boolean focused) {
-        super.setFocused(focused);
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-//        for (int i = 0; i < stackTrace.length; i++) {
-//            System.out.println(i + ": " + stackTrace[i]);
-//        }
-
-        // 第0位通常是 getStackTrace
-        // 第1位通常是 printCallerInfo
-        // 第2位是调用 printCallerInfo 的方法（即调用者）
-
-        if (stackTrace.length > 2) {
-            StackTraceElement caller = stackTrace[2];
-            String simpleClassName = caller.getClassName().substring(caller.getClassName().lastIndexOf('.') + 1);
-            System.out.println("调用方法：" + simpleClassName+":"+caller.getMethodName()+">>"+focused);
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        GuiScreen guiScreen= Minecraft.getMinecraft().currentScreen;
+        if(guiScreen==null){
+            return ;
+        }
+        if(isFocused()){
+            int dx=0;
+            int dy=0;
+            if (keyCode == Keyboard.KEY_UP) {
+                dy=-1;
+            } else if (keyCode == Keyboard.KEY_DOWN) {
+                dy=1;
+            } else if (keyCode == Keyboard.KEY_LEFT) {
+                dx=-1;
+            } else if (keyCode == Keyboard.KEY_RIGHT) {
+                dx=1;
+            }
+            int validX= MathHelper.clamp_int(getX()+dx,0,guiScreen.width-getWidth());
+            int validY= MathHelper.clamp_int(getY()+dy,0,guiScreen.height-getHeight());
+            this.setPosition(validX,validY);
         }
     }
 }

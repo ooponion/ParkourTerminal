@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
+import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;
 import parkourterminal.shader.Shader;
 import parkourterminal.shader.ShaderGroup;
 import parkourterminal.shader.ShaderUniform;
@@ -30,6 +31,7 @@ public class BlurGui extends GuiScreen {
 
     @Override
     public void initGui() {
+        super.initGui();
         isClosing = false;
         System.out.printf("initGui!!!\n");
         if (OpenGlHelper.shadersSupported) {
@@ -48,8 +50,8 @@ public class BlurGui extends GuiScreen {
                 // 计算淡出动画进度
                 animation.RestartAnimation(new Interpolatingfloat(targetBlurIntensity));
                 // 当动画完成，正式退出 GUI
-                if (animation.getProgress() >= 1.0f) {
-                    this.mc.displayGuiScreen(null);
+                if (animation.getProgress() >= 1f) {
+                    ScreenManager.SwitchToGame();
                     return;
                 }
             } else {
@@ -74,6 +76,7 @@ public class BlurGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
+        super.onGuiClosed();
         if (this.shaderGroup != null) {
             this.mc.entityRenderer.stopUseShader();
         }

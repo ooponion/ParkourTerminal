@@ -82,7 +82,7 @@ public class ModDetailGui {
         ShapeDrawer.drawLine(
                 panelX + (int) (panelWidth * 0.20) + 1, detailY + 15,
                 panelX + panelWidth, detailY + 15,
-                0xFFFFFFFF
+                0xFFFFFFFF,1f
         );
 
         // 计算图标在按钮内居中位置

@@ -180,7 +180,8 @@ public class LabelManager {
         }
         TerminalJsonConfig.setLabelList(usedLabel);
     }
-    public static void TerminalGuiInitContainers(){
+    public static void InitContainer(){
+        InitLabels();
         TerminalGuiScreen guiScreen=(TerminalGuiScreen) ScreenManager.getGuiScreen(new ScreenID("TerminalGuiScreen"));
         if(guiScreen!=null){
             guiScreen.InitContainers(initUsedLabelsFromJson(),initUnusedLabelsFromJson());

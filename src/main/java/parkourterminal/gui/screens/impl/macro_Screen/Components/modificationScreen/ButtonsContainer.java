@@ -1,6 +1,6 @@
 package parkourterminal.gui.screens.impl.macro_Screen.Components.modificationScreen;
 
-import parkourterminal.gui.component.CustomButton;
+import parkourterminal.gui.Button.CustomButton;
 import parkourterminal.gui.component.scrollBar.intf.ScrollDirection;
 import parkourterminal.gui.layout.*;
 

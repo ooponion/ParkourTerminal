@@ -9,7 +9,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 import parkourterminal.gui.screens.intf.BlurGui;
 import parkourterminal.gui.component.fontRenderer.ConsolaFontRenderer;
-import parkourterminal.gui.component.CustomButton;
+import parkourterminal.gui.Button.CustomButton;
 import parkourterminal.gui.component.CustomGuiTextField;
 import parkourterminal.gui.screens.intf.instantiationScreen.intf.ScreenID;
 import parkourterminal.gui.screens.intf.instantiationScreen.manager.ScreenManager;

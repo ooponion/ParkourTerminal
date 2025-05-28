@@ -296,12 +296,12 @@ public class IngameMenuGui extends BlurGui {
         // 绘制水平线（仪表盘上 10% 位置）
         int horizontalLineY = panelY + (int) (panelHeight * 0.10); // 水平线 Y 坐标
         int horizontalLineColor = 0xA0FFFFFF; // 白色（ARGB 格式）
-        ShapeDrawer.drawLine(panelX, horizontalLineY, panelX + panelWidth, horizontalLineY, horizontalLineColor);
+        ShapeDrawer.drawLine(panelX, horizontalLineY, panelX + panelWidth, horizontalLineY, horizontalLineColor,1f);
 
         // 绘制垂直线（水平线下方的左 20% 位置）
         int verticalLineX = panelX + (int) (panelWidth * 0.20) + 1; // 垂直线 X 坐标
         int verticalLineColor = 0xA0FFFFFF; // 白色（ARGB 格式）
-        ShapeDrawer.drawLine(verticalLineX, horizontalLineY, verticalLineX, panelY + panelHeight, verticalLineColor);
+        ShapeDrawer.drawLine(verticalLineX, horizontalLineY, verticalLineX, panelY + panelHeight, verticalLineColor,1f);
 
         // 恢复 OpenGL 状态
         GL11.glDisable(GL11.GL_BLEND);

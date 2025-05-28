@@ -4,7 +4,7 @@ import parkourterminal.util.AnimationUtils.intf.AnimationMode;
 import parkourterminal.util.AnimationUtils.intf.AbstractAnimation;
 import parkourterminal.util.AnimationUtils.intf.interpolating;
 
-public class BeizerAnimation<T extends interpolating<T>> extends AbstractAnimation<T> {
+public class BeizerAnimation<T extends interpolating<?,T>> extends AbstractAnimation<T> {
     // 三阶贝塞尔曲线控制点
     final float P0X = 0, P0Y = 0;
     final float P3X = 1, P3Y = 1;

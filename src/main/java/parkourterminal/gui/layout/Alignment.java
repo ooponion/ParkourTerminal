@@ -4,5 +4,8 @@ public enum Alignment {
     START,
     CENTER,
     END,
-    STRETCH
+    STRETCH,
+    SPACE_BETWEEN,
+    SPACE_AROUND,
+    FLEX_STRETCH
 }

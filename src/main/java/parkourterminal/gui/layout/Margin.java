@@ -19,4 +19,10 @@ public class Margin {
         this.right = right;
         this.bottom = bottom;
     }
+    public int vertical(){
+        return top+bottom;
+    }
+    public int horizontal(){
+        return left+right;
+    }
 }
