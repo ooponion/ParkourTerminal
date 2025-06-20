@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.6.6",
+  "package": "parkourterminal.mixins",
+  "refmap": "mixins.parkourterminal.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "IEntityLivingBaseAccessor",
+    "MininEntityPlayer",
+    "MixinEntity",
+    "MixinEntityLivingBase",
+    "MixinEntityPlayerSP",
+    "MixinWorld"
+  ],
+  "client": [
+    "MixinEntityRenderer",
+    "MixinMinecraft",
+    "MixinNetHandlerPlayClient",
+    "MixinPlayerControllerMP",
+    "MixinRender"
+  ],
+  "server": []
+}

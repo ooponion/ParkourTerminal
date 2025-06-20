@@ -1,51 +1,143 @@
 buildscript {
     repositories {
-        mavenCentral()
-        maven {
-            name="forge"
-            url = "https://bmclapi2.bangbang93.com/maven/" }
+        maven { url "https://files.minecraftforge.net/maven" }
+        maven { url 'https://repo.spongepowered.org/maven'}
+        maven { url 'https://plugins.gradle.org/m2/' } // 添加插件仓库
     }
     dependencies {
-        classpath(files('forgegradle/ForgeGradle-2.1.2.jar'))
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4' // 更新到新版
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.0"
-group = "parkourterminal"
-archivesBaseName = "Parkour Terminal"
+apply plugin: "java"
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = mod_version
+group = mod_group
+archivesBaseName = mod_name
+
+sourceCompatibility = targetCompatibility = 1.8
+compileJava.options.encoding = "UTF-8"
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
     mappings = "stable_22"
+    makeObfSourceJar = false
+
+    coreMod = "parkourterminal.core.CorePlugin"
 }
 
-processResources
-    {
-        // this will ensure that this task is redone when the versions change.
-        inputs.property "version", project.version
-        inputs.property "mcversion", project.minecraft.version
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spongepowered.org/maven/' }
+    maven { url 'https://jitpack.io' } // 可选，用于其他依赖
+}
 
-        // replace stuff in mcmod.info, nothing else
-        from(sourceSets.main.resources.srcDirs) {
-            include 'mcmod.info'
+configurations {
+    shade
+    compile.extendsFrom(shade)
+}
 
-            // replace version and mcversion
-            expand 'version':project.version, 'mcversion':project.minecraft.version
-        }
-
-        // copy everything else, thats not the mcmod.info
-        from(sourceSets.main.resources.srcDirs) {
-            exclude 'mcmod.info'
-        }
+dependencies {
+    shade('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
+    }
+}
+shadowJar {
+    dependencies {
+        include(dependency('org.spongepowered:mixin:0.7.10-SNAPSHOT'))
+    }
+    configurations = [project.configurations.shade]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    classifier ''
+    from(sourceSets.main.output) {
+        include '**'
     }
 
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    //relocate 'org.spongepowered.asm', '$parkourterminal.mixin.org.spongepowered.asm'
+}
 
-sourceSets {
-    main {
-        resources {
-            srcDirs += 'src/main/resources'
-        }
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
     }
+}
+
+jar {
+    manifest {
+        attributes(
+                "FMLCorePlugin": "parkourterminal.core.CorePlugin",
+                "FMLCorePluginContainsFMLMod": "true",
+                "ForceLoadAsMod": "true",
+                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "TweakOrder": 0,
+                "MixinConfigs": "mixins.parkourterminal.json"
+        )
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+
+    // 确保 Mixin 配置被包含
+    from('src/main/resources') {
+        include 'mixins.parkourterminal.json'
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+reobfShadowJar.dependsOn shadowJar
+
+// ==== 修复复制任务 ====
+tasks.register('buildAndCopyToMods', Copy) {
+    dependsOn 'reobfShadowJar'
+
+    from "build/libs"
+    into "run/mods"
+    into "D:/pcl2/.minecraft/versions/1.8.9.2/mods"
+    include "*.jar"
+}
+
+tasks.register('buildCopyToRunModsAndRun', Copy) {
+    dependsOn 'reobfShadowJar'
+    from "build/libs"
+    into "run/mods"
+    include "*.jar"
+}
+
+buildCopyToRunModsAndRun.finalizedBy runClient
+
+mixin {
+    add sourceSets.main, "mixins.parkourterminal.refmap.json"
+}
+runClient {
+    dependsOn 'buildCopyToRunModsAndRun'
+    jvmArgs '-Dfml.coreMods.load=parkourterminal.core.CorePlugin',
+            '-Dmixin.debug.export=true',
+            '-Dmixin.debug.verbose=true'
+//    ,
+//            "-Dfml.deobfuscatedEnvironment=false",
+//            "-Dfml.coreMods.load=net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper"
+    args '--mixin', 'mixins.parkourterminal.json'
 }

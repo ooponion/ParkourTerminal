@@ -30,14 +30,14 @@ public class LabelManager {
         addLabel("Pitch",new LabelValueDegree());
 
         //Offset Part
-        addLabel("X Offset",new LabelValueDouble());
-        addLabel("Z Offset",new LabelValueDouble());
-        addLabel("Total Offset",new LabelValueDouble());
+        addLabel("X Offset",new LabelValuePb());
+        addLabel("Z Offset",new LabelValuePb());
+        addLabel("Total Offset",new LabelValuePb());
 
         //PB Part
-        addLabel("X PB",new LabelValueDouble());
-        addLabel("Z PB",new LabelValueDouble());
-        addLabel("PB",new LabelValueDouble());
+        addLabel("X PB",new LabelValuePb());
+        addLabel("Z PB",new LabelValuePb());
+        addLabel("PB",new LabelValuePb());
 
         //Strat Part
         addLabel("Last Timing",new LabelValueString());
@@ -58,6 +58,7 @@ public class LabelManager {
         addLabel("Hit X",new LabelValueDouble());
         addLabel("Hit Y",new LabelValueDouble());
         addLabel("Hit Z",new LabelValueDouble());
+        addLabel("Hit Angle",new LabelValueDegree());
         addLabel("Landing X",new LabelValueDouble());
         addLabel("Landing Y",new LabelValueDouble());
         addLabel("Landing Z",new LabelValueDouble());
@@ -120,6 +121,7 @@ public class LabelManager {
         UpdateLabel("Hit X",GlobalData.getLandData().getHitX());
         UpdateLabel("Hit Y",GlobalData.getLandData().getHitY());
         UpdateLabel("Hit Z",GlobalData.getLandData().getHitZ());
+        UpdateLabel("Hit Angle",GlobalData.getLandData().getHitAngle());
         UpdateLabel("Landing X",GlobalData.getLandData().getLandingX());
         UpdateLabel("Landing Y",GlobalData.getLandData().getLandingY());
         UpdateLabel("Landing Z",GlobalData.getLandData().getLandingZ());

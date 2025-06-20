@@ -8,10 +8,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import parkourterminal.gui.screens.impl.keyUIGuiScreen.KeyBoard.KeyUIManager;
 
 @SideOnly(Side.CLIENT)
-public class TestOverlay {
+public class KeyUIOverlay {
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+        if (event.type ==  RenderGameOverlayEvent.ElementType.ALL) {
             if(Minecraft.getMinecraft().currentScreen ==null){
                 KeyUIManager.getInstance().getContainer().overlayDraw();
             }

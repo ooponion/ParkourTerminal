@@ -23,7 +23,7 @@ public class DDFontRenderer extends FontRenderer {
     private float fontScale = 1.0f;
 
     public DDFontRenderer(Minecraft mc) {
-        super(mc.gameSettings, new ResourceLocation("parkourterminal", "fonts/alternate.png"), mc.getTextureManager(), false);
+        super(mc.gameSettings, new ResourceLocation("parkourterminal", "fonts/ascii.png"), mc.getTextureManager(), false);
         this.mc = mc;
         this.textureManager = mc.getTextureManager();
         loadAllGlyphPages();

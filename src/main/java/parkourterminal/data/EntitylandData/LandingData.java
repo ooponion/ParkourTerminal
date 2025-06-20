@@ -5,11 +5,13 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.world.WorldSettings;
 import parkourterminal.data.GlobalData;
 import parkourterminal.util.BlockUtils;
+import parkourterminal.util.SystemOutHelper;
 
 public class LandingData {
     private Double hitX= Double.NaN;
     private Double hitY= Double.NaN;
     private Double hitZ= Double.NaN;
+    private Float hitAngle= Float.NaN;
     private Double landingX= Double.NaN;
     private Double landingY= Double.NaN;
     private Double landingZ= Double.NaN;
@@ -43,6 +45,7 @@ public class LandingData {
             hitX= player.posX;
             hitY= player.posY;
             hitZ=player.posZ;
+            hitAngle=player.rotationYaw;
             landingX=player.lastTickPosX;
             landingY=player.lastTickPosY;
             landingZ=player.lastTickPosZ;
@@ -56,6 +59,7 @@ public class LandingData {
             }
         }
         lastOnGround= player.onGround;
+
     }
     public int getTier(){
         return tier;
@@ -73,6 +77,9 @@ public class LandingData {
         return hitZ;
     }
 
+    public Float getHitAngle() {
+        return hitAngle;
+    }
     public Double getLandingX() {
         return landingX;
     }

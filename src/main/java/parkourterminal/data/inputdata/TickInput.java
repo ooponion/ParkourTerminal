@@ -5,9 +5,10 @@ import java.util.BitSet;
 public class TickInput {
     private final BitSet keys = new BitSet(8);
     private final String strategy;
-    private final boolean isJump;
+    private final String wad;
+//    private final boolean isJump;
 
-    public TickInput(boolean a, boolean w, boolean s, boolean d, boolean sneak, boolean sprint, boolean jump,boolean onGround,double motionY,double lastMotionY){
+    public TickInput(boolean a, boolean w, boolean s, boolean d, boolean sneak, boolean sprint, boolean jump,boolean onGround){
         keys.set(0, a);
         keys.set(1, w);
         keys.set(2, s);
@@ -16,8 +17,8 @@ public class TickInput {
         keys.set(5, sprint);
         keys.set(6, jump);
         keys.set(7, onGround);
-        isJump=lastMotionY<=0&&motionY>0;
         strategy=initStrategy();
+        wad=initWad();
     }
     public int[] actualDirectionKey(){//longitudinal & sideways (a:-1,d:+1,w:+1,s:-1)
         int sideways=(isA()?-1:0)+(isD()?1:0);
@@ -25,7 +26,7 @@ public class TickInput {
         return new int[]{longitudinal,sideways};
     };
     public boolean isActualJump(){
-        return isOnGround()&&isJump()&&isJump;//isJump true
+        return isOnGround()&&isJump();//isJump true
     }
     public boolean isActualSprint(){
         return actualDirectionKey()[0]==1&&isSprint();
@@ -66,18 +67,30 @@ public class TickInput {
         return result;
     }
 
-    public boolean equals(String strategy){
-        return strategy.equals(getStrategy());
+    public boolean equalsStrat(String strategy){
+        return this.strategy.equals(strategy);
+    }
+    public boolean equalsWad(String wad){
+        return this.wad.equals(wad);
+    }
+    public boolean equals(TickInput input){
+        return input.isActualJump()==isActualJump()&&
+                input.actualDirectionKey()[0]==actualDirectionKey()[0]&&
+                input.actualDirectionKey()[1]==actualDirectionKey()[1]&&
+                input.isActualSprint()==isActualSprint();
     }
     public String getStrategy() {
         return strategy;
+    }
+    public String getWad() {
+        return wad;
     }
     private String initStrategy(){
         if (compareTo(0, 0, false, false, false,null)) return "none"; // jam
         if (compareTo(1, 2, false, true, true,true)) return "Jam";
         if (compareTo(-1, 2, false, false, true,true)) return "bwJam";
         if (compareTo(1, 2, false, null, false,true)) return "hhStart"; // hh
-        if (compareTo(1, 0, false, false, true,true)) return "walkJam"; // fmm
+        if (compareTo(1, 2, false, false, true,true)) return "walkJam"; // fmm
         if (compareTo(1, 2, false, true, false,false)) return "sprintAir";
         if (compareTo(0, 0, false, null, true,true)) return "jumpOnly"; // pessi
         if (compareTo(3, 2, false, false, false,false)) return "walkAir";
@@ -86,8 +99,17 @@ public class TickInput {
         if (compareTo(1, 2, true, null, false,true)) return "burstStart"; // burst
         return "unknown";
     }
+    private String initWad(){
+        if (compareTo(1, -1, null, null, false,null)) return "wa";
+        if (compareTo(1, 1, null, null, false,null)) return "wd";
+        if (compareTo(1, 1, null, null, true,null)) return "wdJ";
+        if (compareTo(1, 1, null, null, true,null)) return "wdJ";
+        if (compareTo(1, 0, null, null, true,null)) return "J";
+        if (compareTo(1, 0, null, null, false,null)) return "w";
+        return "unknown";
+    }
     public String toString(){
-        return String.format("name:%s<<isjump:%s,IsOnGround:%s,IsMotion:%s,Final:%s",getStrategy(),isJump(),isOnGround(),isJump,isActualJump());
+        return String.format("name:%s<<isjump:%s,IsOnGround:%s,Final:%s",getStrategy(),isJump(),isOnGround(),isActualJump());
     }
     public String getDirectionKeys(){
         String keys="";
